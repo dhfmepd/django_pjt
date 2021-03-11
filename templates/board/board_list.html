@@ -1,0 +1,9 @@
+{% if board_list %}
+    <ul>
+    {% for board in board_list %}
+        <li><a href="{% url 'board:detail' board.id %}">{{ board.subject }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>질문이 없습니다.</p>
+{% endif %}
