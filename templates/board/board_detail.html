@@ -3,3 +3,18 @@
 <div>
     {{ board.content }}
 </div>
+
+<h5>{{ board.reply_set.count }}개의 답변이 있습니다.</h5>
+<div>
+    <ul>
+    {% for reply in board.reply_set.all %}
+        <li>{{ reply.content }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<form action="{% url 'board:reply_create' board.id %}" method="post">
+{% csrf_token %}
+<textarea name="content" id="content" rows="15"></textarea>
+<input type="submit" value="답변등록">
+</form>
