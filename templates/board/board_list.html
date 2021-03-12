@@ -1,9 +1,32 @@
-{% if board_list %}
-    <ul>
-    {% for board in board_list %}
-        <li><a href="{% url 'board:detail' board.id %}">{{ board.subject }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>질문이 없습니다.</p>
-{% endif %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <table class="table">
+        <thead>
+        <tr class="thead-dark">
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if board_list %}
+        {% for board in board_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+                <a href="{% url 'board:detail' board.id %}">{{ board.subject }}</a>
+            </td>
+            <td>{{ board.create_date }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">게시물이 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    <a href="{% url 'board:board_create' %}" class="btn btn-primary">등록하기</a>
+</div>
+{% endblock %}
