@@ -12,22 +12,8 @@
     <title>Hello, board!</title>
 </head>
 <body>
-<!-- ------------------------------- Top 네이게이션 영역 Start -------------------------------- -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-    <a class="navbar-brand" href="{% url 'board:index' %}">CJFV DT Platform</a>
-    <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse flex-grow-0" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="#">로그인</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<!-- ------------------------------- Top 네이게이션 영역 End -------------------------------- -->
+<!-- Top 네이게이션 영역 -->
+{% include "navbar.html" %}
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
 {% block content %}
 {% endblock %}
