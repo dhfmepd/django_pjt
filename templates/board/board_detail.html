@@ -1,16 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
+    <!-- 사용자오류 표시 -->
+    {% if messages %}
+    <div class="alert alert-danger my-3" role="alert">
+    {% for message in messages %}
+        <strong>{{ message.tags }}</strong>
+        <ul><li>{{ message.message }}</li></ul>
+    {% endfor %}
+    </div>
+    {% endif %}
 <!-- ------------------------------- 게시판 표시 영역 Start -------------------------------- -->
     <h2 class="border-bottom py-2">{{ board.subject }}</h2>
     <div class="card my-3">
         <div class="card-body">
             <div class="card-text" style="white-space: pre-line;">{{ board.content }}</div>
             <div class="d-flex justify-content-end">
-                <div class="badge badge-light p-2">
-                    {{ board.create_date }}
+                {% if board.modify_date %}
+                <div class="badge badge-light p-2 text-left mx-3">
+                    <div class="mb-2">modified at</div>
+                    <div>{{ board.modify_date }}</div>
+                </div>
+                {% endif %}
+                <div class="badge badge-light p-2 text-left">
+                    <div class="mb-2">{{ board.author.username }}</div>
+                    <div>{{ board.create_date }}</div>
                 </div>
             </div>
+            {% if request.user == board.author %}
+            <div class="my-3">
+                <a href="{% url 'board:board_modify' board.id  %}"
+                   class="btn btn-sm btn-outline-secondary">수정</a>
+                <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                   data-uri="{% url 'board:board_delete' board.id  %}">삭제</a>
+            </div>
+            {% endif %}
         </div>
     </div>
 <!-- ------------------------------- 게시판 표시 영역 End -------------------------------- -->
@@ -21,10 +45,25 @@
         <div class="card-body">
             <div class="card-text" style="white-space: pre-line;">{{ reply.content }}</div>
             <div class="d-flex justify-content-end">
-                <div class="badge badge-light p-2">
-                    {{ reply.create_date }}
+                {% if reply.modify_date %}
+                <div class="badge badge-light p-2 text-left mx-3">
+                    <div class="mb-2">modified at</div>
+                    <div>{{ reply.modify_date }}</div>
+                </div>
+                {% endif %}
+                <div class="badge badge-light p-2 text-left">
+                    <div class="mb-2">{{ reply.author.username }}</div>
+                    <div>{{ reply.create_date }}</div>
                 </div>
             </div>
+            {% if request.user == reply.author %}
+            <div class="my-3">
+                <a href="{% url 'board:reply_modify' reply.id  %}"
+                   class="btn btn-sm btn-outline-secondary">수정</a>
+                <a href="#" class="delete btn btn-sm btn-outline-secondary "
+                   data-uri="{% url 'board:reply_delete' reply.id  %}">삭제</a>
+            </div>
+            {% endif %}
         </div>
     </div>
     {% endfor %}
@@ -45,10 +84,22 @@
         {% endif %}
         <!-- 오류표시 End -->
         <div class="form-group">
-            <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+            <textarea {% if not user.is_authenticated %}disabled{% endif %}
+                      name="content" id="content" class="form-control" rows="10"></textarea>
         </div>
         <input type="submit" value="답변등록" class="btn btn-primary">
     </form>
 <!-- ------------------------------- 답변 등록 영역 End -------------------------------- -->
 </div>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".delete").on('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = $(this).data('uri');
+        }
+    });
+});
+</script>
 {% endblock %}
