@@ -1,5 +1,5 @@
 from django import forms
-from board.models import Board, Reply
+from board.models import Board, Reply, Comment
 
 class BoardForm(forms.ModelForm):
     class Meta:
@@ -16,4 +16,12 @@ class ReplyForm(forms.ModelForm):
         fields = ['content']
         labels = {
             'content': '답변내용',
+        }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        labels = {
+            'content': '댓글내용',
         }

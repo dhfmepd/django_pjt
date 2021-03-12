@@ -7,6 +7,7 @@
         <thead>
         <tr class="text-center thead-dark">
             <th>번호</th>
+            <th>추천</th>
             <th style="width:50%">제목</th>
             <th>글쓴이</th>
             <th>작성일시</th>
@@ -18,6 +19,11 @@
         <tr class="text-center">
             <td>
                 {{ board_list.paginator.count|sub:board_list.start_index|sub:forloop.counter0|add:1 }}
+            </td>
+            <td>
+                {% if board.voter.all.count > 0 %}
+                <span class="badge badge-warning px-2 py-1">{{ board.voter.all.count }}</span>
+                {% endif %}
             </td>
             <td class="text-left">
                 <a href="{% url 'board:detail' board.id %}">{{ board.subject }}</a>
