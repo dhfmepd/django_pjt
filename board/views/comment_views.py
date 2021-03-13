@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, resolve_url
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -19,7 +19,9 @@ def comment_create_board(request, board_id):
             comment.create_date = timezone.now()
             comment.board = board
             comment.save()
-            return redirect('board:detail', board_id=board.id)
+            return redirect('{}#comment_{}'.format(
+                resolve_url('board:detail', board_id=comment.board.id), comment.id))
+
     else:
         form = CommentForm()
     context = {'form': form}
@@ -42,7 +44,8 @@ def comment_modify_board(request, comment_id):
             comment.author = request.user
             comment.modify_date = timezone.now()
             comment.save()
-            return redirect('board:detail', board_id=comment.board.id)
+            return redirect('{}#comment_{}'.format(
+                resolve_url('board:detail', board_id=comment.board.id), comment.id))
     else:
         form = CommentForm(instance=comment)
     context = {'form': form}
@@ -75,7 +78,8 @@ def comment_create_reply(request, reply_id):
             comment.create_date = timezone.now()
             comment.reply = reply
             comment.save()
-            return redirect('board:detail', board_id=comment.reply.board.id)
+            return redirect('{}#comment_{}'.format(
+                resolve_url('board:detail', board_id=comment.reply.board.id), comment.id))
     else:
         form = CommentForm()
     context = {'form': form}
@@ -99,7 +103,8 @@ def comment_modify_reply(request, comment_id):
             comment.author = request.user
             comment.modify_date = timezone.now()
             comment.save()
-            return redirect('board:detail', board_id=comment.reply.board.id)
+            return redirect('{}#comment_{}'.format(
+                resolve_url('board:detail', board_id=comment.reply.board.id), comment.id))
     else:
         form = CommentForm(instance=comment)
     context = {'form': form}

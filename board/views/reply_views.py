@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, resolve_url
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -19,7 +19,8 @@ def reply_create(request, board_id):
             reply.create_date = timezone.now()
             reply.board = board
             reply.save()
-            return redirect('board:detail', board_id=board.id)
+            return redirect('{}#reply_{}'.format(
+                resolve_url('board:detail', board_id=board.id), reply.id))
     else:
         form = ReplyForm()
     context = {'board': board, 'form': form}
@@ -42,7 +43,8 @@ def reply_modify(request, reply_id):
             reply.author = request.user
             reply.modify_date = timezone.now()
             reply.save()
-            return redirect('board:detail', board_id=reply.board.id)
+            return redirect('{}#reply_{}'.format(
+                resolve_url('board:detail', board_id=reply.board.id), reply.id))
     else:
         form = ReplyForm(instance=reply)
     context = {'reply': reply, 'form': form}
