@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load board_filter %}
 {% block content %}
-<div class="container my-3">
+<div class="container my-3" style="padding-top:60px">
 <!-- ------------------------------- 검색조건 영역 Start -------------------------------- -->
     <div class="row justify-content-end my-3">
         <div class="col-4 input-group">
@@ -93,7 +93,7 @@
     </ul>
 <!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
     <a href="{% url 'board:board_create' %}" class="btn btn-primary">등록하기</a>
-    <form id="searchForm" method="get" action="{% url 'index' %}">
+    <form id="searchForm" method="get" action="{% url 'board:list' %}">
         <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
         <input type="hidden" id="page" name="page" value="{{ page }}">
     </form>

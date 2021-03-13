@@ -17,7 +17,7 @@ def board_create(request):
             board.author = request.user
             board.create_date = timezone.now()
             board.save()
-            return redirect('board:index')
+            return redirect('board:list')
     else:
         form = BoardForm()
     context = {'form': form}
@@ -56,4 +56,4 @@ def board_delete(request, board_id):
         messages.error(request, '삭제권한이 없습니다')
         return redirect('board:detail', board_id=board.id)
     board.delete()
-    return redirect('board:index')
+    return redirect('board:list')

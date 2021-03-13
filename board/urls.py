@@ -5,7 +5,7 @@ from .views import base_views, board_views, reply_views, comment_views, vote_vie
 app_name = 'board'
 
 urlpatterns = [
-    path('', base_views.index, name='index'),
+    path('', base_views.list, name='list'),
     path('<int:board_id>/', base_views.detail, name='detail'),
     path('board/create/', board_views.board_create, name='board_create'),
     path('board/modify/<int:board_id>/', board_views.board_modify, name='board_modify'),

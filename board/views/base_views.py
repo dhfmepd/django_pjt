@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from ..models import Board
 
-def index(request):
+@login_required(login_url='common:login')
+def list(request):
     """
     Board 목록 출력
     """
@@ -28,6 +30,7 @@ def index(request):
     context = {'board_list': page_obj, 'page': page, 'kw': kw}  # page와 kw가 추가되었다.
     return render(request, 'board/board_list.html', context)
 
+@login_required(login_url='common:login')
 def detail(request, board_id):
     """
     Board 상세 출력

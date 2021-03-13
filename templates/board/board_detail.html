@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load board_filter %}
 {% block content %}
-<div class="container my-3">
+<div class="container my-3" style="padding-top:60px">
 <!-- ------------------------------- 사용자오류 표시 영역 Start -------------------------------- -->
     {% if messages %}
     <div class="alert alert-danger my-3" role="alert">
@@ -79,6 +79,7 @@
             </div>
         </div>
     </div>
+    <a href="{% url 'board:list' %}" class="btn btn-primary"><i class="bi bi-list-ul"></i>목록으로</a>
 <!-- ------------------------------- 게시물 표시 영역 End -------------------------------- -->
 <!-- ------------------------------- 답변 표시 영역 Start -------------------------------- -->
     <h5 class="border-bottom my-3 py-2">{{ board.reply_set.count }}개의 답변이 있습니다.</h5>
