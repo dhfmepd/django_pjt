@@ -2,11 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from common.models import Menu
 from ..models import Board
 from ..forms import BoardForm
 
 @login_required(login_url='common:login')
-def board_create(request):
+def board_create(request, menu_id):
     """
     Board 등록
     """
@@ -14,14 +15,15 @@ def board_create(request):
         form = BoardForm(request.POST)
         if form.is_valid():
             board = form.save(commit=False)
+            board.menu = Menu.objects.get(id=menu_id)
             board.author = request.user
             board.create_date = timezone.now()
             board.save()
-            return redirect('board:list')
+            return redirect('board:list', menu_id=menu_id)
     else:
         form = BoardForm()
     context = {'form': form}
-    return render(request, 'board/board_form.html', context )
+    return render(request, 'board/board_form.html', context)
 
 @login_required(login_url='common:login')
 def board_modify(request, board_id):
@@ -56,4 +58,4 @@ def board_delete(request, board_id):
         messages.error(request, '삭제권한이 없습니다')
         return redirect('board:detail', board_id=board.id)
     board.delete()
-    return redirect('board:list')
+    return redirect('board:list', menu_id=board.menu.id)

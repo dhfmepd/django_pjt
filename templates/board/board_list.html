@@ -3,7 +3,21 @@
 {% block content %}
 <div class="container my-3" style="padding-top:60px">
 <!-- ------------------------------- 검색조건 영역 Start -------------------------------- -->
-    <div class="row justify-content-end my-3">
+    <h5 class="border-bottom py-2">{{ menu.title }}</h5>
+    <div class="row justify-content-between my-3">
+        <div class="col-2">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
+                    <i class="bi bi-list-ul"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
+                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary so {% if so == 'popular' %}active{% endif %}" data-so="popular" data-original-title="인기순">
+                    <i class="bi bi-suit-heart-fill"></i>
+                </button>
+            </div>
+        </div>
         <div class="col-4 input-group">
             <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
             <div class="input-group-append">
@@ -92,8 +106,8 @@
         {% endif %}
     </ul>
 <!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
-    <a href="{% url 'board:board_create' %}" class="btn btn-primary">등록하기</a>
-    <form id="searchForm" method="get" action="{% url 'board:list' %}">
+    <a href="{% url 'board:board_create' menu.id %}" class="btn btn-primary">등록하기</a>
+    <form id="searchForm" method="get" action="{% url 'board:list' menu.id %}">
         <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
         <input type="hidden" id="page" name="page" value="{{ page }}">
     </form>

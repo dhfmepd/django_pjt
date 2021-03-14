@@ -2,10 +2,11 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
+from common.models import Menu
 from ..models import Board
 
 @login_required(login_url='common:login')
-def list(request):
+def list(request, menu_id):
     """
     Board 목록 출력
     """
@@ -14,7 +15,7 @@ def list(request):
     kw = request.GET.get('kw', '')  # 검색어
 
     # 조회
-    board_list = Board.objects.order_by('-create_date')
+    board_list = Board.objects.filter(menu=menu_id).order_by('-create_date')
     if kw:
         board_list = board_list.filter(
             Q(subject__icontains=kw) |  # 제목검색
@@ -27,7 +28,9 @@ def list(request):
     paginator = Paginator(board_list, 10)  # 페이지당 10개씩 보여주기
     page_obj = paginator.get_page(page)
 
-    context = {'board_list': page_obj, 'page': page, 'kw': kw}  # page와 kw가 추가되었다.
+    menu = Menu.objects.get(id=menu_id)
+
+    context = {'board_list': page_obj, 'page': page, 'kw': kw, 'menu': menu}  # page와 kw가 추가되었다.
     return render(request, 'board/board_list.html', context)
 
 @login_required(login_url='common:login')

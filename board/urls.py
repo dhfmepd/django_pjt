@@ -5,9 +5,9 @@ from .views import base_views, board_views, reply_views, comment_views, vote_vie
 app_name = 'board'
 
 urlpatterns = [
-    path('', base_views.list, name='list'),
-    path('<int:board_id>/', base_views.detail, name='detail'),
-    path('board/create/', board_views.board_create, name='board_create'),
+    path('board/<int:menu_id>', base_views.list, name='list'),
+    path('board/detail/<int:board_id>/', base_views.detail, name='detail'),
+    path('board/create/<int:menu_id>', board_views.board_create, name='board_create'),
     path('board/modify/<int:board_id>/', board_views.board_modify, name='board_modify'),
     path('board/delete/<int:board_id>/', board_views.board_delete, name='board_delete'),
     path('reply/create/<int:board_id>/', reply_views.reply_create, name='reply_create'),

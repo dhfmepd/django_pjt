@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from common.models import Menu
 
 class Board(models.Model):
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='menu_board')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_board')
     subject = models.CharField(max_length=200)
     content = models.TextField()
