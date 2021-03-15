@@ -182,6 +182,9 @@
         <div class="form-group">
             <textarea {% if not user.is_authenticated %}disabled{% endif %}
                       name="content" id="content" class="form-control" rows="10"></textarea>
+            <script>
+                var simplemde = new SimpleMDE({ element: document.getElementById("content") });
+            </script>
         </div>
         <input type="submit" value="답변등록" class="btn btn-primary">
     </form>
