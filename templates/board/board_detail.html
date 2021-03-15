@@ -19,7 +19,7 @@
         <div class="col-1">
             <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{board.voter.count}}</div>
             <a href="#" data-uri="{% url 'board:vote_board' board.id  %}"
-               class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+               class="recommend btn btn-sm btn-secondary btn-block my-1"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
         </div>
         <!-- 추천영역 End -->
         <div class="col-11">
@@ -72,25 +72,37 @@
                     {% endif %}
                     <div>
                         <a href="{% url 'board:comment_create_board' board.id  %}"
-                           class="small"><small>댓글 추가 ..</small></a>
+                           class="small"><i class="bi bi-chat-dots"></i><small> 댓글 추가 ..</small></a>
                     </div>
                     <!-- 게시판 댓글 영역 End -->
                 </div>
             </div>
         </div>
     </div>
-    <a href="{% url 'board:list' board.menu_id %}" class="btn btn-primary"><i class="bi bi-list-ul"></i>목록으로</a>
+    <a href="{% url 'board:list' board.menu_id %}" class="btn btn-primary"><i class="bi bi-list-ul"></i> 목록으로</a>
 <!-- ------------------------------- 게시물 표시 영역 End -------------------------------- -->
 <!-- ------------------------------- 답변 표시 영역 Start -------------------------------- -->
-    <h5 class="border-bottom my-3 py-2">{{ board.reply_set.count }}개의 답변이 있습니다.</h5>
-    {% for reply in board.reply_set.all %}
+    <div class="d-flex justify-content-between border-top my-3 py-2">
+        <h5 class="my-3 py-2">{{ reply_list.paginator.count }}개의 답변이 있습니다.</h5>
+        <!-- 정렬영역 Start -->
+        <div class="btn-group my-3 py-2" role="group">
+            <button type="button" class="btn btn-sm btn-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
+                <i class="bi bi-list-ul"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
+                <i class="bi bi-hand-thumbs-up-fill"></i>
+            </button>
+        </div>
+    </div>
+    <!-- 정렬영역 End -->
+    {% for reply in reply_list %}
     <a name="reply_{{ reply.id }}"></a>
     <div class="row my-3">
         <!-- 추천영역 Start -->
         <div class="col-1">
             <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{reply.voter.count}}</div>
             <a href="#" data-uri="{% url 'board:vote_reply' reply.id  %}"
-                class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+                class="recommend btn btn-sm btn-secondary btn-block my-1"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
         </div>
         <!-- 추천영역 End -->
         <div class="col-11">
@@ -143,7 +155,7 @@
                     {% endif %}
                     <div>
                         <a href="{% url 'board:comment_create_reply' reply.id  %}"
-                           class="small"><small>댓글 추가 ..</small></a>
+                           class="small"><i class="bi bi-chat-dots"></i><small> 댓글 추가 ..</small></a>
                     </div>
                     <!-- 답변 댓글 영역 End -->
                 </div>
@@ -174,6 +186,49 @@
         <input type="submit" value="답변등록" class="btn btn-primary">
     </form>
 <!-- ------------------------------- 답변 등록 영역 End -------------------------------- -->
+<!-- ------------------------------- 페이징처리 영역 Start -------------------------------- -->
+    <ul class="pagination justify-content-center">
+        <!-- 이전페이지 -->
+        {% if reply_list.has_previous %}
+        <li class="page-item">
+           <a class="page-link" data-page="{{ reply_list.previous_page_number }}" href="#">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+        <!-- 페이지리스트 -->
+        {% for page_number in reply_list.paginator.page_range %}
+            <!-- 페이지리스트 표시 건수 제한 -->
+            {% if page_number >= reply_list.number|add:-5 and page_number <= reply_list.number|add:5 %}
+                {% if page_number == reply_list.number %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        <!-- 다음페이지 -->
+        {% if reply_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ reply_list.next_page_number }}" href="#">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+<!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
+    <form id="searchForm" method="get" action="{% url 'board:detail' board.id %}">
+        <input type="hidden" id="page" name="page" value="{{ page }}">
+        <input type="hidden" id="so" name="so" value="{{ so }}">
+    </form>
 </div>
 {% endblock %}
 {% block script %}
@@ -188,6 +243,15 @@ $(document).ready(function(){
         if(confirm("정말로 추천하시겠습니까?")) {
             location.href = $(this).data('uri');
         }
+    });
+    $(".page-link").on('click', function() {
+        $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+    $(".so").on('click', function() {
+        $("#so").val($(this).data("so"));
+        $("#page").val(1);
+        $("#searchForm").submit();
     });
 });
 </script>
