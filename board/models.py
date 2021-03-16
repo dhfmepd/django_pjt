@@ -7,6 +7,7 @@ class Board(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_board')
     subject = models.CharField(max_length=200)
     content = models.TextField()
+    hit_count = models.IntegerField(default=0)
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
     voter = models.ManyToManyField(User, related_name='voter_board')

@@ -36,6 +36,7 @@
             <th>추천</th>
             <th style="width:50%">제목</th>
             <th>글쓴이</th>
+            <th>조회</th>
             <th>작성일시</th>
         </tr>
         </thead>
@@ -59,6 +60,7 @@
                 {% endif %}
             </td>
             <td>{{ board.author.username }}</td>
+            <td>{{ board.hit_count }}</td>
             <td>{{ board.create_date }}</td>
         </tr>
         {% endfor %}

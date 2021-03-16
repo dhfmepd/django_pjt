@@ -51,6 +51,10 @@ def detail(request, board_id):
 
     # 조회
     board = get_object_or_404(Board, pk=board_id)
+    
+    # 조회수 증가
+    board.hit_count += 1
+    board.save()
 
     # 정렬
     if so == 'recommend':
