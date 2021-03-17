@@ -1,0 +1,43 @@
+<div class="container my-3">
+    <h5 class="my-3 border-bottom pb-2">첨부파일</h5>
+    <div class="row my-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                {% if file_list %}
+                    {% for file in file_list %}
+                    <div class="card-text">
+                        <a href="{{ file.file_data.url }}">{{ file.file_data.name }}</a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="card-text">No files.</div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <form action="{% url 'common:file_upload' ref_type=ref_type ref_id=ref_id %}" method="post" enctype="multipart/form-data" class="post-form my-3">
+        {% csrf_token %}
+        <!-- 오류표시 Start -->
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+                {% if field.errors %}
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+            </div>
+        {% endif %}
+        <!-- 오류표시 End -->
+        <div class="form-group">
+            <p>
+                {{ form.file_data.errors }}
+                {{ form.file_data }}
+            </p>
+            <label>{{ form.file_data.label_tag }} {{ form.file_data.help_text }}</label>
+        </div>
+        <button type="submit" class="btn btn-primary">업로드</button>
+    </form>
+</div>
