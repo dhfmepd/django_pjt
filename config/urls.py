@@ -14,6 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 from common import views
 
@@ -22,4 +24,4 @@ urlpatterns = [
     path('common/', include('common.urls')),
     path('board/', include('board.urls')),
     path('', views.index, name='index'),  # '/' 에 해당되는 path
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
