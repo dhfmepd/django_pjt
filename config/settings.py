@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'widget_tweaks',
+    'bootstrap_modal_forms',
     'common.apps.CommonConfig',
     'board.apps.BoardConfig',
     'django.contrib.admin',

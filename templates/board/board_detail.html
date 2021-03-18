@@ -81,7 +81,7 @@
     </div>
     <a href="{% url 'board:list' board.menu_id %}" class="btn btn-primary"><i class="bi bi-list-ul"></i> 목록으로</a>
     <!-- 테스트 소스 -->
-    <a id="btn_file_upload" class="btn btn-primary"><i class="bi bi-pencil-fill"></i> 첨부파일</a>
+    <button class="upload-file btn btn-primary" type="button" name="button">UPLOAD FILE</button>
 <!-- ------------------------------- 게시물 표시 영역 End -------------------------------- -->
 <!-- ------------------------------- 답변 표시 영역 Start -------------------------------- -->
     <div class="d-flex justify-content-between border-top my-3 py-2">
@@ -234,6 +234,13 @@
         <input type="hidden" id="page" name="page" value="{{ page }}">
         <input type="hidden" id="so" name="so" value="{{ so }}">
     </form>
+<!-- ------------------------------- Modal Forms 영역 Start -------------------------------- -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+<!-- ------------------------------- Modal Forms 영역 End -------------------------------- -->
 </div>
 {% endblock %}
 {% block script %}
@@ -261,6 +268,10 @@ $(document).ready(function(){
     $("#btn_file_upload").on('click', function() {
         window.open("{% url 'common:file_upload' ref_type='board' ref_id=board.id %}", "_black", "top=0, width=250, height=200");
     });
+    $(".upload-file").modalForm({
+        formURL: "{% url 'common:file_upload' ref_type='board' ref_id=board.id %}"
+    });
+
 });
 </script>
 {% endblock %}

@@ -1,3 +1,6 @@
+import json
+from django.urls import reverse_lazy
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -45,10 +48,11 @@ def file_upload(request, ref_type, ref_id):
             file.ref_id = ref_id
             file.create_date = timezone.now()
             file.save()
-            return redirect('common:file_upload', ref_type=ref_type, ref_id=ref_id)
+            return HttpResponse(json.dumps({'message': 'OK'}), content_type="application/json")
     else:
         # 파일 목록 조회
         file_list = File.objects.filter(ref_type=ref_type, ref_id=ref_id).order_by('-create_date')
         form = FileForm()
+
     context = {'file_list': file_list, 'form': form, 'ref_type': ref_type, 'ref_id': ref_id}
     return render(request, 'common/file_upload.html', context)
