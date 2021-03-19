@@ -13,11 +13,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'simplemde.min.css' %}">
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-    <!-- Simplemde JS -->
-    <script src="{% static 'simplemde.min.js' %}"></script>
     <title>CJ Foodville DT Platform</title>
 </head>
 <body>
+<!-- Simplemde JS -->
+<script src="{% static 'simplemde.min.js' %}"></script>
 <!-- Top 네이게이션 영역 -->
 {% include "navbar.html" %}
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
@@ -28,8 +28,6 @@
 <script src="{% static 'jquery-3.5.1.min.js' %}"></script>
 <!-- Bootstrap JS -->
 <script src="{% static 'bootstrap.min.js' %}"></script>
-<!-- Modal Forms JS -->
-<script src="{% static 'jquery.bootstrap.modal.forms.min.js' %}"></script>
 <!-- 자바스크립트 Start -->
 {% block script %}
 {% endblock %}

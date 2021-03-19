@@ -1,14 +1,10 @@
-import json
-from django.urls import reverse_lazy
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.utils import timezone
 from common.models import File
 from common.forms import UserForm, FileForm
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 def index(request):
     """
@@ -48,11 +44,8 @@ def file_upload(request, ref_type, ref_id):
             file.ref_id = ref_id
             file.create_date = timezone.now()
             file.save()
-            return HttpResponse(json.dumps({'message': 'OK'}), content_type="application/json")
-    else:
-        # 파일 목록 조회
-        file_list = File.objects.filter(ref_type=ref_type, ref_id=ref_id).order_by('-create_date')
-        form = FileForm()
+            return redirect('board:detail', board_id=ref_id)
+        else:
+            messages.error(request, '파일 업로드가 유효하지 않습니다.')
 
-    context = {'file_list': file_list, 'form': form, 'ref_type': ref_type, 'ref_id': ref_id}
-    return render(request, 'common/file_upload.html', context)
+    return redirect('board:detail', board_id=ref_id)

@@ -1,87 +1,42 @@
-{% load static %}
-<form id="fileUploadForm" action="" method="post" enctype="multipart/form-data" class="post-form my-3">
-    {% csrf_token %}
-
-    <div class="modal-header">
-        <h5 class="modal-title">파일 업로드</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-
-    <div class="modal-body">
-        <div class="card">
-            <div class="card-body">
-            {% if file_list %}
-                {% for file in file_list %}
-                <div class="card-text">
-                    <a href="{{ file.file_data.url }}">{{ file.file_data.name }}</a>
+<div class="modal fade" tabindex="-1" role="dialog" id="fileUploadModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="fileUploadForm" action="{% url 'common:file_upload' ref_type ref_id %}" method="post" enctype="multipart/form-data" class="post-form my-3">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">파일 업로드</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                {% endfor %}
-            {% else %}
-                <div class="card-text">No files.</div>
-            {% endif %}
-            </div>
-        </div>
 
-        <!-- 오류표시 Start -->
-        {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
-            {% for field in form %}
-                {% if field.errors %}
-                <strong>{{ field.label }}</strong>
-                {{ field.errors }}
-                {% endif %}
-            {% endfor %}
-            </div>
-        {% endif %}
+                <div class="modal-body">
+                    <!-- 오류표시 Start -->
+                    {% if fileForm.errors %}
+                        <div class="alert alert-danger" role="alert">
+                        {% for field in fileForm %}
+                            {% if field.errors %}
+                            <strong>{{ field.label }}</strong>
+                            {{ field.errors }}
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                    <!-- 오류표시 End -->
+                    <div class="form-group">
+                        <p>
+                            {{ fileForm.file_data.errors }}
+                            {{ fileForm.file_data }}
+                        </p>
+                        <label>{{ fileForm.file_data.label_tag }} {{ fileForm.file_data.help_text }}</label>
+                    </div>
+                </div>
 
-        <!-- 오류표시 End -->
-        <div class="form-group">
-            <p>
-                {{ form.file_data.errors }}
-                {{ form.file_data }}
-            </p>
-            <label>{{ form.file_data.label_tag }} {{ form.file_data.help_text }}</label>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                    <button id="file_upload_btn" type="button" class="btn btn-primary">업로드</button>
+                </div>
+            </form>
         </div>
     </div>
-
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
-        <button type="button" class="upload-file btn btn-primary">업로드</button>
-    </div>
-
-    <input type="hidden" id="ref_type" name="ref_type" value="{{ ref_type }}">
-    <input type="hidden" id="ref_id" name="ref_id" value="{{ ref_id }}">
-</form>
-<!-- jQuery JS -->
-<script src="{% static 'jquery-3.5.1.min.js' %}"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $(".upload-file").click(function(event){
-
-        event.preventDefault();
-        var form = $('#fileUploadForm')[0];
-        var data = new FormData(form);
-        $(".upload-file").prop("disabled", true);
-
-        $.ajax({
-            type: "POST",
-            url: "{% url 'common:file_upload' ref_type=ref_type ref_id=ref_id %}", // 통신할 url을 지정
-            data: data,
-            processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000,
-            success: function(response) { // 성공
-                alert(response.message);
-                $(".upload-file").prop("disabled", false);
-            },
-            error: function(request, status, error) { // 실패
-                alert("로그인이 필요합니다.");
-                $(".upload-file").prop("disabled", false);
-            },
-        });
-    })
-})
-</script>
+</div>

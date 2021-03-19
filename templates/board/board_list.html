@@ -110,7 +110,7 @@
         {% endif %}
     </ul>
 <!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
-    <a href="{% url 'board:board_create' menu.id %}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i>등록하기</a>
+    <a href="{% url 'board:board_create' menu.id %}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i> 등록하기</a>
     <form id="searchForm" method="get" action="{% url 'board:list' menu.id %}">
         <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
         <input type="hidden" id="page" name="page" value="{{ page }}">

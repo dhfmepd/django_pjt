@@ -9,9 +9,6 @@
             <label for="content">댓글내용</label>
             <textarea class="form-control"name="content" id="content" 
                       rows="3">{{ form.content.value|default_if_none:'' }}</textarea>
-            <script>
-                var simplemde = new SimpleMDE({ element: document.getElementById("content") });
-            </script>
         </div>
         <button type="submit" class="btn btn-primary">저장하기</button>
     </form>

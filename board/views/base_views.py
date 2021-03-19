@@ -2,8 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
-from common.models import Menu
+from common.models import Menu, File
 from ..models import Board
+from common.forms import FileForm
 
 @login_required(login_url='common:login')
 def list(request, menu_id):
@@ -65,5 +66,10 @@ def detail(request, board_id):
     paginator = Paginator(reply_list, 5)  # 페이지당 5개씩 보여주기
     page_obj = paginator.get_page(page)
 
-    context = {'board': board, 'reply_list': page_obj, 'so': so}
+    # 첨부파일 Modal 폼
+    fileForm = FileForm()
+    # 첨부파일 목록
+    file_list = File.objects.filter(ref_type='board', ref_id=board.id).order_by('-create_date')
+
+    context = {'board': board, 'reply_list': page_obj, 'so': so, 'fileForm': fileForm, 'file_list': file_list, 'ref_type': 'board', 'ref_id': board.id}
     return render(request, 'board/board_detail.html', context)
