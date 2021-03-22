@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import HttpResponseRedirect
@@ -49,4 +49,14 @@ def file_upload(request, ref_type, ref_id):
         else:
             messages.error(request, '파일업로드가 유효하지 않습니다.')
 
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required(login_url='common:login')
+def file_delete(request, file_id):
+    """
+    파일 삭제
+    """
+    file = get_object_or_404(File, pk=file_id)
+    file.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
