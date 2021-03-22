@@ -1,6 +1,26 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <div class="container my-3" style="padding-top:60px">
-    Welcome MySite!!
+    <div class="row">
+        <div class="col-4">
+            <h1>About Me</h1>
+        </div>
+        <div class="col-8">
+            <img src="{% static '/images/tlj_main.png' %}" class="img-fluid w-100">
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-sm col-lg-4 bg-info">
+            One of three columns
+        </div>
+        <div class="col-sm col-lg-4 bg-secondary">
+            One of three columns
+        </div>
+        <div class="col-sm col-lg-4 bg-warning">
+            One of three columns
+        </div>
+    </div>
 </div>
 {% endblock %}

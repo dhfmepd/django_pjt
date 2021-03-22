@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.http import HttpResponseRedirect
 from common.models import File
 from common.forms import UserForm, FileForm
 from django.contrib import messages
@@ -44,8 +45,8 @@ def file_upload(request, ref_type, ref_id):
             file.ref_id = ref_id
             file.create_date = timezone.now()
             file.save()
-            return redirect('board:detail', board_id=ref_id)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
-            messages.error(request, '파일 업로드가 유효하지 않습니다.')
+            messages.error(request, '파일업로드가 유효하지 않습니다.')
 
-    return redirect('board:detail', board_id=ref_id)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
