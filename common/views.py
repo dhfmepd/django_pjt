@@ -1,8 +1,9 @@
+import mimetypes
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from common.models import File
 from common.forms import UserForm, FileForm
 from django.contrib import messages
@@ -60,3 +61,11 @@ def file_delete(request, file_id):
     file = get_object_or_404(File, pk=file_id)
     file.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+@login_required(login_url='common:login')
+def file_download(request, file_id):
+    file = get_object_or_404(File, pk=file_id)
+    fl = open(file.file_data.path, 'r')
+    response = HttpResponse(fl, content_type='Application/octet-stream')
+    response['Content-Disposition'] = "attachment; filename=%s" % file.file_name
+    return response

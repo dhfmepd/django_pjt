@@ -80,7 +80,8 @@
         </div>
     </div>
     <a href="{% url 'board:list' board.menu_id %}" class="btn btn-primary"><i class="bi bi-list-ul"></i> 목록으로</a>
-
+<!-- ------------------------------- 게시물 표시 영역 End -------------------------------- -->
+<!-- ------------------------------- 첨부파일 표시 영역 Start -------------------------------- -->
     <div class="row my-3">
         <div class="col-12">
             <div class="card">
@@ -107,13 +108,13 @@
                         <tr class="text-center">
                             <td>{{ forloop.counter }}</td>
                             <td>
-                                <a href="{{ file.file_data.url }}">{{ file.file_data.name }}</a>
+                                <a href="{% url 'common:file_download' file.id  %}">{{ file.file_data.name }}</a>
                             </td>
                             <td>
                                 {{ file.file_data.size }}
                             </td>
                             <td>
-                                <a href="{% url 'common:file_delete' file.id %}" class="badge badge-danger" type="button">DELETE</a>
+                                <a href="#" data-uri="{% url 'common:file_delete' file.id %}" class="file_delete badge badge-danger" type="button">DELETE</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -128,8 +129,7 @@
             </div>
         </div>
     </div>
-
-<!-- ------------------------------- 게시물 표시 영역 End -------------------------------- -->
+<!-- ------------------------------- 첨부파일 표시 영역 End -------------------------------- -->
 <!-- ------------------------------- 답변 표시 영역 Start -------------------------------- -->
     <div class="d-flex justify-content-between border-top my-3 py-2">
         <h5 class="my-3 py-2">{{ reply_list.paginator.count }}개의 답변이 있습니다.</h5>
@@ -290,12 +290,12 @@
 <script type='text/javascript'>
 $(document).ready(function(){
     $(".delete").on('click', function() {
-        if(confirm("정말로 삭제하시겠습니까?")) {
+        if(confirm("삭제하시겠습니까?")) {
             location.href = $(this).data('uri');
         }
     });
     $(".recommend").on('click', function() {
-        if(confirm("정말로 추천하시겠습니까?")) {
+        if(confirm("추천하시겠습니까?")) {
             location.href = $(this).data('uri');
         }
     });
@@ -308,13 +308,20 @@ $(document).ready(function(){
         $("#page").val(1);
         $("#searchForm").submit();
     });
-    $("#upload_popup_btn").click(function(event) {
+    $("#upload_popup_btn").on('click', function(event) {
         $('#fileUploadModal').modal('show');
     });
-    $("#file_upload_btn").click(function(event){
-        $('#fileUploadModal').modal('hide');
-        $("#fileUploadForm").submit();
+    $("#file_upload_btn").on('click', function(event){
+        if(confirm("업로드 하시겠습니까?")) {
+            $('#fileUploadModal').modal('hide');
+            $("#fileUploadForm").submit();
+        }
     })
+    $(".file_delete").on('click', function() {
+        if(confirm("삭제하시겠습니까?")) {
+            location.href = $(this).data('uri');
+        }
+    });
 });
 </script>
 {% endblock %}

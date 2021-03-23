@@ -18,10 +18,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from common import views
+from django.contrib import messages
+from django.shortcuts import redirect
+
+def protected_file(request, path, document_root=None):
+    messages.error(request, "접근 불가")
+    return redirect('/')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('common/', include('common.urls')),
     path('board/', include('board.urls')),
     path('', views.index, name='index'),  # '/' 에 해당되는 path
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, protected_file, document_root=settings.MEDIA_ROOT)
