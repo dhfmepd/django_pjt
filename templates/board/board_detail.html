@@ -108,7 +108,7 @@
                         <tr class="text-center">
                             <td>{{ forloop.counter }}</td>
                             <td>
-                                <a href="{% url 'common:file_download' file.id  %}">{{ file.file_data.name }}</a>
+                                <a href="{% url 'common:file_download' file.id  %}">{{ file.file_name }}</a>
                             </td>
                             <td>
                                 {{ file.file_data.size }}
@@ -120,7 +120,7 @@
                         {% endfor %}
                         {% else %}
                         <tr>
-                            <td colspan="3">첨부파일이 없습니다.</td>
+                            <td colspan="4" class="text-center">첨부파일이 없습니다.</td>
                         </tr>
                         {% endif %}
                         </tbody>

@@ -1,4 +1,5 @@
-import mimetypes
+import os
+import urllib
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -52,7 +53,6 @@ def file_upload(request, ref_type, ref_id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-
 @login_required(login_url='common:login')
 def file_delete(request, file_id):
     """
@@ -65,7 +65,12 @@ def file_delete(request, file_id):
 @login_required(login_url='common:login')
 def file_download(request, file_id):
     file = get_object_or_404(File, pk=file_id)
-    fl = open(file.file_data.path, 'r')
-    response = HttpResponse(fl, content_type='Application/octet-stream')
-    response['Content-Disposition'] = "attachment; filename=%s" % file.file_name
-    return response
+    if os.path.exists(file.file_data.path):
+        file_name = urllib.parse.quote(file.file_name.encode('utf-8'))
+        with open(file.file_data.path, 'r', encoding='utf-8') as fl:
+            response = HttpResponse(fl, content_type='Application/octet-stream')
+            response['Content-Disposition'] = 'attachment; filename*=UTF-8\'\'%s' % file_name
+            return response
+    else:
+        messages.error(request, '파일이 존재하지 않습니다.')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
