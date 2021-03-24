@@ -17,6 +17,14 @@
                     </div>
                     {% endif %}
                 </li>
+                <li class="nav-item dropdown">
+                    {% if user.is_authenticated %}
+                    <a class="nav-link dropdown-toggle" href="{% url 'board:list' 1 %}" data-toggle="dropdown">분석</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/common/index.html">CHART JS</a>
+                    </div>
+                    {% endif %}
+                </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
