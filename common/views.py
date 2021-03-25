@@ -64,6 +64,9 @@ def file_delete(request, file_id):
 
 @login_required(login_url='common:login')
 def file_download(request, file_id):
+    """
+    파일 다운로드
+    """
     file = get_object_or_404(File, pk=file_id)
     if os.path.exists(file.file_data.path):
         file_name = urllib.parse.quote(file.file_name.encode('utf-8'))
