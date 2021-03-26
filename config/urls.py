@@ -29,5 +29,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('common/', include('common.urls')),
     path('board/', include('board.urls')),
+    path('sample/', include('sample.urls')),
     path('', views.index, name='index'),  # '/' 에 해당되는 path
 ] + static(settings.UPLOAD_URL, protected_file, document_root=settings.UPLOAD_ROOT)

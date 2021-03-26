@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container my-3" style="padding-top:60px">
+    <div class="row">
+        <div class="card col-6">
+            <div class="card-body">
+                <canvas id="pie-chart"></canvas>
+            </div>
+        </div>
+        <div class="card col-6">
+            <div class="card-body">
+                <canvas id="bar-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var pieConfig = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: {{ pie_data|safe }},
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.blue,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.orange,
+                ],
+                label: 'Board Count'
+            }],
+            labels: {{ pie_label|safe }}
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: '사용자 별 게시물 건수(5인)'
+            }
+        }
+    };
+
+    var color = Chart.helpers.color;
+    var barChartData = {
+        labels: ['Board', 'Comment', 'Reply'],
+        datasets: [{
+            label: 'Dataset 1',
+            backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+            borderColor: window.chartColors.red,
+            borderWidth: 1,
+            data: {{ user_a_data|safe }}
+
+        }, {
+            label: 'Dataset 2',
+            backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+            borderColor: window.chartColors.blue,
+            borderWidth: 1,
+            data: {{ user_b_data|safe }}
+
+        }]
+
+    };
+
+    window.onload = function() {
+        var pieCanvas = document.getElementById('pie-chart').getContext('2d');
+        window.myPie = new Chart(pieCanvas, pieConfig);
+
+        var barCanvas = document.getElementById('bar-chart').getContext('2d');
+        window.myBar = new Chart(barCanvas, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: '사용자 별 게시물 통계'
+                }
+            }
+        });
+    };
+</script>
+
+{% endblock %}
