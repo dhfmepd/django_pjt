@@ -45,14 +45,14 @@
     var barChartData = {
         labels: ['Board', 'Comment', 'Reply'],
         datasets: [{
-            label: 'Dataset 1',
+            label: '{{ user_a_label|safe }}',
             backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
             borderColor: window.chartColors.red,
             borderWidth: 1,
             data: {{ user_a_data|safe }}
 
         }, {
-            label: 'Dataset 2',
+            label: '{{ user_b_label|safe }}',
             backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
             borderColor: window.chartColors.blue,
             borderWidth: 1,

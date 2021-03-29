@@ -6,7 +6,7 @@
         <div class="col-4">
             <div class="card">
                 <div class="card-body">
-                    <canvas id="myChart" width="400" height="400"></canvas>
+
                 </div>
             </div>
         </div>
@@ -27,27 +27,5 @@
         </div>
     </div>
 </div>
-
-<script>
-var ctx = document.getElementById('myChart');
-var data = {
-    labels: [
-        'Red',
-        'Yellow',
-        'Blue'
-    ],
-    datasets: [{
-        data: [10, 20, 30],
-        backgroundColor: [ "#f79546", "#9bba57", "#4f81bb"],
-        borderWidth: 0,
-        label: "Dataset 1"
-    }]
-};
-
-var myChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: data
-});
-</script>
 
 {% endblock %}
