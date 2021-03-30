@@ -11,7 +11,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                     {% if user.is_authenticated %}
-                    <a class="nav-link dropdown-toggle" href="{% url 'board:list' 1 %}" data-toggle="dropdown">게시판</a>
+                    <a class="nav-link dropdown-toggle" href="{% url 'board:list' 1 %}" data-toggle="dropdown"> BOARD </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="{% url 'board:list' 1 %}">Q & A 게시판</a>
                         <a class="dropdown-item" href="{% url 'board:list' 2 %}">자유게시판</a>
@@ -20,7 +20,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     {% if user.is_authenticated %}
-                    <a class="nav-link dropdown-toggle" href="{% url 'board:list' 1 %}" data-toggle="dropdown">SAMPLES</a>
+                    <a class="nav-link dropdown-toggle" href="{% url 'board:list' 1 %}" data-toggle="dropdown"> SAMPLES </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="{% url 'sample:chart_js' %}">CHART JS</a>
                         <a class="dropdown-item" href="{% url 'sample:api_open' %}">OPEN API</a>
