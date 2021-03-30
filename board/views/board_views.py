@@ -22,7 +22,7 @@ def board_create(request, menu_id):
             return redirect('board:list', menu_id=menu_id)
     else:
         form = BoardForm()
-    context = {'form': form}
+    context = {'form': form, 'menu_id': menu_id}
     return render(request, 'board/board_form.html', context)
 
 @login_required(login_url='common:login')

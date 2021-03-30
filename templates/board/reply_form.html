@@ -5,7 +5,7 @@
         {% csrf_token %}
         {% include "form_errors.html" %}
         <div class="form-group">
-            <label for="content">답변내용</label>
+            <label for="content"><h2>답변내용</h2></label>
             <textarea class="form-control" name="content" id="content" 
                       rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
             <script>
