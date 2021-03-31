@@ -55,9 +55,13 @@ def api_open(request):
     #라이브러리: https://www.lfd.uci.edu/~gohlke/pythonlibs/#jpype
     #설치: pip install JPype1-1.2.0-cp39-cp39-win_amd64.whl
     #JDK 8 설치(이슈) + JAVA_HOME 설정
-
-    txt = '사랑하고싶게하는가슴속온감정을헤집어놓는영화예요정말최고'
+    txt = '미팅 후 점심식사(오동욱 외 3인)'
     okt = Okt()
-    print(okt.pos(txt, norm=True, stem=True, join=True))
-    context = {'api_open': ''}
+    result = okt.pos(txt, norm=True, stem=True, join=True)
+    for word in result:
+        idx = word.find('/')
+        if word[idx+1:] in ['Noun']:
+            print(word[:idx])
+
+    context = {'result': result}
     return render(request, 'sample/api_open.html', context)
