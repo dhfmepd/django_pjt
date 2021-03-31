@@ -45,7 +45,7 @@ def board_modify(request, board_id):
             return redirect('board:detail', board_id=board.id)
     else:
         form = BoardForm(instance=board)
-    context = {'form': form}
+    context = {'form': form, 'menu_id': board.menu_id}
     return render(request, 'board/board_form.html', context)
 
 @login_required(login_url='common:login')
