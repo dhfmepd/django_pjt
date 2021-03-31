@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from board.models import Board, Comment, Reply
 from django.db.models import F, Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
+from konlpy.tag import Okt
 
 def chart_js(request):
     pie_label = []
@@ -49,5 +50,14 @@ def chart_js(request):
     return render(request, 'sample/chart_js.html', context)
 
 def api_open(request):
-    context = {'question_list': ''}
+    #라이브러리: https://konlpy-ko.readthedocs.io/ko/v0.4.3/
+    #설치: pip install konlpy
+    #라이브러리: https://www.lfd.uci.edu/~gohlke/pythonlibs/#jpype
+    #설치: pip install JPype1-1.2.0-cp39-cp39-win_amd64.whl
+    #JDK 8 설치(이슈) + JAVA_HOME 설정
+
+    txt = '사랑하고싶게하는가슴속온감정을헤집어놓는영화예요정말최고'
+    okt = Okt()
+    print(okt.pos(txt, norm=True, stem=True, join=True))
+    context = {'api_open': ''}
     return render(request, 'sample/api_open.html', context)
