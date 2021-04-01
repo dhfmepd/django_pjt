@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from board.models import Board, Comment, Reply
 from django.db.models import F, Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
-from konlpy.tag import Okt
+#from konlpy.tag import Okt
 
 def chart_js(request):
     pie_label = []
@@ -55,6 +55,7 @@ def api_open(request):
     #라이브러리: https://www.lfd.uci.edu/~gohlke/pythonlibs/#jpype
     #설치: pip install JPype1-1.2.0-cp39-cp39-win_amd64.whl
     #JDK 8 설치(이슈) + JAVA_HOME 설정
+    """
     txt = '미팅 후 점심식사(오동욱 외 3인)'
     okt = Okt()
     result = okt.pos(txt, norm=True, stem=True, join=True)
@@ -64,4 +65,6 @@ def api_open(request):
             print(word[:idx])
 
     context = {'result': result}
+    """
+    context = {'result': '테스트'}
     return render(request, 'sample/api_open.html', context)
