@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load board_filter %}
 {% block content %}
-<div class="container my-3" style="padding-top:20px">
+<div class="container my-3" style="padding-top:80px">
 <!-- ------------------------------- 사용자오류 표시 영역 Start -------------------------------- -->
     {% if messages %}
     <div class="alert alert-danger my-3" role="alert">
@@ -91,7 +91,7 @@
                         <button id="upload_popup_btn" type="button" class="btn btn-sm btn-primary"><i class="bi bi-upload"></i> UPLOAD</button>
                     </h5>
 
-                    <table class="table my-3">
+                    <table class="table">
                         <!-- 헤더 영역 End -->
                         <thead>
                         <tr class="text-center thead-dark">
@@ -135,14 +135,15 @@
         <h5 class="my-3 py-2">{{ reply_list.paginator.count }}개의 답변이 있습니다.</h5>
         <!-- 정렬영역 Start -->
         <div class="btn-group my-3 py-2" role="group">
-            <button type="button" class="btn btn-sm btn-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
+            <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
                 <i class="bi bi-list-ul"></i>
             </button>
-            <button type="button" class="btn btn-sm btn-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
-                <i class="bi bi-hand-thumbs-up-fill"></i>
+            <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
+                <i class="bi bi-hand-thumbs-up"></i>
             </button>
         </div>
     </div>
+
     <!-- 정렬영역 End -->
     {% for reply in reply_list %}
     <a name="reply_{{ reply.id }}"></a>
@@ -213,31 +214,6 @@
     </div>
     {% endfor %}
 <!-- ------------------------------- 답변 표시 영역 End -------------------------------- -->
-<!-- ------------------------------- 답변 등록 영역 Start -------------------------------- -->
-    <form action="{% url 'board:reply_create' board.id %}" method="post" class="my-3">
-        {% csrf_token %}
-        <!-- 오류표시 영역 Start -->
-        {% if form.errors %}
-        <div class="alert alert-danger" role="alert">
-        {% for field in form %}
-            {% if field.errors %}
-            <strong>{{ field.label }}</strong>
-            {{ field.errors }}
-            {% endif %}
-        {% endfor %}
-        </div>
-        {% endif %}
-        <!-- 오류표시 영역 End -->
-        <div class="form-group">
-            <textarea {% if not user.is_authenticated %}disabled{% endif %}
-                      name="content" id="content" class="form-control" rows="10"></textarea>
-            <script>
-                var simplemde = new SimpleMDE({ element: document.getElementById("content") });
-            </script>
-        </div>
-        <input type="submit" value="답변등록" class="btn btn-primary">
-    </form>
-<!-- ------------------------------- 답변 등록 영역 End -------------------------------- -->
 <!-- ------------------------------- 페이징처리 영역 Start -------------------------------- -->
     <ul class="pagination justify-content-center">
         <!-- 이전페이지 -->
@@ -277,6 +253,34 @@
         {% endif %}
     </ul>
 <!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
+<!-- ------------------------------- 답변 등록 영역 Start -------------------------------- -->
+    <form action="{% url 'board:reply_create' board.id %}" method="post" class="my-3">
+        {% csrf_token %}
+        <!-- 오류표시 영역 Start -->
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+        {% for field in form %}
+            {% if field.errors %}
+            <strong>{{ field.label }}</strong>
+            {{ field.errors }}
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+        <!-- 오류표시 영역 End -->
+        <div class="form-group">
+            <textarea {% if not user.is_authenticated %}disabled{% endif %}
+                      name="content" id="content" class="form-control" rows="10"></textarea>
+            <script>
+                var simplemde = new SimpleMDE({ element: document.getElementById("content") });
+            </script>
+        </div>
+        <input type="hidden" name="page" value="{{ page }}">
+        <input type="hidden" name="so" value="{{ so }}">
+        <input type="submit" value="답변등록" class="btn btn-primary">
+    </form>
+<!-- ------------------------------- 답변 등록 영역 End -------------------------------- -->
+
     <form id="searchForm" method="get" action="{% url 'board:detail' board.id %}">
         <input type="hidden" id="page" name="page" value="{{ page }}">
         <input type="hidden" id="so" name="so" value="{{ so }}">

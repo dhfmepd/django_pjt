@@ -84,7 +84,7 @@ DATABASES = {
     }
 }
 
-""" MySQL 접속 방식
+""" MySQL 접속 방식 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -98,7 +98,6 @@ DATABASES = {
     }
 }
 """
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 

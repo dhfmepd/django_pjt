@@ -13,6 +13,7 @@ def list(request, menu_id):
     """
     # 입력 파라미터
     page = request.GET.get('page', '1')  # 페이지
+    op = request.GET.get('op', 'a')  # 검색기준
     kw = request.GET.get('kw', '')  # 검색어
     so = request.GET.get('so', 'recent')  # 정렬기준
 
@@ -23,14 +24,30 @@ def list(request, menu_id):
         board_list = Board.objects.filter(menu=menu_id).annotate(num_reply=Count('reply')).order_by('-num_reply', '-create_date')
     else:  # recent
         board_list = Board.objects.filter(menu=menu_id).order_by('-create_date')
-
+    print('-----------------------------')
+    print(op)
     if kw:
-        board_list = board_list.filter(
-            Q(subject__icontains=kw) |  # 제목검색
-            Q(content__icontains=kw) |  # 내용검색
-            Q(author__username__icontains=kw) |  # 질문 글쓴이검색
-            Q(reply__author__username__icontains=kw)  # 답변 글쓴이검색
-        ).distinct()
+        if op == 'a':
+            board_list = board_list.filter(
+                Q(subject__icontains=kw) |  # 제목검색
+                Q(content__icontains=kw)    # 내용검색
+            ).distinct()
+        elif op == 'b':
+            board_list = board_list.filter(
+                Q(subject__icontains=kw)    # 제목검색
+            ).distinct()
+        elif op == 'c':
+            board_list = board_list.filter(
+                Q(author__username__icontains=kw)  # Board 글쓴이검색
+            ).distinct()
+        elif op == 'd':
+            board_list = board_list.filter(
+                Q(reply__content__icontains=kw)    # Reply 내용검색
+            ).distinct()
+        else:
+            board_list = board_list.filter(
+                Q(reply__author__username__icontains=kw)  # Reply 글쓴이검색
+            ).distinct()
 
     # 페이징처리
     paginator = Paginator(board_list, 10)  # 페이지당 10개씩 보여주기
@@ -38,7 +55,7 @@ def list(request, menu_id):
 
     menu = Menu.objects.get(id=menu_id)
 
-    context = {'board_list': page_obj, 'page': page, 'kw': kw, 'so': so, 'menu': menu}
+    context = {'board_list': page_obj, 'page': page, 'kw': kw, 'so': so, 'op': op, 'menu': menu}
     return render(request, 'board/board_list.html', context)
 
 @login_required(login_url='common:login')
@@ -71,5 +88,5 @@ def detail(request, board_id):
     # 첨부파일 목록
     file_list = File.objects.filter(ref_type='board', ref_id=board.id).order_by('-create_date')
 
-    context = {'board': board, 'reply_list': page_obj, 'so': so, 'fileForm': fileForm, 'file_list': file_list, 'ref_type': 'board', 'ref_id': board.id}
+    context = {'board': board, 'reply_list': page_obj, 'so': so, 'page': page, 'fileForm': fileForm, 'file_list': file_list, 'ref_type': 'board', 'ref_id': board.id}
     return render(request, 'board/board_detail.html', context)

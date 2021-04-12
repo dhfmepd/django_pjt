@@ -2,8 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect, resolve_url
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Count
 from ..models import Board, Reply
 from ..forms import ReplyForm
+from common.models import File
+from common.forms import FileForm
 
 @login_required(login_url='common:login')
 def reply_create(request, board_id):
@@ -21,9 +25,27 @@ def reply_create(request, board_id):
             reply.save()
             return redirect('{}#reply_{}'.format(
                 resolve_url('board:detail', board_id=board.id), reply.id))
-    else:
-        form = ReplyForm()
-    context = {'board': board, 'form': form}
+
+    # 입력 파라미터
+    page = request.POST.get('page', '1')  # 페이지
+    so = request.POST.get('so', 'recent')  # 정렬기준
+
+    # 정렬
+    if so == 'recommend':
+        reply_list = board.reply_set.all().annotate(num_voter=Count('voter')).order_by('-num_voter', '-create_date')
+    else:  # recent
+        reply_list = board.reply_set.all().order_by('-create_date')
+
+    paginator = Paginator(reply_list, 5)  # 페이지당 5개씩 보여주기
+    page_obj = paginator.get_page(page)
+
+    # 첨부파일 Modal 폼
+    fileForm = FileForm()
+    # 첨부파일 목록
+    file_list = File.objects.filter(ref_type='board', ref_id=board.id).order_by('-create_date')
+
+    context = {'board': board, 'reply_list': page_obj, 'so': so, 'fileForm': fileForm, 'file_list': file_list,
+               'ref_type': 'board', 'ref_id': board.id, 'form': form}
     return render(request, 'board/board_detail.html', context)
 
 @login_required(login_url='common:login')

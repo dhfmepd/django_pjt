@@ -1,29 +1,34 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-<div class="container my-3" style="padding-top:60px">
-    <div class="row">
-        <div class="col-4">
-            <h4>로그인</h4>
-        </div>
-        <div class="col-8 text-right">
-            <span>또는 <a href="{% url 'common:signup' %}">계정을 만드세요.</a></span>
-        </div>
-    </div>
-    <form method="post" class="post-form" action="{% url 'common:login' %}">
+<!-- Signin CSS -->
+<link rel="stylesheet" type="text/css" href="{% static 'signin.css' %}">
+
+<body class="text-center">
+    <form method="post" class="form-signin" action="{% url 'common:login' %}">
+        <h1 class="mb-3 font-weight-normal">CJ One Expense</h1>
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
         {% include "form_errors.html" %}
+        <h3 class="mb-3 font-weight-normal">Please sign in</h3>
         <div class="form-group">
-            <label for="username">사용자ID</label>
-            <input type="text" class="form-control" name="username" id="username"
+            <label for="username" class="sr-only">사용자ID</label>
+            <input type="text" class="form-control" name="username" id="username" placeholder="User ID"
                    value="{{ form.username.value|default_if_none:'' }}">
         </div>
         <div class="form-group">
-            <label for="password">비밀번호</label>
-            <input type="password" class="form-control" name="password" id="password"
+            <label for="password" class="sr-only">비밀번호</label>
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password"
                    value="{{ form.password.value|default_if_none:'' }}">
         </div>
-        <button type="submit" class="btn btn-primary">로그인</button>
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+        <button type="submit" class="btn btn-lg btn-primary btn-block">로그인</button>
+        <a href="{% url 'common:signup' %}" class="btn btn-lg btn-outline-secondary btn-block">계정 만들기</a>
+        <p class="mt-5 mb-3 text-muted">&copy; 2017-2020</p>
     </form>
-</div>
+</body>
 {% endblock %}

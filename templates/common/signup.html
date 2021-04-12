@@ -1,38 +1,37 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-<div class="container my-3" style="padding-top:60px">
-    <div class="row my-3">
-        <div class="col-4">
-            <h4>계정생성</h4>
-        </div>
-        <div class="col-8 text-right">
-            <span>또는 <a href="{% url 'common:login' %}">로그인 하세요.</a></span>
-        </div>
-    </div>
-    <form method="post" class="post-form">
+<!-- Signin CSS -->
+<link rel="stylesheet" type="text/css" href="{% static 'signin.css' %}">
+
+<body class="text-center" style="padding-top:60px">
+    <form method="post" class="form-signin">
+        <h2 class="mb-3 font-weight-normal">Create your account</h2>
         {% csrf_token %}
         {% include "form_errors.html" %}
         <div class="form-group">
-            <label for="username">사용자 이름</label>
-            <input type="text" class="form-control" name="username" id="username"
+            <label for="username" class="sr-only">사용자 이름</label>
+            <input type="text" class="form-control" name="username" id="username" placeholder="User ID"
                    value="{{ form.username.value|default_if_none:'' }}">
         </div>
         <div class="form-group">
-            <label for="password1">비밀번호</label>
-            <input type="password" class="form-control" name="password1" id="password1"
+            <label for="password1" class="sr-only">비밀번호</label>
+            <input type="password" class="form-control" name="password1" id="password1" placeholder="Password"
                    value="{{ form.password1.value|default_if_none:'' }}">
         </div>
         <div class="form-group">
-            <label for="password2">비밀번호 확인</label>
-            <input type="password" class="form-control" name="password2" id="password2"
+            <label for="password2" class="sr-only">비밀번호 확인</label>
+            <input type="password" class="form-control" name="password2" id="password2" placeholder="Repeat Password"
                    value="{{ form.password2.value|default_if_none:'' }}">
         </div>
         <div class="form-group">
-            <label for="email">이메일</label>
-            <input type="text" class="form-control" name="email" id="email"
+            <label for="email" class="sr-only">이메일</label>
+            <input type="text" class="form-control" name="email" id="email" placeholder="Email address"
                    value="{{ form.email.value|default_if_none:'' }}">
         </div>
-        <button type="submit" class="btn btn-primary">생성하기</button>
+        <button type="submit" class="btn btn-lg btn-primary btn-block">생성하기</button>
+        <a href="{% url 'common:login' %}" class="btn btn-lg btn-outline-secondary btn-block">로그인 하기</a>
+        <p class="mt-5 mb-3 text-muted">&copy; 2017-2020</p>
     </form>
-</div>
+</body>
 {% endblock %}
