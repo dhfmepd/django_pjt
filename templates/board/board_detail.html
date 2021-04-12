@@ -19,7 +19,7 @@
         <div class="col-1">
             <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{board.voter.count}}</div>
             <a href="#" data-uri="{% url 'board:vote_board' board.id  %}"
-               class="recommend btn btn-sm btn-secondary btn-block my-1"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
+               class="recommend btn btn-sm btn-secondary"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
         </div>
         <!-- 추천영역 End -->
         <div class="col-11">
@@ -94,7 +94,7 @@
                     <table class="table">
                         <!-- 헤더 영역 End -->
                         <thead>
-                        <tr class="text-center thead-dark">
+                        <tr class="text-center thead-dark table-sm">
                             <th>번호</th>
                             <th>파일명</th>
                             <th>사이즈</th>
@@ -152,7 +152,7 @@
         <div class="col-1">
             <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{reply.voter.count}}</div>
             <a href="#" data-uri="{% url 'board:vote_reply' reply.id  %}"
-                class="recommend btn btn-sm btn-secondary btn-block my-1"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
+                class="recommend btn btn-sm btn-secondary"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
         </div>
         <!-- 추천영역 End -->
         <div class="col-11">
@@ -277,7 +277,9 @@
         </div>
         <input type="hidden" name="page" value="{{ page }}">
         <input type="hidden" name="so" value="{{ so }}">
-        <input type="submit" value="답변등록" class="btn btn-primary">
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> 답변등록</button>
+        </div>
     </form>
 <!-- ------------------------------- 답변 등록 영역 End -------------------------------- -->
 

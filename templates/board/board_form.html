@@ -29,8 +29,10 @@
                 var simplemde = new SimpleMDE({ element: document.getElementById("content") });
             </script>
         </div>
-        <a href="{% url 'board:list' menu_id %}" class="btn btn-primary"><i class="bi bi-list-ul"></i> 목록으로</a>
-        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> 저장하기</button>
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'board:list' menu_id %}" class="btn btn-primary"><i class="bi bi-list-ul"></i> 목록으로</a>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> 저장하기</button>
+        </div>
     </form>
 </div>
 {% endblock %}

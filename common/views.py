@@ -70,7 +70,7 @@ def file_download(request, file_id):
     file = get_object_or_404(File, pk=file_id)
     if os.path.exists(file.file_data.path):
         file_name = urllib.parse.quote(file.file_name.encode('utf-8'))
-        with open(file.file_data.path, 'r', encoding='utf-8') as fl:
+        with open(file.file_data.path, 'rb') as fl:
             response = HttpResponse(fl, content_type='Application/octet-stream')
             response['Content-Disposition'] = 'attachment; filename*=UTF-8\'\'%s' % file_name
             return response

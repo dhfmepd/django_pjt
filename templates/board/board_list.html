@@ -112,11 +112,11 @@
 <!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
     <div class="row justify-content-center my-3">
         <select id="options" class="col-2 custom-select d-block">
-            <option value="a" {% if op == 'a' %}selected="selected"{% endif %}>제목 + 내용</option>
-            <option value="b" {% if op == 'b' %}selected="selected"{% endif %}>제목만</option>
-            <option value="c" {% if op == 'c' %}selected="selected"{% endif %}>글작성자</option>
-            <option value="d" {% if op == 'd' %}selected="selected"{% endif %}>댓글내용</option>
-            <option value="e" {% if op == 'e' %}selected="selected"{% endif %}>댓글작성자</option>
+            <option value="a" {% if op == 'a' %}selected{% endif %}>제목 + 내용</option>
+            <option value="b" {% if op == 'b' %}selected{% endif %}>제목만</option>
+            <option value="c" {% if op == 'c' %}selected{% endif %}>글작성자</option>
+            <option value="d" {% if op == 'd' %}selected{% endif %}>댓글내용</option>
+            <option value="e" {% if op == 'e' %}selected{% endif %}>댓글작성자</option>
         </select>
         <div class="col-4 input-group">
             <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
