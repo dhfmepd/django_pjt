@@ -24,8 +24,7 @@ def list(request, menu_id):
         board_list = Board.objects.filter(menu=menu_id).annotate(num_reply=Count('reply')).order_by('-num_reply', '-create_date')
     else:  # recent
         board_list = Board.objects.filter(menu=menu_id).order_by('-create_date')
-    print('-----------------------------')
-    print(op)
+
     if kw:
         if op == 'a':
             board_list = board_list.filter(

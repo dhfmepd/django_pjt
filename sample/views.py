@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from board.models import Board, Comment, Reply
 from django.db.models import F, Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
+import cx_Oracle
 #from konlpy.tag import Okt
 
 def chart_js(request):
@@ -48,6 +49,26 @@ def chart_js(request):
 
     context = {'pie_label': pie_label, 'pie_data': pie_data, 'user_a_label': user_a_label, 'user_b_label': user_b_label, 'user_a_data': user_a_data, 'user_b_data': user_b_data}
     return render(request, 'sample/chart_js.html', context)
+
+def ora_conn(request):
+    sql = request.POST.get('sql', 'SELECT 1 FROM DUAL')
+
+    if request.method == 'POST':
+        dsn = cx_Oracle.makedsn("52.2.142.63", "1525", "FVWQA")
+        db = cx_Oracle.connect("fvsrm", "qwer!@", dsn)
+
+        cursor = db.cursor()
+        cursor.execute(sql)
+        data_list = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        context = {'sql': sql, 'data_list': data_list}
+        return render(request, 'sample/ora_conn.html', context)
+
+    context = {'sql': sql}
+    return render(request, 'sample/ora_conn.html', context)
 
 def api_open(request):
     #라이브러리: https://konlpy-ko.readthedocs.io/ko/v0.4.3/
