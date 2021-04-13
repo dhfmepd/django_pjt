@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<!-- Dashboard CSS -->
-<link rel="stylesheet" type="text/css" href="{% static 'dashboard.css' %}">
-<!-- feather JS -->
-<script src="{% static 'feather.min.js' %}"></script>
-
 <div class="container my-3" style="padding-top:80px">
 <div class="col-md-8 order-md-1">
     <h4 class="mb-3">Oracle DB 접속</h4>
@@ -24,7 +19,7 @@
         {% endif %}
         <div class="form-group">
             <div class="col-md-12 mb-3">
-                <label for="sql"><i data-feather="home"></i> SQL 문장</label>
+                <label for="sql">SQL 문장</label>
                 <input type="text" class="form-control" id="sql" placeholder="SELECT 1 FROM DUAL">
             </div>
         </div>
@@ -55,9 +50,4 @@
         </tbody>
     </table>
 </div>
-<script>
-    window.onload = function() {
-        feather.replace();
-    };
-</script>
 {% endblock %}
