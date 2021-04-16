@@ -4,7 +4,7 @@ from board.models import Board, Comment, Reply
 from django.db.models import F, Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 import cx_Oracle
-#from konlpy.tag import Okt
+from konlpy.tag import Okt
 
 def chart_js(request):
     pie_label = []
@@ -76,16 +76,19 @@ def api_open(request):
     #라이브러리: https://www.lfd.uci.edu/~gohlke/pythonlibs/#jpype
     #설치: pip install JPype1-1.2.0-cp39-cp39-win_amd64.whl
     #JDK 8 설치(이슈) + JAVA_HOME 설정
-    """
-    txt = '미팅 후 점심식사(오동욱 외 3인)'
-    okt = Okt()
-    result = okt.pos(txt, norm=True, stem=True, join=True)
-    for word in result:
-        idx = word.find('/')
-        if word[idx+1:] in ['Noun']:
-            print(word[:idx])
 
-    context = {'result': result}
-    """
-    context = {'result': '테스트'}
+    context = request.POST.get('context', '내용없음')
+    if request.method == 'POST':
+        okt = Okt()
+        result = okt.pos(context, norm=True, stem=True, join=True)
+        data_list = []
+        for word in result:
+            idx = word.find('/')
+            if word[idx+1:] in ['Noun']:
+                data_list.append(word[:idx])
+
+        context = {'context': context, 'data_list': data_list}
+        return render(request, 'sample/api_open.html', context)
+
+    context = {'context': context}
     return render(request, 'sample/api_open.html', context)
