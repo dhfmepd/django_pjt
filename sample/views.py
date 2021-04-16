@@ -52,8 +52,8 @@ def chart_js(request):
 
 def ora_conn(request):
     sql = request.POST.get('sql', 'SELECT 1 FROM DUAL')
-
     if request.method == 'POST':
+
         dsn = cx_Oracle.makedsn("52.2.142.63", "1525", "FVWQA")
         db = cx_Oracle.connect("fvsrm", "qwer!@", dsn)
 
