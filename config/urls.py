@@ -32,3 +32,5 @@ urlpatterns = [
     path('sample/', include('sample.urls')),
     path('', views.index, name='index'),  # '/' 에 해당되는 path
 ] + static(settings.UPLOAD_URL, protected_file, document_root=settings.UPLOAD_ROOT)
+
+handler404 = 'common.views.page_not_found'
