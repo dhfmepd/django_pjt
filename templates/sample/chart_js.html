@@ -103,7 +103,7 @@
 
 			<h2>Section title</h2>
 			<div class="table-responsive">
-				<table class="table table-striped table-sm">
+				<table class="table table-striped table-sm" id="dataTable">
 					<thead>
 						<tr>
 							<th>#</th>
@@ -232,8 +232,9 @@
 		</main>
 	</div>
 </div>
-
-<script>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
     var pieConfig = {
         type: 'pie',
         data: {
@@ -264,7 +265,22 @@
         window.myPie = new Chart(pieCanvas, pieConfig);
         feather.replace();
     };
+    jQuery(function($){
+		$("#dataTable").DataTable({
+			// 표시 건수기능 숨기기
+			//lengthChange: false,
+			// 검색 기능 숨기기
+			//searching: false,
+			// 정렬 기능 숨기기
+			//ordering: false,
+			// 정보 표시 숨기기
+			//info: false,
+			// 페이징 기능 숨기기
+			//paging: false
+		});
+	});
 </script>
+{% endblock %}
 <!--
 <div class="container my-3">
     <div class="row">
@@ -349,4 +365,3 @@
     };
 </script>
 -->
-{% endblock %}
