@@ -73,14 +73,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-""" SQLite 접속 방식 """
+""" SQLite 접속 방식 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+"""
 """ MySQL 접속 방식 
 DATABASES = {
     'default': {
@@ -88,13 +88,14 @@ DATABASES = {
         # 사용하려는 DB 이름
         'NAME': 'cjfv_oneexp',
         # 여기부터 connection 정보
-        'USER' : 'root',
-        'PASSWORD' : 'cjfv2021@@',
+        'USER' : 'cjfv_oneexp',
+        'PASSWORD' : 'qwer1234!',
         'HOST' : '127.0.0.1',
         'PORT' : '3306',
     }
 }
 """
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
