@@ -1,6 +1,6 @@
 import os
 import uuid
-from config import settings
+from config.settings.base import base
 from django.utils import timezone
 from django.db import models
 
@@ -28,5 +28,5 @@ class File(models.Model):
     # 파일 삭제 시 파일데이터 함꼐 삭제
     def delete(self, *args, **kargs):
         if self.file_data:
-            os.remove(os.path.join(settings.UPLOAD_ROOT, self.file_data.path))
+            os.remove(os.path.join(base.UPLOAD_ROOT, self.file_data.path))
         super(File, self).delete(*args, **kargs)
