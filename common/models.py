@@ -1,6 +1,6 @@
 import os
 import uuid
-from config.settings.base import base
+from config.settings import base
 from django.utils import timezone
 from django.db import models
 
