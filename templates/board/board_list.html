@@ -1,130 +1,195 @@
 {% extends 'base.html' %}
 {% load board_filter %}
 {% block content %}
-<div class="container my-3" style="padding-top:80px">
-<!-- ------------------------------- 검색조건 영역 Start -------------------------------- -->
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom py-2">
-		<h1 class="h2">{{ menu.title }}</h1>
-		<div class="btn-toolbar mb-2 mb-md-0">
-            <!-- 정렬영역 Start -->
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
-                    <i class="bi bi-list-ul"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
-                    <i class="bi bi-hand-thumbs-up"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'popular' %}active{% endif %}" data-so="popular" data-original-title="인기순">
-                    <i class="bi bi-suit-heart"></i>
-                </button>
-            </div>
-            <!-- 정렬영역 End -->
-		</div>
-	</div>
+<!-- Begin Page Content -->
+<div class="container-fluid" style="padding-top:80px">
 
-<!-- ------------------------------- 검색조건 영역 End -------------------------------- -->
-    <table class="table table-striped">
-        <!-- 헤더 영역 End -->
-        <thead>
-        <tr class="text-center thead-dark">
-            <th class="text-center">번호</th>
-            <th class="text-center">추천</th>
-            <th class="text-center">제목</th>
-            <th class="text-center">글쓴이</th>
-            <th class="text-center">조회</th>
-            <th class="text-center">작성일시</th>
-        </tr>
-        </thead>
-        <!-- 헤더 영역 End -->
-        <tbody>
-        {% if board_list %}
-        {% for board in board_list %}
-        <tr class="text-center">
-            <td>
-                {{ board_list.paginator.count|sub:board_list.start_index|sub:forloop.counter0|add:1 }}
-            </td>
-            <td>
-                {% if board.voter.all.count > 0 %}
-                <span class="badge badge-warning px-2 py-1">{{ board.voter.all.count }}</span>
-                {% endif %}
-            </td>
-            <td class="text-left">
-                <a href="{% url 'board:detail' board.id %}">{{ board.subject }}</a>
-                {% if board.reply_set.count > 0 %}
-                <span class="text-danger small ml-2">{{ board.reply_set.count }}</span>
-                {% endif %}
-            </td>
-            <td>{{ board.author.username }}</td>
-            <td>{{ board.hit_count }}</td>
-            <td>{{ board.create_date }}</td>
-        </tr>
-        {% endfor %}
-        {% else %}
-        <tr>
-            <td colspan="6" class="text-center">게시물이 없습니다.</td>
-        </tr>
-        {% endif %}
-        </tbody>
-    </table>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">BOARD</h1>
+    <p class="mb-4">게시판에 대한 설명...</p>
 
-    <div class="btn-toolbar justify-content-end">
-        <a href="{% url 'board:board_create' menu.id %}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i> 등록하기</a>
-    </div>
-
-<!-- ------------------------------- 페이징처리 영역 Start -------------------------------- -->
-    <ul class="pagination justify-content-center border-bottom py-2">
-        <!-- 이전페이지 -->
-        {% if board_list.has_previous %}
-        <li class="page-item">
-           <a class="page-link" data-page="{{ board_list.previous_page_number }}" href="#">< 이전</a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">< 이전</a>
-        </li>
-        {% endif %}
-        <!-- 페이지리스트 -->
-        {% for page_number in board_list.paginator.page_range %}
-            <!-- 페이지리스트 표시 건수 제한 -->
-            {% if page_number >= board_list.number|add:-5 and page_number <= board_list.number|add:5 %}
-                {% if page_number == board_list.number %}
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
-                </li>
-                {% else %}
-                <li class="page-item">
-                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
-                </li>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-        <!-- 다음페이지 -->
-        {% if board_list.has_next %}
-        <li class="page-item">
-            <a class="page-link" data-page="{{ board_list.next_page_number }}" href="#">다음 ></a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음 ></a>
-        </li>
-        {% endif %}
-    </ul>
-<!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
-    <div class="row justify-content-center my-3">
-        <select id="options" class="col-2 custom-select d-block">
-            <option value="a" {% if op == 'a' %}selected{% endif %}>제목 + 내용</option>
-            <option value="b" {% if op == 'b' %}selected{% endif %}>제목만</option>
-            <option value="c" {% if op == 'c' %}selected{% endif %}>글작성자</option>
-            <option value="d" {% if op == 'd' %}selected{% endif %}>댓글내용</option>
-            <option value="e" {% if op == 'e' %}selected{% endif %}>댓글작성자</option>
-        </select>
-        <div class="col-4 input-group">
-            <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ menu.title }} - ( {{ menu.remark }} )</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_length" id="dataTable_length">
+                                <label>Show
+                                    <select name="dataTable_length" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select> entries
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_filter">
+                                <!-- 정렬영역 Start -->
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
+                                        <i class="fas fa-align-justify"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
+                                        <i class="fas fa-thumbs-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'popular' %}active{% endif %}" data-so="popular" data-original-title="인기순">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                                <!-- 정렬영역 End -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">번호</th>
+                                        <th class="text-center">추천</th>
+                                        <th class="text-center">제목</th>
+                                        <th class="text-center">글쓴이</th>
+                                        <th class="text-center">조회</th>
+                                        <th class="text-center">작성일시</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th class="text-center">번호</th>
+                                        <th class="text-center">추천</th>
+                                        <th class="text-center">제목</th>
+                                        <th class="text-center">글쓴이</th>
+                                        <th class="text-center">조회</th>
+                                        <th class="text-center">작성일시</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    {% if board_list %}
+                                    {% for board in board_list %}
+                                    <tr class="text-center">
+                                        <td>
+                                            {{ board_list.paginator.count|sub:board_list.start_index|sub:forloop.counter0|add:1 }}
+                                        </td>
+                                        <td>
+                                            {% if board.voter.all.count > 0 %}
+                                            <span class="badge badge-warning px-2 py-1">{{ board.voter.all.count }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-left">
+                                            <a href="{% url 'board:detail' board.id %}">{{ board.subject }}</a>
+                                            {% if board.reply_set.count > 0 %}
+                                            <span class="text-danger small ml-2">{{ board.reply_set.count }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ board.author.username }}</td>
+                                        <td>{{ board.hit_count }}</td>
+                                        <td>{{ board.create_date }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">게시물이 없습니다.</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row border-bottom py-2">
+                        <div class="col-sm-12 col-md-5">
+                            <a href="{% url 'board:board_create' menu.id %}" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-arrow-right"></i>
+                                </span>
+                                <span class="text">등록하기</span>
+                            </a>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers">
+                                <ul class="pagination">
+                                    <!-- 이전페이지 -->
+                                    {% if board_list.has_previous %}
+                                    <li class="paginate_button page-item previous">
+                                        <a href="#" aria-controls="dataTable" data-page="{{ board_list.previous_page_number }}" tabindex="0" class="page-link">Previous</a>
+                                    </li>
+                                    {% else %}
+                                    <li class="paginate_button page-item previous disabled">
+                                        <a href="#" aria-controls="dataTable" tabindex="-1" class="page-link" aria-disabled="true">Previous</a>
+                                    </li>
+                                    {% endif %}
+                                    <!-- 페이지리스트 -->
+                                    {% for page_number in board_list.paginator.page_range %}
+                                        <!-- 페이지리스트 표시 건수 제한 -->
+                                        {% if page_number >= board_list.number|add:-5 and page_number <= board_list.number|add:5 %}
+                                            {% if page_number == board_list.number %}
+                                            <li class="paginate_button page-item active" aria-current="page">
+                                                <a href="#" aria-controls="dataTable" data-page="{{ page_number }}" class="page-link">{{ page_number }}</a>
+                                            </li>
+                                            {% else %}
+                                            <li class="paginate_button page-item">
+                                                <a href="#" aria-controls="dataTable" data-page="{{ page_number }}" class="page-link">{{ page_number }}</a>
+                                            </li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <!-- 다음페이지 -->
+                                    {% if board_list.has_next %}
+                                    <li class="paginate_button page-item next">
+                                        <a href="#" aria-controls="dataTable" data-page="{{ board_list.next_page_number }}" tabindex="0" class="page-link">Next</a>
+                                    </li>
+                                    {% else %}
+                                    <li class="paginate_button page-item next disabled">
+                                        <a href="#" aria-controls="dataTable" tabindex="-1" class="page-link" aria-disabled="true">Next</a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="row justify-content-center col-sm-12">
+                            <select id="options" class="col-2 custom-select custom-select form-control form-control d-block">
+                                <option value="a" {% if op == 'a' %}selected{% endif %}>제목 + 내용</option>
+                                <option value="b" {% if op == 'b' %}selected{% endif %}>제목만</option>
+                                <option value="c" {% if op == 'c' %}selected{% endif %}>글작성자</option>
+                                <option value="d" {% if op == 'd' %}selected{% endif %}>댓글내용</option>
+                                <option value="e" {% if op == 'e' %}selected{% endif %}>댓글작성자</option>
+                            </select>
+                            <div class="col-4 input-group">
+                                <input type="text" class="form-control bg-light kw" placeholder="Search for..."
+                                    aria-label="Search" aria-describedby="basic-addon2" value="{{ kw|default_if_none:'' }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button" id="btn_search">
+                                        <i class="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+<!-- /.container-fluid -->
+
+
+<!-- ------------------------------- 검색조건 영역 Start -------------------------------- -->
+
+
+<!-- ------------------------------- 검색조건 영역 End -------------------------------- -->
+
+<!-- ------------------------------- 페이징처리 영역 Start -------------------------------- -->
+
+<!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
+
 
     <form id="searchForm" method="get" action="{% url 'board:list' menu.id %}">
         <input type="hidden" id="op" name="op" value="{{ op|default_if_none:'' }}">
