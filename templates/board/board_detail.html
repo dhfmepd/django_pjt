@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load board_filter %}
 {% block content %}
-<div class="container my-3" style="padding-top:80px">
+<div class="container-fluid">
 <!-- ------------------------------- 사용자오류 표시 영역 Start -------------------------------- -->
     {% if messages %}
     <div class="alert alert-danger my-3" role="alert">
@@ -13,274 +13,314 @@
     {% endif %}
 <!-- ------------------------------- 사용자오류 표시 영역 End -------------------------------- -->
 <!-- ------------------------------- 게시물 표시 영역 Start -------------------------------- -->
-    <h2 class="border-bottom py-2">{{ board.subject }}</h2>
-    <div class="row my-3">
-        <!-- 추천영역 Start -->
-        <div class="col-1">
-            <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{board.voter.count}}</div>
-            <a href="#" data-uri="{% url 'board:vote_board' board.id  %}"
-               class="recommend btn btn-sm btn-secondary"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">
+        <i class="fas fa-fw fa-table"></i>
+        <span class="text">{{ board.menu.title }}</span>
+    </h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h5 class="m-0 font-weight-bold text-primary">{{ board.subject }}</h5>
         </div>
-        <!-- 추천영역 End -->
-        <div class="col-11">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-text">{{ board.content|mark }}</div>
-                    <div class="d-flex justify-content-end">
-                        {% if board.modify_date %}
-                        <div class="badge badge-light p-2 text-left mx-3">
-                            <div class="mb-2">modified at</div>
-                            <div>{{ board.modify_date }}</div>
-                        </div>
-                        {% endif %}
-                        <div class="badge badge-light p-2 text-left">
-                            <div class="mb-2">{{ board.author.username }}</div>
-                            <div>{{ board.create_date }}</div>
-                        </div>
-                    </div>
-                    <!-- 버튼영역 Start -->
-                    {% if request.user == board.author %}
-                    <div class="my-3">
-                        <a href="{% url 'board:board_modify' board.id  %}"
-                           class="btn btn-sm btn-outline-secondary">수정</a>
-                        <a href="#" class="delete btn btn-sm btn-outline-secondary"
-                           data-uri="{% url 'board:board_delete' board.id  %}">삭제</a>
-                    </div>
-                    {% endif %}
-                    <!-- 버튼영역 Start -->
-                    <!-- 게시판 댓글 영역 Start -->
-                    {% if board.comment_set.count > 0 %}
-                    <div class="mt-3">
-                    {% for comment in board.comment_set.all %}
-                        <a name="comment_{{ comment.id }}"></a>
-                        <div class="comment py-2 text-muted">
-                            <span style="white-space: pre-line;">{{ comment.content }}</span>
-                            <span>
-                                - {{ comment.author }}, {{ comment.create_date }}
-                                {% if comment.modify_date %}
-                                (수정:{{ comment.modify_date }})
+        <div class="card-body">
+            <div class="row my-3">
+                <!-- 추천영역 Start -->
+                <div class="col-1">
+                    <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{board.voter.count}}</div>
+                    <a href="#" data-uri="{% url 'board:vote_board' board.id  %}"
+                       class="recommend btn btn-secondary w-100">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-thumbs-up"></i>
+                        </span>
+                        <span class="text">추천</span>
+                    </a>
+                </div>
+                <!-- 추천영역 End -->
+                <div class="col-11">
+                    <div class="card mb-4 py-3 border-left-primary">
+                        <div class="card-body">
+                            <div class="card-text">{{ board.content|mark }}</div>
+                            <div class="d-flex justify-content-end">
+                                {% if board.modify_date %}
+                                <div class="badge badge-light p-2 text-left mx-3">
+                                    <div class="mb-2">modified at</div>
+                                    <div>{{ board.modify_date }}</div>
+                                </div>
                                 {% endif %}
-                            </span>
-                            {% if request.user == comment.author %}
-                            <a href="{% url 'board:comment_modify_board' comment.id  %}" class="small">수정</a>,
-                            <a href="#" class="small delete"
-                               data-uri="{% url 'board:comment_delete_board' comment.id  %}">삭제</a>
+                                <div class="badge badge-light p-2 text-left">
+                                    <div class="mb-2">{{ board.author.username }}</div>
+                                    <div>{{ board.create_date }}</div>
+                                </div>
+                            </div>
+                            <!-- 버튼영역 Start -->
+                            {% if request.user == board.author %}
+                            <div class="my-3">
+                                <a href="{% url 'board:board_modify' board.id  %}"
+                                   class="btn btn-sm btn-outline-secondary">수정</a>
+                                <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                                   data-uri="{% url 'board:board_delete' board.id  %}">삭제</a>
+                            </div>
                             {% endif %}
+                            <!-- 버튼영역 Start -->
+                            <!-- 게시판 댓글 영역 Start -->
+                            {% if board.comment_set.count > 0 %}
+                            <div class="mt-3">
+                            {% for comment in board.comment_set.all %}
+                                <a name="comment_{{ comment.id }}"></a>
+                                <div class="comment py-2 text-muted">
+                                    <span style="white-space: pre-line;">{{ comment.content }}</span>
+                                    <span>
+                                        - {{ comment.author }}, {{ comment.create_date }}
+                                        {% if comment.modify_date %}
+                                        (수정:{{ comment.modify_date }})
+                                        {% endif %}
+                                    </span>
+                                    {% if request.user == comment.author %}
+                                    <a href="{% url 'board:comment_modify_board' comment.id  %}" class="small">수정</a>,
+                                    <a href="#" class="small delete"
+                                       data-uri="{% url 'board:comment_delete_board' comment.id  %}">삭제</a>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div>
+                                <a href="{% url 'board:comment_create_board' board.id  %}"
+                                   class="small"><i class="bi bi-chat-dots"></i><small> 댓글 추가 ..</small></a>
+                            </div>
+                            <!-- 게시판 댓글 영역 End -->
                         </div>
-                    {% endfor %}
                     </div>
-                    {% endif %}
-                    <div>
-                        <a href="{% url 'board:comment_create_board' board.id  %}"
-                           class="small"><i class="bi bi-chat-dots"></i><small> 댓글 추가 ..</small></a>
-                    </div>
-                    <!-- 게시판 댓글 영역 End -->
                 </div>
             </div>
+            <a href="{% url 'board:list' board.menu_id %}" class="btn btn-primary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="text">목록으로</span>
+            </a>
         </div>
     </div>
-    <a href="{% url 'board:list' board.menu_id %}" class="btn btn-primary"><i class="bi bi-list-ul"></i> 목록으로</a>
 <!-- ------------------------------- 게시물 표시 영역 End -------------------------------- -->
 <!-- ------------------------------- 첨부파일 표시 영역 Start -------------------------------- -->
-    <div class="row my-3">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-header d-flex justify-content-between align-items-center">
-                        첨부파일
-                        <button id="upload_popup_btn" type="button" class="btn btn-sm btn-primary"><i class="bi bi-upload"></i> UPLOAD</button>
-                    </h5>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Attach Files</h6>
+            <button id="upload_popup_btn" type="button" class="btn btn-primary btn-icon-split btn-sm">
+                <span class="icon text-white-50">
+                    <i class="fas fa-upload"></i>
+                </span>
+                <span class="text">UPLOAD</span>
+            </button>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <!-- 헤더 영역 End -->
+                <thead>
+                <tr class="text-center thead-dark table-sm">
+                    <th>번호</th>
+                    <th>파일명</th>
+                    <th>사이즈</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <!-- 헤더 영역 End -->
+                <tbody>
+                {% if file_list %}
+                {% for file in file_list %}
+                <tr class="text-center">
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="{% url 'common:file_download' file.id  %}">{{ file.file_name }}</a>
+                    </td>
+                    <td>
+                        {{ file.file_data.size }}
+                    </td>
+                    <td>
+                        <a href="#" data-uri="{% url 'common:file_delete' file.id %}" class="file_delete badge badge-danger" type="button">DELETE</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">첨부파일이 없습니다.</td>
+                </tr>
+                {% endif %}
+                </tbody>
+            </table>
 
-                    <table class="table">
-                        <!-- 헤더 영역 End -->
-                        <thead>
-                        <tr class="text-center thead-dark table-sm">
-                            <th>번호</th>
-                            <th>파일명</th>
-                            <th>사이즈</th>
-                            <th>삭제</th>
-                        </tr>
-                        </thead>
-                        <!-- 헤더 영역 End -->
-                        <tbody>
-                        {% if file_list %}
-                        {% for file in file_list %}
-                        <tr class="text-center">
-                            <td>{{ forloop.counter }}</td>
-                            <td>
-                                <a href="{% url 'common:file_download' file.id  %}">{{ file.file_name }}</a>
-                            </td>
-                            <td>
-                                {{ file.file_data.size }}
-                            </td>
-                            <td>
-                                <a href="#" data-uri="{% url 'common:file_delete' file.id %}" class="file_delete badge badge-danger" type="button">DELETE</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% else %}
-                        <tr>
-                            <td colspan="4" class="text-center">첨부파일이 없습니다.</td>
-                        </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </div>
 <!-- ------------------------------- 첨부파일 표시 영역 End -------------------------------- -->
 <!-- ------------------------------- 답변 표시 영역 Start -------------------------------- -->
-    <div class="d-flex justify-content-between border-top my-3 py-2">
-        <h5 class="my-3 py-2">{{ reply_list.paginator.count }}개의 답변이 있습니다.</h5>
-        <!-- 정렬영역 Start -->
-        <div class="btn-group my-3 py-2" role="group">
-            <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
-                <i class="bi bi-list-ul"></i>
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
-                <i class="bi bi-hand-thumbs-up"></i>
-            </button>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Reply</h6>
         </div>
-    </div>
-
-    <!-- 정렬영역 End -->
-    {% for reply in reply_list %}
-    <a name="reply_{{ reply.id }}"></a>
-    <div class="row my-3">
-        <!-- 추천영역 Start -->
-        <div class="col-1">
-            <div class="bg-light text-center p-3 border font-weight-bolder m-1">{{reply.voter.count}}</div>
-            <a href="#" data-uri="{% url 'board:vote_reply' reply.id  %}"
-                class="recommend btn btn-sm btn-secondary"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
-        </div>
-        <!-- 추천영역 End -->
-        <div class="col-11">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-text">{{ reply.content|mark }}</div>
-                    <div class="d-flex justify-content-end">
-                        {% if reply.modify_date %}
-                        <div class="badge badge-light p-2 text-left mx-3">
-                            <div class="mb-2">modified at</div>
-                            <div>{{ reply.modify_date }}</div>
-                        </div>
-                        {% endif %}
-                        <div class="badge badge-light p-2 text-left">
-                            <div class="mb-2">{{ reply.author.username }}</div>
-                            <div>{{ reply.create_date }}</div>
-                        </div>
-                    </div>
-                    <!-- 버튼영역 Start -->
-                    {% if request.user == reply.author %}
-                    <div class="my-3">
-                        <a href="{% url 'board:reply_modify' reply.id  %}"
-                           class="btn btn-sm btn-outline-secondary">수정</a>
-                        <a href="#" class="delete btn btn-sm btn-outline-secondary "
-                           data-uri="{% url 'board:reply_delete' reply.id  %}">삭제</a>
-                    </div>
-                    {% endif %}
-                    <!-- 버튼영역 End -->
-                    <!-- 답변 댓글 영역 Start -->
-                    {% if reply.comment_set.count > 0 %}
-                    <div class="mt-3">
-                    {% for comment in reply.comment_set.all %}
-                        <a name="comment_{{ comment.id }}"></a>
-                        <div class="comment py-2 text-muted">
-                            <span style="white-space: pre-line;">{{ comment.content }}</span>
-                            <span>
-                                - {{ comment.author }}, {{ comment.create_date }}
-                                {% if comment.modify_date %}
-                                (수정:{{ comment.modify_date }})
-                                {% endif %}
-                            </span>
-                            {% if request.user == comment.author %}
-                            <a href="{% url 'board:comment_modify_reply' comment.id  %}" class="small">수정</a>,
-                            <a href="#" class="small delete"
-                               data-uri="{% url 'board:comment_delete_reply' comment.id  %}">삭제</a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                    </div>
-                    {% endif %}
-                    <div>
-                        <a href="{% url 'board:comment_create_reply' reply.id  %}"
-                           class="small"><i class="bi bi-chat-dots"></i><small> 댓글 추가 ..</small></a>
-                    </div>
-                    <!-- 답변 댓글 영역 End -->
+        <div class="card-body">
+            <div class="d-flex justify-content-between border-top my-3 py-2">
+                <h5 class="my-3 py-2">{{ reply_list.paginator.count }}개의 답변이 있습니다.</h5>
+                <!-- 정렬영역 Start -->
+                <div class="btn-group my-3 py-2" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
-    {% endfor %}
+
+            <!-- 정렬영역 End -->
+            {% for reply in reply_list %}
+            <a name="reply_{{ reply.id }}"></a>
+            <div class="row my-3">
+                <!-- 추천영역 Start -->
+                <div class="col-1">
+                    <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{reply.voter.count}}</div>
+                    <a href="#" data-uri="{% url 'board:vote_reply' reply.id  %}"
+                       class="recommend btn btn-secondary w-100">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-thumbs-up"></i>
+                        </span>
+                        <span class="text">추천</span>
+                    </a>
+                </div>
+                <!-- 추천영역 End -->
+                <div class="col-11">
+                    <div class="card mb-4 py-3 border-left-secondary">
+                        <div class="card-body">
+                            <div class="card-text">{{ reply.content|mark }}</div>
+                            <div class="d-flex justify-content-end">
+                                {% if reply.modify_date %}
+                                <div class="badge badge-light p-2 text-left mx-3">
+                                    <div class="mb-2">modified at</div>
+                                    <div>{{ reply.modify_date }}</div>
+                                </div>
+                                {% endif %}
+                                <div class="badge badge-light p-2 text-left">
+                                    <div class="mb-2">{{ reply.author.username }}</div>
+                                    <div>{{ reply.create_date }}</div>
+                                </div>
+                            </div>
+                            <!-- 버튼영역 Start -->
+                            {% if request.user == reply.author %}
+                            <div class="my-3">
+                                <a href="{% url 'board:reply_modify' reply.id  %}"
+                                   class="btn btn-sm btn-outline-secondary">수정</a>
+                                <a href="#" class="delete btn btn-sm btn-outline-secondary "
+                                   data-uri="{% url 'board:reply_delete' reply.id  %}">삭제</a>
+                            </div>
+                            {% endif %}
+                            <!-- 버튼영역 End -->
+                            <!-- 답변 댓글 영역 Start -->
+                            {% if reply.comment_set.count > 0 %}
+                            <div class="mt-3">
+                            {% for comment in reply.comment_set.all %}
+                                <a name="comment_{{ comment.id }}"></a>
+                                <div class="comment py-2 text-muted">
+                                    <span style="white-space: pre-line;">{{ comment.content }}</span>
+                                    <span>
+                                        - {{ comment.author }}, {{ comment.create_date }}
+                                        {% if comment.modify_date %}
+                                        (수정:{{ comment.modify_date }})
+                                        {% endif %}
+                                    </span>
+                                    {% if request.user == comment.author %}
+                                    <a href="{% url 'board:comment_modify_reply' comment.id  %}" class="small">수정</a>,
+                                    <a href="#" class="small delete"
+                                       data-uri="{% url 'board:comment_delete_reply' comment.id  %}">삭제</a>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div>
+                                <a href="{% url 'board:comment_create_reply' reply.id  %}"
+                                   class="small"><i class="bi bi-chat-dots"></i><small> 댓글 추가 ..</small></a>
+                            </div>
+                            <!-- 답변 댓글 영역 End -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
 <!-- ------------------------------- 답변 표시 영역 End -------------------------------- -->
 <!-- ------------------------------- 페이징처리 영역 Start -------------------------------- -->
-    <ul class="pagination justify-content-center">
-        <!-- 이전페이지 -->
-        {% if reply_list.has_previous %}
-        <li class="page-item">
-           <a class="page-link" data-page="{{ reply_list.previous_page_number }}" href="#">이전</a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
-        </li>
-        {% endif %}
-        <!-- 페이지리스트 -->
-        {% for page_number in reply_list.paginator.page_range %}
-            <!-- 페이지리스트 표시 건수 제한 -->
-            {% if page_number >= reply_list.number|add:-5 and page_number <= reply_list.number|add:5 %}
-                {% if page_number == reply_list.number %}
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            <ul class="pagination justify-content-center">
+                <!-- 이전페이지 -->
+                {% if reply_list.has_previous %}
+                <li class="paginate_button page-item previous">
+                    <a href="#" aria-controls="dataTable" data-page="{{ reply_list.previous_page_number }}" tabindex="0" class="page-link">Previous</a>
                 </li>
                 {% else %}
-                <li class="page-item">
-                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                <li class="paginate_button page-item previous disabled">
+                    <a href="#" aria-controls="dataTable" tabindex="-1" class="page-link" aria-disabled="true">Previous</a>
                 </li>
                 {% endif %}
-            {% endif %}
-        {% endfor %}
-        <!-- 다음페이지 -->
-        {% if reply_list.has_next %}
-        <li class="page-item">
-            <a class="page-link" data-page="{{ reply_list.next_page_number }}" href="#">다음</a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
-        </li>
-        {% endif %}
-    </ul>
+                <!-- 페이지리스트 -->
+                {% for page_number in reply_list.paginator.page_range %}
+                    <!-- 페이지리스트 표시 건수 제한 -->
+                    {% if page_number >= reply_list.number|add:-5 and page_number <= reply_list.number|add:5 %}
+                        {% if page_number == reply_list.number %}
+                        <li class="paginate_button page-item active" aria-current="page">
+                            <a href="#" aria-controls="dataTable" data-page="{{ page_number }}" class="page-link">{{ page_number }}</a>
+                        </li>
+                        {% else %}
+                        <li class="paginate_button page-item">
+                            <a href="#" aria-controls="dataTable" data-page="{{ page_number }}" class="page-link">{{ page_number }}</a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <!-- 다음페이지 -->
+                {% if reply_list.has_next %}
+                <li class="paginate_button page-item next">
+                    <a href="#" aria-controls="dataTable" data-page="{{ reply_list.next_page_number }}" tabindex="0" class="page-link">Next</a>
+                </li>
+                {% else %}
+                <li class="paginate_button page-item next disabled">
+                    <a href="#" aria-controls="dataTable" tabindex="-1" class="page-link" aria-disabled="true">Next</a>
+                </li>
+                {% endif %}
+            </ul>
 <!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
 <!-- ------------------------------- 답변 등록 영역 Start -------------------------------- -->
-    <form action="{% url 'board:reply_create' board.id %}" method="post" class="my-3">
-        {% csrf_token %}
-        <!-- 오류표시 영역 Start -->
-        {% if form.errors %}
-        <div class="alert alert-danger" role="alert">
-        {% for field in form %}
-            {% if field.errors %}
-            <strong>{{ field.label }}</strong>
-            {{ field.errors }}
-            {% endif %}
-        {% endfor %}
+            <form action="{% url 'board:reply_create' board.id %}" method="post" class="my-3">
+                {% csrf_token %}
+                <!-- 오류표시 영역 Start -->
+                {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                {% for field in form %}
+                    {% if field.errors %}
+                    <strong>{{ field.label }}</strong>
+                    {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+                </div>
+                {% endif %}
+                <!-- 오류표시 영역 End -->
+                <div class="form-group">
+                    <textarea {% if not user.is_authenticated %}disabled{% endif %}
+                              name="content" id="content" class="form-control" rows="10"></textarea>
+                    <script>
+                        var simplemde = new SimpleMDE({ element: document.getElementById("content") });
+                    </script>
+                </div>
+                <input type="hidden" name="page" value="{{ page }}">
+                <input type="hidden" name="so" value="{{ so }}">
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-save"></i>
+                        </span>
+                        <span class="text">답변등록</span>
+                    </button>
+                </div>
+            </form>
         </div>
-        {% endif %}
-        <!-- 오류표시 영역 End -->
-        <div class="form-group">
-            <textarea {% if not user.is_authenticated %}disabled{% endif %}
-                      name="content" id="content" class="form-control" rows="10"></textarea>
-            <script>
-                var simplemde = new SimpleMDE({ element: document.getElementById("content") });
-            </script>
-        </div>
-        <input type="hidden" name="page" value="{{ page }}">
-        <input type="hidden" name="so" value="{{ so }}">
-        <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> 답변등록</button>
-        </div>
-    </form>
+    </div>
 <!-- ------------------------------- 답변 등록 영역 End -------------------------------- -->
 
     <form id="searchForm" method="get" action="{% url 'board:detail' board.id %}">

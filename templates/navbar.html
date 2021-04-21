@@ -9,24 +9,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    {% if user.is_authenticated %}
-                    <a class="nav-link dropdown-toggle" href="{% url 'board:list' 1 %}" data-toggle="dropdown"> BOARD </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{% url 'board:list' 1 %}">Q & A 게시판</a>
-                        <a class="dropdown-item" href="{% url 'board:list' 2 %}">자유게시판</a>
-                    </div>
-                    {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">ABOUT</a>
                 </li>
-                <li class="nav-item dropdown">
-                    {% if user.is_authenticated %}
-                    <a class="nav-link dropdown-toggle" href="{% url 'board:list' 1 %}" data-toggle="dropdown"> SAMPLES </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{% url 'sample:chart_js' %}">CHART JS</a>
-                        <a class="dropdown-item" href="{% url 'sample:api_open' %}">KoNLPy</a>
-                        <a class="dropdown-item" href="{% url 'sample:ora_conn' %}">ORACLE DB Conn</a>
-                    </div>
-                    {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">CONTACT</a>
                 </li>
             </ul>
             <ul class="navbar-nav">

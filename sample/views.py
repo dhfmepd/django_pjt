@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from board.models import Board, Comment, Reply
-from django.db.models import F, Count, OuterRef, Subquery
+from django.db.models import Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 import cx_Oracle
 from konlpy.tag import Okt

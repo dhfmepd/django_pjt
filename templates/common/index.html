@@ -1,8 +1,17 @@
-{% extends "base.html" %}
 {% load static %}
-{% block content %}
-<!-- Carousel CSS -->
-<link rel="stylesheet" type="text/css" href="{% static 'carousel.css' %}">
+<!doctype html>
+<html lang="ko">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+    <!-- Carousel CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'carousel.css' %}">
+    <title>CJ One Expense</title>
+</head>
+<body id="page-top">
 <style>
     .bd-placeholder-img {
         font-size: 1.125rem;
@@ -19,7 +28,8 @@
         }
     }
 </style>
-
+<!-- Top 네이게이션 영역 -->
+{% include "navbar.html" %}
 <main role="main">
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -145,7 +155,10 @@
             Copyright2013&copy; CJ Foodville, All rights reserved.
         </p>
     </footer>
+    <!-- jQuery JS -->
+    <script src="{% static 'jquery-3.5.1.min.js' %}"></script>
+    <!-- Bootstrap JS -->
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
 </main>
-{% endblock %}
-{% block script %}
-{% endblock %}
+</body>
+</html>

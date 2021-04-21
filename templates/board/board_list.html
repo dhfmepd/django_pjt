@@ -2,11 +2,13 @@
 {% load board_filter %}
 {% block content %}
 <!-- Begin Page Content -->
-<div class="container-fluid" style="padding-top:80px">
+<div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">BOARD</h1>
-    <p class="mb-4">게시판에 대한 설명...</p>
+    <h1 class="h3 mb-2 text-gray-800">
+        <i class="fas fa-fw fa-table"></i>
+        <span class="text">Bulletin Board</span>
+    </h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -191,13 +193,12 @@
 <!-- ------------------------------- 페이징처리 영역 End -------------------------------- -->
 
 
-    <form id="searchForm" method="get" action="{% url 'board:list' menu.id %}">
-        <input type="hidden" id="op" name="op" value="{{ op|default_if_none:'' }}">
-        <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
-        <input type="hidden" id="page" name="page" value="{{ page }}">
-        <input type="hidden" id="so" name="so" value="{{ so }}">
-    </form>
-</div>
+<form id="searchForm" method="get" action="{% url 'board:list' menu.id %}">
+    <input type="hidden" id="op" name="op" value="{{ op|default_if_none:'' }}">
+    <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
+    <input type="hidden" id="page" name="page" value="{{ page }}">
+    <input type="hidden" id="so" name="so" value="{{ so }}">
+</form>
 {% endblock %}
 {% block script %}
 <script type='text/javascript'>
