@@ -1,38 +1,56 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container my-3" style="padding-top:80px">
-    <h5 class="my-3 border-bottom pb-2">게시물 등록</h5>
-    <form method="post" class="post-form my-3">
-        {% csrf_token %}
-        <!-- 오류표시 Start -->
-        {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
-            {% for field in form %}
-                {% if field.errors %}
-                <strong>{{ field.label }}</strong>
-                {{ field.errors }}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h5 class="m-0 font-weight-bold text-primary">게시물 등록</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" class="post-form my-3">
+                {% csrf_token %}
+                <!-- 오류표시 Start -->
+                {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                    {% for field in form %}
+                        {% if field.errors %}
+                        <strong>{{ field.label }}</strong>
+                        {{ field.errors }}
+                        {% endif %}
+                    {% endfor %}
+                    </div>
                 {% endif %}
-            {% endfor %}
-            </div>
-        {% endif %}
-        <!-- 오류표시 End -->
-        <div class="form-group">
-            <label for="subject">제목</label>
-            <input type="text" class="form-control" name="subject" id="subject"
-                   value="{{ form.subject.value|default_if_none:'' }}">
+                <!-- 오류표시 End -->
+                <div class="form-group">
+                    <label for="subject">제목</label>
+                    <input type="text" class="form-control" name="subject" id="subject"
+                           value="{{ form.subject.value|default_if_none:'' }}">
+                </div>
+                <div class="form-group">
+                    <label for="content">내용</label>
+                    <textarea class="form-control" name="content"
+                              id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
+                    <script>
+                        var simplemde = new SimpleMDE({ element: document.getElementById("content") });
+                    </script>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'board:list' menu_id %}" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-arrow-left"></i>
+                        </span>
+                        <span class="text">목록으로</span>
+                    </a>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-save"></i>
+                            </span>
+                            <span class="text">저장하기</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="content">내용</label>
-            <textarea class="form-control" name="content"
-                      id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
-            <script>
-                var simplemde = new SimpleMDE({ element: document.getElementById("content") });
-            </script>
-        </div>
-        <div class="d-flex justify-content-between">
-            <a href="{% url 'board:list' menu_id %}" class="btn btn-primary"><i class="bi bi-list-ul"></i> 목록으로</a>
-            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> 저장하기</button>
-        </div>
-    </form>
+    </div>
 </div>
 {% endblock %}

@@ -13,7 +13,7 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">{{ menu.title }} - ( {{ menu.remark }} )</h6>
+            <h6 class="m-0 font-weight-bold text-primary">{{ menu.title }} - [ {{ menu.remark }} ]</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -22,11 +22,11 @@
                         <div class="col-sm-12 col-md-6">
                             <div class="dataTables_length" id="dataTable_length">
                                 <label>Show
-                                    <select name="dataTable_length" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
+                                    <select id="data_count" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm">
+                                        <option value="10" {% if count == '10' %} selected {% endif %}>10</option>
+                                        <option value="25" {% if count == '25' %} selected {% endif %}>25</option>
+                                        <option value="50" {% if count == '50' %} selected {% endif %}>50</option>
+                                        <option value="100" {% if count == '100' %} selected {% endif %}>100</option>
                                     </select> entries
                                 </label>
                             </div>
@@ -198,23 +198,32 @@
     <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
     <input type="hidden" id="page" name="page" value="{{ page }}">
     <input type="hidden" id="so" name="so" value="{{ so }}">
+    <input type="hidden" id="count" name="count" value="{{ count }}">
 </form>
 {% endblock %}
 {% block script %}
 <script type='text/javascript'>
 $(document).ready(function(){
     $(".page-link").on('click', function() {
+        $("#count").val($("#data_count option:selected").val());
         $("#page").val($(this).data("page"));
         $("#searchForm").submit();
     });
     $("#btn_search").on('click', function() {
+        $("#count").val($("#data_count option:selected").val());
         $("#op").val($("#options option:selected").val());
         $("#kw").val($(".kw").val());
-        $("#page").val(1);  // 검색버튼을 클릭할 경우 1페이지부터 조회한다.
+        $("#page").val(1);
         $("#searchForm").submit();
     });
     $(".so").on('click', function() {
+        $("#count").val($("#data_count option:selected").val());
         $("#so").val($(this).data("so"));
+        $("#page").val(1);
+        $("#searchForm").submit();
+    });
+    $("#data_count").on('change', function() {
+        $("#count").val($("#data_count option:selected").val());
         $("#page").val(1);
         $("#searchForm").submit();
     });

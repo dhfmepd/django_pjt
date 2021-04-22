@@ -16,6 +16,7 @@ def list(request, menu_id):
     op = request.GET.get('op', 'a')  # 검색기준
     kw = request.GET.get('kw', '')  # 검색어
     so = request.GET.get('so', 'recent')  # 정렬기준
+    count = request.GET.get('count', '10')  # 조회건수
 
     # 정렬
     if so == 'recommend':
@@ -49,12 +50,12 @@ def list(request, menu_id):
             ).distinct()
 
     # 페이징처리
-    paginator = Paginator(board_list, 10)  # 페이지당 10개씩 보여주기
+    paginator = Paginator(board_list, count)
     page_obj = paginator.get_page(page)
 
     menu = Menu.objects.get(id=menu_id)
 
-    context = {'board_list': page_obj, 'page': page, 'kw': kw, 'so': so, 'op': op, 'menu': menu}
+    context = {'board_list': page_obj, 'page': page, 'kw': kw, 'so': so, 'op': op, 'count': count, 'menu': menu}
     return render(request, 'board/board_list.html', context)
 
 @login_required(login_url='common:login')
