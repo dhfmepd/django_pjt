@@ -5,13 +5,16 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
-from board.models import Board, Comment, Reply
 from django.db.models import Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 from django.contrib.auth.models import User
+from django.contrib import messages
+from django.db import connection
+from board.models import Board, Comment, Reply
 from common.models import File
 from common.forms import UserForm, FileForm
-from django.contrib import messages
+from datetime import datetime
+import cx_Oracle
 
 def index(request):
     """
@@ -41,6 +44,7 @@ def page_not_found(request, exception):
     """
     404 Page not found
     """
+    print('=========================404=========================')
     return render(request, 'common/404.html', {})
 
 @login_required(login_url='common:login')
@@ -141,3 +145,67 @@ def file_download(request, file_id):
     else:
         messages.error(request, '파일이 존재하지 않습니다.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+@login_required(login_url='common:login')
+def data_receive(request):
+    """
+    데이터 수신
+    """
+    source_sql      = request.POST.get('source_sql')
+    source_ip       = request.POST.get('source_ip')
+    source_port     = request.POST.get('source_port')
+    source_sid      = request.POST.get('source_sid')
+    source_user     = request.POST.get('source_user')
+    source_password = request.POST.get('source_password')
+    target_sql      = request.POST.get('target_sql')
+
+    if request.method == 'POST':
+        tot_row_count = 0
+
+        # Source DB 데이터 조회
+        dsn = cx_Oracle.makedsn(source_ip, source_port, source_sid)
+        db = cx_Oracle.connect(source_user, source_password, dsn)
+
+        cursor = db.cursor()
+        cursor.execute(source_sql) # Source SQL FILE로 관리 후 Read 하여 처리
+        data_list = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        for row in data_list:
+            temp_sql = target_sql + '(' # Target SQL FILE로 관리 후 Read 하여 처리
+            for index, column in enumerate(row):
+                if index != 0:
+                    temp_sql += ','
+                # TIMESTAMP
+                if type(column) is datetime:
+                    temp_sql += 'datetime(\'NOW\')' # MySQL 용 처리로 변경
+                # NUMBER
+                elif type(column) is int:
+                    temp_sql += str(column)
+                # VARCHAR or CHAR
+                elif type(column) is str:
+                    temp_sql += '\'' + column + '\''
+                # 기타 Null 처리
+                else:
+                    temp_sql += 'Null'
+
+            temp_sql += ')'
+
+            # Target DB 데이터 저장
+            cursor = connection.cursor()
+
+            result = cursor.execute(temp_sql)
+            cursor.fetchall()
+
+            tot_row_count += result.rowcount
+
+            connection.commit()
+            connection.close()
+
+        context = {'data_list': data_list, 'tot_row_count' : tot_row_count}
+        return render(request, 'common/data_receive.html', context)
+
+    context = {}
+    return render(request, 'common/data_receive.html', context)

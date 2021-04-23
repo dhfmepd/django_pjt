@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from board.models import Board, Comment, Reply
+from django.db import connection
 from django.db.models import Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 import cx_Oracle
@@ -69,6 +70,30 @@ def ora_conn(request):
 
     context = {'sql': sql}
     return render(request, 'sample/ora_conn.html', context)
+
+def sql_exec(request):
+    sql = request.POST.get('sql', 'SELECT 1 FROM DUAL')
+    if request.method == 'POST':
+        try:
+            cursor = connection.cursor()
+
+            strSql = sql
+            result = cursor.execute(strSql)
+            data_list = cursor.fetchall()
+
+            print(result)
+            print(data_list)
+
+            connection.commit()
+            connection.close()
+        except:
+            connection.rollback()
+
+        context = {'sql': sql, 'data_list': data_list}
+        return render(request, 'sample/sql_exec.html', context)
+
+    context = {'sql': sql}
+    return render(request, 'sample/sql_exec.html', context)
 
 def api_open(request):
     #라이브러리: https://konlpy-ko.readthedocs.io/ko/v0.4.3/

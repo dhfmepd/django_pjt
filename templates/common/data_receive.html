@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container my-3" style="padding-top:80px">
+<div class="col-md-8 order-md-1">
+    <h4 class="mb-3">Data Receive</h4>
+    <form method="post" class="post-form my-3">
+        {% csrf_token %}
+        <!-- 오류표시 Start -->
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+                {% if field.errors %}
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <div class="col-md-12 mb-3">
+                <label for="source_sql">Source SQL 문장</label>
+                <input type="text" class="form-control" id="source_sql" name="source_sql" value="SELECT 1, 1, SUBJECT, SUBJECT, 0, SYSTIMESTAMP, NULL FROM FVSRM.SNOTE">
+            </div>
+            <div class="col-md-12 mb-3">
+                <label for="target_sql">Target SQL 문장</label>
+                <input type="text" class="form-control" id="target_sql" name="target_sql" value="INSERT INTO board_board (menu_id, author_id, subject, content, hit_count, create_date, modify_date) VALUES">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12 mb-3">
+                <label for="source_ip">IP</label>
+                <input type="text" class="form-control" id="source_ip" name="source_ip" value="52.2.142.63">
+            </div>
+            <div class="col-md-12 mb-3">
+                <label for="source_port">PORT</label>
+                <input type="text" class="form-control" id="source_port" name="source_port" value="1525">
+            </div>
+            <div class="col-md-12 mb-3">
+                <label for="source_sid">SID</label>
+                <input type="text" class="form-control" id="source_sid" name="source_sid" value="FVWQA">
+            </div>
+            <div class="col-md-12 mb-3">
+                <label for="source_user">USER</label>
+                <input type="text" class="form-control" id="source_user" name="source_user" value="fvsrm">
+            </div>
+            <div class="col-md-12 mb-3">
+                <label for="source_password">PASSWORD</label>
+                <input type="text" class="form-control" id="source_password" name="source_password" value="qwer!@">
+            </div>
+        </div>
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">쿼리 실행</button>
+    </form>
+
+    <table class="table table-striped">
+        <!-- 헤더 영역 End -->
+        <thead>
+        <tr class="text-center thead-dark">
+            <th class="text-center">Data</th>
+        </tr>
+        </thead>
+        <!-- 헤더 영역 End -->
+        <tbody>
+        {% if data_list %}
+        {% for data in data_list %}
+        <tr class="text-center">
+            <td class="text-center">{{ data }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td class="text-center">조회 결과가 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

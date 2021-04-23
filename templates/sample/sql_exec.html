@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container my-3" style="padding-top:80px">
+<div class="col-md-8 order-md-1">
+    <h4 class="mb-3">Oracle DB 접속</h4>
+    <form method="post" class="post-form my-3">
+        {% csrf_token %}
+        <!-- 오류표시 Start -->
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+                {% if field.errors %}
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <div class="col-md-12 mb-3">
+                <label for="sql">SQL 문장</label>
+                <input type="text" class="form-control" id="sql" name="sql" placeholder="SELECT 1 FROM DUAL">
+            </div>
+        </div>
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">쿼리 실행</button>
+    </form>
+
+    <table class="table table-striped">
+        <!-- 헤더 영역 End -->
+        <thead>
+        <tr class="text-center thead-dark">
+            <th class="text-center">Data</th>
+        </tr>
+        </thead>
+        <!-- 헤더 영역 End -->
+        <tbody>
+        {% if data_list %}
+        {% for data in data_list %}
+        <tr class="text-center">
+            <td class="text-center">{{ data }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td class="text-center">조회 결과가 없습니다.</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
