@@ -15,15 +15,13 @@
     <form method="post" class="post-form my-3">
         {% csrf_token %}
         <!-- 오류표시 Start -->
-        {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
-            {% for field in form %}
-                {% if field.errors %}
-                <strong>{{ field.label }}</strong>
-                {{ field.errors }}
-                {% endif %}
-            {% endfor %}
-            </div>
+        {% if messages %}
+        <div class="alert alert-danger my-3" role="alert">
+        {% for message in messages %}
+            <strong>{{ message.tags }}</strong>
+            <ul><li>{{ message.message }}</li></ul>
+        {% endfor %}
+        </div>
         {% endif %}
         <div class="row">
             <!-- DataTales Example -->

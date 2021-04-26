@@ -1,7 +1,7 @@
 import os
 import urllib
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
@@ -167,54 +167,58 @@ def data_receive(request):
         label_list = []
         data_list = []
 
-        # Source DB 데이터 조회
-        dsn = cx_Oracle.makedsn(source_ip, source_port, source_sid)
-        db = cx_Oracle.connect(source_user, source_password, dsn)
+        if source_sql.find('SELECT') == 0 or source_sql.find('select') == 0:
 
-        cursor = db.cursor()
-        cursor.execute(source_sql) # Source SQL FILE로 관리 후 Read 하여 처리
-        result_list = cursor.fetchall()
+            # Source DB 데이터 조회
+            dsn = cx_Oracle.makedsn(source_ip, source_port, source_sid)
+            db = cx_Oracle.connect(source_user, source_password, dsn)
 
-        cursor.close()
-        db.close()
+            cursor = db.cursor()
+            cursor.execute(source_sql) # Source SQL FILE로 관리 후 Read 하여 처리
+            result_list = cursor.fetchall()
 
-        for r_idx, row in enumerate(result_list):
-            temp_sql = target_sql + '(' # Target SQL FILE로 관리 후 Read 하여 처리
-            for c_idx, column in enumerate(row):
-                if r_idx == 0:
-                    label_list.append(c_idx)
+            cursor.close()
+            db.close()
 
-                if c_idx != 0:
-                    temp_sql += ','
+            for r_idx, row in enumerate(result_list):
+                temp_sql = target_sql + '(' # Target SQL FILE로 관리 후 Read 하여 처리
+                for c_idx, column in enumerate(row):
+                    if r_idx == 0:
+                        label_list.append(c_idx)
 
-                # TIMESTAMP
-                if type(column) is datetime:
-                    temp_sql += 'datetime(\'NOW\')' # MySQL 용 처리로 변경
-                # NUMBER
-                elif type(column) is int:
-                    temp_sql += str(column)
-                # VARCHAR or CHAR
-                elif type(column) is str:
-                    temp_sql += '\'' + column + '\''
-                # 기타 Null 처리
-                else:
-                    temp_sql += 'Null'
+                    if c_idx != 0:
+                        temp_sql += ','
 
-            temp_sql += ')'
+                    # TIMESTAMP
+                    if type(column) is datetime:
+                        temp_sql += 'datetime(\'NOW\')' # MySQL 용 처리로 변경
+                    # NUMBER
+                    elif type(column) is int:
+                        temp_sql += str(column)
+                    # VARCHAR or CHAR
+                    elif type(column) is str:
+                        temp_sql += '\'' + column + '\''
+                    # 기타 Null 처리
+                    else:
+                        temp_sql += 'Null'
 
-            data_list.append(row)
+                temp_sql += ')'
 
-            # Target DB 데이터 저장
-            cursor = connection.cursor()
+                data_list.append(row)
 
-            cursor.execute(temp_sql)
-            cursor.fetchall()
+                # Target DB 데이터 저장
+                cursor = connection.cursor()
 
-            connection.commit()
-            connection.close()
+                cursor.execute(temp_sql)
+                cursor.fetchall()
 
-        context = {'label_list': label_list, 'data_list': data_list}
-        return render(request, 'common/data_receive.html', context)
+                connection.commit()
+                connection.close()
+
+            context = {'label_list': label_list, 'data_list': data_list}
+            return render(request, 'common/data_receive.html', context)
+        else:
+            messages.error(request, '올바르지 않은 SELECT문 입니다.')
 
     context = {}
     return render(request, 'common/data_receive.html', context)
