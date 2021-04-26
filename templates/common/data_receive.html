@@ -8,7 +8,7 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-2 text-gray-800">
             <i class="fas fa-fw fa-table"></i>
-            <span class="text">ORACLE Data Interface</span>
+            <span class="text">ORACLE DB Interface</span>
         </h1>
     </div>
 
@@ -91,42 +91,46 @@
                 </div>
             </div>
         </div>
-
-
         <button class="btn btn-primary btn-lg btn-block mb-4" type="submit">데이터 수신 실행</button>
+    </form>
+    <div class="card border-left-primary shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">데이터 처리 내역</h6>
+        </div>
 
-
-        <table class="table table-striped mb-4" id="dataTable">
-            <!-- 헤더 영역 End -->
-            <thead>
-            <tr class="text-center thead-dark">
-                {% if label_list %}
-                {% for label in label_list %}
-                <th class="text-center">{{ label }}</th>
+        <div class="card-body">
+            <table class="table table-striped mb-4" id="dataTable">
+                <!-- 헤더 영역 End -->
+                <thead>
+                <tr class="text-center thead-dark">
+                    {% if label_list %}
+                    {% for label in label_list %}
+                    <th class="text-center">{{ label }}</th>
+                    {% endfor %}
+                    {% else %}
+                    <th class="text-center">Data</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <!-- 헤더 영역 End -->
+                <tbody>
+                {% if data_list %}
+                {% for data in data_list %}
+                <tr class="text-center">
+                    {% for row in data %}
+                    <td class="text-center">{{ row }}</td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
                 {% else %}
-                <th class="text-center">Data</th>
+                <tr>
+                    <td class="text-center">조회 결과가 없습니다.</td>
+                </tr>
                 {% endif %}
-            </tr>
-            </thead>
-            <!-- 헤더 영역 End -->
-            <tbody>
-            {% if data_list %}
-            {% for data in data_list %}
-            <tr class="text-center">
-                {% for row in data %}
-                <td class="text-center">{{ row }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td class="text-center">조회 결과가 없습니다.</td>
-            </tr>
-            {% endif %}
-            </tbody>
-        </table>
-    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
 {% block script %}
