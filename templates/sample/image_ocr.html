@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container my-3" style="padding-top:80px">
 <div class="col-md-8 order-md-1">
-    <h4 class="mb-3">KoNLPy</h4>
+    <h4 class="mb-3">OCR Test</h4>
     <form method="post" class="post-form my-3">
         {% csrf_token %}
         <!-- 오류표시 Start -->
@@ -19,35 +19,21 @@
         {% endif %}
         <div class="form-group">
             <div class="col-md-12 mb-3">
-                <label for="context">TEST 문장</label>
-                <input type="text" class="form-control" id="context" name="context" placeholder="점심식대 : 홍길동 외 2명">
+                <label for="image_path">이미지 경로</label>
+                <input type="text" class="form-control" id="image_path" name="image_path" value="upload/2021/04/26/">
             </div>
         </div>
         <hr class="mb-4">
         <button class="btn btn-primary btn-lg btn-block" type="submit">분석 실행</button>
+
+        <div class="form-group">
+            <div class="col-md-12 mb-3">
+                <label for="image_path">분석 결과</label>
+                <textarea class="form-control"name="result_text" id="result_text"
+                          rows="10">{{ result_text|default_if_none:'' }}</textarea>
+            </div>
+        </div>
     </form>
 
-    <table class="table table-striped">
-        <!-- 헤더 영역 End -->
-        <thead>
-        <tr class="text-center thead-dark">
-            <th class="text-center">Data</th>
-        </tr>
-        </thead>
-        <!-- 헤더 영역 End -->
-        <tbody>
-        {% if data_list %}
-        {% for data in data_list %}
-        <tr class="text-center">
-            <td class="text-center">{{ data }}</td>
-        </tr>
-        {% endfor %}
-        {% else %}
-        <tr>
-            <td class="text-center">분석 결과가 없습니다.</td>
-        </tr>
-        {% endif %}
-        </tbody>
-    </table>
 </div>
 {% endblock %}

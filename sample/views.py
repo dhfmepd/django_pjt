@@ -6,6 +6,8 @@ from django.db.models import Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 import cx_Oracle
 from konlpy.tag import Okt
+#import pytesseract
+#import cv2
 
 def chart_js(request):
     pie_label = []
@@ -117,3 +119,22 @@ def api_open(request):
 
     context = {'context': context}
     return render(request, 'sample/api_open.html', context)
+
+def image_ocr(request):
+    # gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # binary_img = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    # kernel = np.ones((5, 5), np.uint8)
+    # open_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
+    # custom_config = '--oem3'
+    image_path = request.POST.get('image_path')
+
+    #if request.method == 'POST':
+        #img = cv2.imread(image_path)
+
+        #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        #result_text = pytesseract.image_to_string(img, lang="kor")
+
+        #context = {'result_text': result_text}
+        #return render(request, 'sample/image_ocr.html', context)
+
+    return render(request, 'sample/image_ocr.html', {})
