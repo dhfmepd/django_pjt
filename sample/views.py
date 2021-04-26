@@ -6,6 +6,7 @@ from django.db.models import Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 import cx_Oracle
 from konlpy.tag import Okt
+from django.core.mail import EmailMessage
 #import pytesseract
 #import cv2
 
@@ -138,3 +139,25 @@ def image_ocr(request):
         #return render(request, 'sample/image_ocr.html', context)
 
     return render(request, 'sample/image_ocr.html', {})
+
+def email_send(request):
+    from_addr = request.POST.get('from_addr')
+    to_addr = request.POST.get('to_addr')
+    subject = request.POST.get('subject')
+    content = request.POST.get('content')
+    print(from_addr)
+    print(to_addr)
+    print(subject)
+    print(content)
+    if request.method == 'POST':
+        email = EmailMessage(
+            subject,  # 제목
+            content,  # 내용
+            from_addr,  # 보내는 이메일 (settings에서 설정해서 작성안해도 됨)
+            to=[to_addr],  # 받는 이메일 리스트
+        )
+        email.send()
+
+        return render(request, 'sample/email_send.html', {})
+
+    return render(request, 'sample/email_send.html', {})

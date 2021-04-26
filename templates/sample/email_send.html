@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container my-3" style="padding-top:80px">
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3">EMAIL Test</h4>
+        <form method="post" class="post-form my-3">
+            {% csrf_token %}
+            <!-- 오류표시 Start -->
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                {% for field in form %}
+                    {% if field.errors %}
+                    <strong>{{ field.label }}</strong>
+                    {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <div class="col-md-12 mb-3">
+                    <label for="from_addr">FROM ADDRESS</label>
+                    <input type="text" class="form-control" id="from_addr" name="from_addr" placeholder="xxxx@cj.net">
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label for="to_addr">TO ADDRESS</label>
+                    <input type="text" class="form-control" id="to_addr" name="to_addr" placeholder="xxxx@cj.net">
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label for="subject">SUBJECT</label>
+                    <input type="text" class="form-control" id="subject" name="subject">
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label for="content">CONTENT</label>
+                    <textarea class="form-control"name="content" id="content"
+                              rows="3">{{ content|default_if_none:'' }}</textarea>
+                </div>
+            </div>
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">SEND</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

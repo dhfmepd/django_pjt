@@ -142,6 +142,14 @@ LOGOUT_REDIRECT_URL = '/'
 UPLOAD_URL = '/upload/'
 UPLOAD_ROOT = os.path.join(BASE_DIR, 'upload')
 
+# EMAIL INFO
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = 'cjfv2021@gmail.com'
+EMAIL_HOST_PASSWORD = 'cjfvdt2021!!'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGGING = {
     'version': 1,
