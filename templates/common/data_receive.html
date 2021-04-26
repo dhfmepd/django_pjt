@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="container my-3" style="padding-top:80px">
-<div class="col-md-8 order-md-1">
-    <h4 class="mb-3">Data Receive</h4>
+<!-- Begin Page Content -->
+<div class="container-fluid mb-4">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-2 text-gray-800">
+            <i class="fas fa-fw fa-table"></i>
+            <span class="text">FIMS Data Interface</span>
+        </h1>
+    </div>
+
     <form method="post" class="post-form my-3">
         {% csrf_token %}
         <!-- 오류표시 Start -->
@@ -17,63 +25,116 @@
             {% endfor %}
             </div>
         {% endif %}
-        <div class="form-group">
-            <div class="col-md-12 mb-3">
-                <label for="source_sql">Source SQL 문장</label>
-                <input type="text" class="form-control" id="source_sql" name="source_sql" value="SELECT 1, 1, SUBJECT, SUBJECT, 0, SYSTIMESTAMP, NULL FROM FVSRM.SNOTE">
-            </div>
-            <div class="col-md-12 mb-3">
-                <label for="target_sql">Target SQL 문장</label>
-                <input type="text" class="form-control" id="target_sql" name="target_sql" value="INSERT INTO board_board (menu_id, author_id, subject, content, hit_count, create_date, modify_date) VALUES">
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-12 mb-3">
-                <label for="source_ip">IP</label>
-                <input type="text" class="form-control" id="source_ip" name="source_ip" value="52.2.142.63">
-            </div>
-            <div class="col-md-12 mb-3">
-                <label for="source_port">PORT</label>
-                <input type="text" class="form-control" id="source_port" name="source_port" value="1525">
-            </div>
-            <div class="col-md-12 mb-3">
-                <label for="source_sid">SID</label>
-                <input type="text" class="form-control" id="source_sid" name="source_sid" value="FVWQA">
-            </div>
-            <div class="col-md-12 mb-3">
-                <label for="source_user">USER</label>
-                <input type="text" class="form-control" id="source_user" name="source_user" value="fvsrm">
-            </div>
-            <div class="col-md-12 mb-3">
-                <label for="source_password">PASSWORD</label>
-                <input type="text" class="form-control" id="source_password" name="source_password" value="qwer!@">
-            </div>
-        </div>
-        <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit">쿼리 실행</button>
-    </form>
+        <div class="row">
+            <!-- DataTales Example -->
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Source DB 접속정보 (FIMS)</h6>
+                    </div>
 
-    <table class="table table-striped">
-        <!-- 헤더 영역 End -->
-        <thead>
-        <tr class="text-center thead-dark">
-            <th class="text-center">Data</th>
-        </tr>
-        </thead>
-        <!-- 헤더 영역 End -->
-        <tbody>
-        {% if data_list %}
-        {% for data in data_list %}
-        <tr class="text-center">
-            <td class="text-center">{{ data }}</td>
-        </tr>
-        {% endfor %}
-        {% else %}
-        <tr>
-            <td class="text-center">조회 결과가 없습니다.</td>
-        </tr>
-        {% endif %}
-        </tbody>
-    </table>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group row">
+                                    <div class="col-sm-6">
+                                        <label for="source_ip">IP</label>
+                                        <input type="text" class="form-control" id="source_ip" name="source_ip" value="52.2.142.63">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label for="source_port">PORT</label>
+                                        <input type="text" class="form-control" id="source_port" name="source_port" value="1525">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label for="source_sid">SID</label>
+                                        <input type="text" class="form-control" id="source_sid" name="source_sid" value="FVWQA">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6">
+                                        <label for="source_user">USER</label>
+                                        <input type="text" class="form-control" id="source_user" name="source_user" value="fvsrm">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6">
+                                        <label for="source_password">PASSWORD</label>
+                                        <input type="text" class="form-control" id="source_password" name="source_password" value="qwer!@">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6 mb-4">
+                <!-- DataTales Example -->
+                <div class="card border-left-primary shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">SQL 정보</h6>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="source_sql">Source - SELECT <font color="red">( 예시 : SELECT 컬럼명, 컬럼명 FROM 테이블명 WHERE 컬럼명 = '값' )</font></label>
+                                    <textarea class="form-control"name="source_sql" id="source_sql"
+                                          rows="3">{{ form.source_sql.value|default_if_none:'' }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="target_sql">Target - INSERT <font color="red">( 예시 : INSERT INTO 테이블명 (컬럼명, 컬럼명) VALUES )</font></label>
+                                    <textarea class="form-control"name="target_sql" id="target_sql"
+                                          rows="3">{{ form.target_sql.value|default_if_none:'' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <button class="btn btn-primary btn-lg btn-block mb-4" type="submit">데이터 수신 실행</button>
+
+
+        <table class="table table-striped mb-4" id="dataTable">
+            <!-- 헤더 영역 End -->
+            <thead>
+            <tr class="text-center thead-dark">
+                {% if label_list %}
+                {% for label in label_list %}
+                <th class="text-center">{{ label }}</th>
+                {% endfor %}
+                {% else %}
+                <th class="text-center">Data</th>
+                {% endif %}
+            </tr>
+            </thead>
+            <!-- 헤더 영역 End -->
+            <tbody>
+            {% if data_list %}
+            {% for data in data_list %}
+            <tr class="text-center">
+                {% for row in data %}
+                <td class="text-center">{{ row }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td class="text-center">조회 결과가 없습니다.</td>
+            </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </form>
 </div>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+    jQuery(function($){
+		$("#dataTable").DataTable();
+	});
+</script>
 {% endblock %}

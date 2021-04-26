@@ -20,7 +20,11 @@ def index(request):
     """
     Home 출력
     """
-    context = {'question_list': ''}
+    if request.user.is_authenticated == True:
+        context = {}
+        return render(request, 'common/dashboard.html', context)
+
+    context = {}
     return render(request, 'common/index.html', context)
 
 def signup(request):
@@ -160,7 +164,8 @@ def data_receive(request):
     target_sql      = request.POST.get('target_sql')
 
     if request.method == 'POST':
-        tot_row_count = 0
+        label_list = []
+        data_list = []
 
         # Source DB 데이터 조회
         dsn = cx_Oracle.makedsn(source_ip, source_port, source_sid)
@@ -168,16 +173,20 @@ def data_receive(request):
 
         cursor = db.cursor()
         cursor.execute(source_sql) # Source SQL FILE로 관리 후 Read 하여 처리
-        data_list = cursor.fetchall()
+        result_list = cursor.fetchall()
 
         cursor.close()
         db.close()
 
-        for row in data_list:
+        for r_idx, row in enumerate(result_list):
             temp_sql = target_sql + '(' # Target SQL FILE로 관리 후 Read 하여 처리
-            for index, column in enumerate(row):
-                if index != 0:
+            for c_idx, column in enumerate(row):
+                if r_idx == 0:
+                    label_list.append(c_idx)
+
+                if c_idx != 0:
                     temp_sql += ','
+
                 # TIMESTAMP
                 if type(column) is datetime:
                     temp_sql += 'datetime(\'NOW\')' # MySQL 용 처리로 변경
@@ -193,18 +202,18 @@ def data_receive(request):
 
             temp_sql += ')'
 
+            data_list.append(row)
+
             # Target DB 데이터 저장
             cursor = connection.cursor()
 
-            result = cursor.execute(temp_sql)
+            cursor.execute(temp_sql)
             cursor.fetchall()
-
-            tot_row_count += result.rowcount
 
             connection.commit()
             connection.close()
 
-        context = {'data_list': data_list, 'tot_row_count' : tot_row_count}
+        context = {'label_list': label_list, 'data_list': data_list}
         return render(request, 'common/data_receive.html', context)
 
     context = {}
