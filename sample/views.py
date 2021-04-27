@@ -7,8 +7,8 @@ from django.db.models.functions import Coalesce
 import cx_Oracle
 from konlpy.tag import Okt
 from django.core.mail import EmailMessage
-#import pytesseract
-#import cv2
+import pytesseract
+import cv2
 
 def chart_js(request):
     pie_label = []
@@ -129,14 +129,15 @@ def image_ocr(request):
     # custom_config = '--oem3'
     image_path = request.POST.get('image_path')
 
-    #if request.method == 'POST':
-        #img = cv2.imread(image_path)
+    if request.method == 'POST':
+        img = cv2.imread(image_path)
+        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        #로컬설정
+        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        result_text = pytesseract.image_to_string(gray_img, lang="kor")
 
-        #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-        #result_text = pytesseract.image_to_string(img, lang="kor")
-
-        #context = {'result_text': result_text}
-        #return render(request, 'sample/image_ocr.html', context)
+        context = {'result_text': result_text}
+        return render(request, 'sample/image_ocr.html', context)
 
     return render(request, 'sample/image_ocr.html', {})
 
@@ -145,10 +146,7 @@ def email_send(request):
     to_addr = request.POST.get('to_addr')
     subject = request.POST.get('subject')
     content = request.POST.get('content')
-    print(from_addr)
-    print(to_addr)
-    print(subject)
-    print(content)
+
     if request.method == 'POST':
         email = EmailMessage(
             subject,  # 제목
