@@ -133,7 +133,7 @@ def image_ocr(request):
         img = cv2.imread(image_path)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         #로컬설정
-        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
         result_text = pytesseract.image_to_string(gray_img, lang="kor")
 
         context = {'result_text': result_text}
