@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
-from common import views
+from common.views import base_views
 from django.contrib import messages
 from django.shortcuts import redirect
 
@@ -30,7 +30,7 @@ urlpatterns = [
     path('common/', include('common.urls')),
     path('board/', include('board.urls')),
     path('sample/', include('sample.urls')),
-    path('', views.index, name='index'),  # '/' 에 해당되는 path
+    path('', base_views.index, name='index'),  # '/' 에 해당되는 path
 ] + static(settings.UPLOAD_URL, protected_file, document_root=settings.UPLOAD_ROOT)
 
-handler404 = 'common.views.page_not_found'
+handler404 = 'common.views.base_views.page_not_found'

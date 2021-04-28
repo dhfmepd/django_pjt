@@ -135,7 +135,7 @@ STATICFILES_DIRS = [
 ]
 
 # 로그인 / 로그아웃 성공후 이동하는 URL
-LOGIN_REDIRECT_URL = '/common/dashboard/'
+LOGIN_REDIRECT_URL = '/common/main/'
 LOGOUT_REDIRECT_URL = '/'
 
 # UPLOAD URL

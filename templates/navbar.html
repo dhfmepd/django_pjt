@@ -2,7 +2,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'common:dashboard' %}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'common:main' %}">
         <div class="sidebar-brand-icon">
             <img src="{% static '/images/logo_cj_white.png' %}" class="img-fluid" style="height:50px;">
         </div>
@@ -14,7 +14,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="{% url 'common:dashboard' %}">
+        <a class="nav-link" href="{% url 'common:main' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
@@ -32,7 +32,7 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne"
             aria-expanded="true" aria-controls="collapseOne">
             <i class="fas fa-fw fa-cog"></i>
-            <span>Bulletin Board</span>
+            <span>게시판</span>
         </a>
             <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -63,11 +63,11 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
             aria-expanded="true" aria-controls="collapseUtilities">
             <i class="fas fa-fw fa-wrench"></i>
-            <span>Utilities</span>
+            <span>샘플소스</span>
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
+                <h6 class="collapse-header">샘플 페이지:</h6>
                 <a class="collapse-item" href="{% url 'sample:api_open' %}">KoNLPy Package Test</a>
                 <a class="collapse-item" href="{% url 'sample:image_ocr' %}">Tesseract Package Test</a>
                 <a class="collapse-item" href="{% url 'sample:email_send' %}">Email Send Test</a>
@@ -88,15 +88,21 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
             aria-expanded="true" aria-controls="collapsePages">
             <i class="fas fa-fw fa-folder"></i>
-            <span>Types</span>
+            <span>경비 분석</span>
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">A Type:</h6>
-                <a class="collapse-item" href="#">Test Page</a>
-                <div class="collapse-divider"></div>
+                <a class="collapse-item" href="#">상위 경비 항목</a>
+                <a class="collapse-item" href="#">전체 경비 현황</a>
+                <a class="collapse-item" href="#">평균 지출</a>
+                <a class="collapse-item" href="#">지출 비교</a>
+                <a class="collapse-item" href="#">경비 트렌드</a>
+                <a class="collapse-item" href="#">부서별 경비현황</a>
+                <a class="collapse-item" href="#">예산대비 실적</a>
+                <a class="collapse-item" href="#">목표설정</a>
+                <!--<div class="collapse-divider"></div>
                 <h6 class="collapse-header">B Type:</h6>
-                <a class="collapse-item" href="#">Test Page</a>
+                <a class="collapse-item" href="#">Test Page</a>-->
             </div>
         </div>
     </li>
