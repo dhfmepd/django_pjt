@@ -159,3 +159,7 @@ def email_send(request):
         return render(request, 'sample/email_send.html', {})
 
     return render(request, 'sample/email_send.html', {})
+
+def chart_sample(request):
+
+    return render(request, 'sample/chart_sample.html', {})
