@@ -4,8 +4,56 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce
 from django.contrib.auth.models import User
+from django.contrib.auth import login as auth_login
+from django.contrib.auth.forms import AuthenticationForm
 from board.models import Board, Comment, Reply
+from common.models import Menu
 from common.forms import UserForm
+
+def get_menu_list():
+    # 메뉴구조 0~2 Level로 구성
+    menu_list = Menu.objects.filter(level=0).order_by('sort_no')
+
+    root_menu_list = []
+    # 1 Level 리스트
+    for root_menu in menu_list:
+        child_menu_list = []
+        # 2 Level 리스트
+        for child_menu in root_menu.children.all():
+            leaf_menu_list = []
+            # 3 Level 리스트
+            for leaf_menu in child_menu.children.all():
+                leaf_menu_list.append({'id': leaf_menu.id,
+                                       'title': leaf_menu.title,
+                                       'level': leaf_menu.level,
+                                       'url': leaf_menu.url,
+                                       'argument': leaf_menu.argument})
+            # 2 Level 추가
+            child_menu_list.append({'id': child_menu.id,
+                                    'title': child_menu.title,
+                                    'children': leaf_menu_list})
+        # 1 Level 추가
+        root_menu_list.append({'id': root_menu.id,
+                               'title': root_menu.title,
+                               'children': child_menu_list})
+    return root_menu_list
+
+def login(request):
+    if request.method == 'POST':
+        # data는 forms.form 두번쨰 인자이므로 data = 은 생략 가능
+        form = AuthenticationForm(request, data = request.POST) # 먼저 request 인자를 받아야함
+        if form.is_valid():
+            # 메뉴정보 세션저장
+            request.session['menu_list'] = get_menu_list()
+
+            # 세션 CREATE/ form.get_user는 User 객체 반환
+            auth_login(request, form.get_user())
+            return redirect('common:main') # 로그인 성공시 메인페이지 이동
+    else:
+        form = AuthenticationForm()
+
+    context = {'form': form}
+    return render(request, 'common/login.html', context)
 
 def signup(request):
     """
@@ -84,7 +132,7 @@ def main(request):
             user_b_data.append(bar_dset['r_cnt'])
 
     context = {'pie_label': pie_label, 'pie_data': pie_data, 'user_a_label': user_a_label, 'user_b_label': user_b_label,
-               'user_a_data': user_a_data, 'user_b_data': user_b_data}
+               'user_a_data': user_a_data, 'user_b_data': user_b_data, 'menu_list': Menu.objects.all()}
     return render(request, 'common/main.html', context)
 
 def page_not_found(request, exception):

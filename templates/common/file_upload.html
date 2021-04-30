@@ -11,29 +11,21 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="card">
-                        <div class="card-body">
-                            <!-- 오류표시 Start -->
-                            {% if fileForm.errors %}
-                                <div class="alert alert-danger" role="alert">
-                                {% for field in fileForm %}
-                                    {% if field.errors %}
-                                    <strong>{{ field.label }}</strong>
-                                    {{ field.errors }}
-                                    {% endif %}
-                                {% endfor %}
-                                </div>
+                    <!-- 오류표시 Start -->
+                    {% if fileForm.errors %}
+                        <div class="alert alert-danger" role="alert">
+                        {% for field in fileForm %}
+                            {% if field.errors %}
+                            <strong>{{ field.label }}</strong>
+                            {{ field.errors }}
                             {% endif %}
-                            <!-- 오류표시 End -->
-                            <div class="form-group">
-                                <p>
-                                    {{ fileForm.file_data.errors }}
-                                    {{ fileForm.file_data }}
-                                </p>
-                                <label>{{ fileForm.file_data.label_tag }} {{ fileForm.file_data.help_text }}</label>
-                            </div>
+                        {% endfor %}
                         </div>
-                    </div>
+                    {% endif %}
+                    <!-- 오류표시 End -->
+                    {{ fileForm.file_data.label_tag }}
+                    {{ fileForm.file_data.help_text }}
+                    {{ fileForm.file_data }}
                 </div>
 
                 <div class="modal-footer">

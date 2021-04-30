@@ -1,7 +1,5 @@
 from django.contrib import admin
 from .models import Menu
+from mptt.admin import DraggableMPTTAdmin
 
-class MenuAdmin(admin.ModelAdmin):
-    search_fields = ['title']
-
-admin.site.register(Menu, MenuAdmin)
+admin.site.register(Menu, DraggableMPTTAdmin)

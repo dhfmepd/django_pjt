@@ -10,4 +10,8 @@ class UserForm(UserCreationForm):
         fields = ("username", "email")
 
 class FileForm(forms.Form):
-    file_data = forms.FileField(label='Select a file', help_text='Max. 42 MB')
+    file_data = forms.FileField(
+        label='Select a file',
+        help_text='Max. 42 MB',
+        widget=forms.FileInput(attrs={'class': 'form-control py-1'})
+    )

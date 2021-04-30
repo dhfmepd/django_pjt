@@ -28,6 +28,7 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
+    'mptt',
     'common.apps.CommonConfig',
     'board.apps.BoardConfig',
     'sample.apps.SampleConfig',
@@ -214,3 +215,5 @@ LOGGING = {
         },
     }
 }
+
+MPTT_ADMIN_LEVEL_INDENT = 5

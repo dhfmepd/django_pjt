@@ -3,11 +3,8 @@ import uuid
 from config.settings import base
 from django.utils import timezone
 from django.db import models
-
-class Menu(models.Model):
-    title = models.CharField(max_length=50)
-    remark = models.TextField()
-    sort_no = models.IntegerField()
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 
 def get_file_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -30,3 +27,20 @@ class File(models.Model):
         if self.file_data:
             os.remove(os.path.join(base.UPLOAD_ROOT, self.file_data.path))
         super(File, self).delete(*args, **kargs)
+
+class Menu(MPTTModel):
+    title = models.CharField(max_length=50)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.CASCADE)
+    url = models.CharField(max_length=20, null=True, blank=True)
+    argument = models.CharField(max_length=20, null=True, blank=True)
+    remark = models.TextField()
+    sort_no = models.IntegerField()
+
+    class Meta:
+        ordering = ['sort_no', 'lft']
+
+    class MPTTMeta:
+        order_insertion_by = ['sort_no']
+
+    def __str__(self):
+        return self.title
