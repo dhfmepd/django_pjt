@@ -11,4 +11,5 @@ urlpatterns = [
     path('sqlexec/', views.sql_exec, name='sql_exec'),
     path('imageocr/', views.image_ocr, name='image_ocr'),
     path('emailsend/', views.email_send, name='email_send'),
+    path('pandas/', views.pandas_sample, name='pandas_sample'),
 ]

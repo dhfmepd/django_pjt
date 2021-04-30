@@ -163,3 +163,8 @@ def email_send(request):
 def chart_sample(request):
 
     return render(request, 'sample/chart_sample.html', {})
+
+
+def pandas_sample(request):
+
+    return render(request, 'sample/pandas_sample.html', {})
