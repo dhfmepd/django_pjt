@@ -9,6 +9,7 @@ from konlpy.tag import Okt
 from django.core.mail import EmailMessage
 import pytesseract
 import cv2
+import pandas as pd
 
 def chart_js(request):
     pie_label = []
@@ -166,5 +167,13 @@ def chart_sample(request):
 
 
 def pandas_sample(request):
+    data = {
+        'year': [2016, 2017, 2018],
+        'GDP rate': [2.8, 3.1, 3.0],
+        'GDP': ['1.637M', '1.73M', '1.83M']
+    }
 
-    return render(request, 'sample/pandas_sample.html', {})
+    df = pd.DataFrame(data)
+    df = df.to_html(classes='mystyle')
+
+    return render(request, 'sample/pandas_sample.html', {'table': df})
