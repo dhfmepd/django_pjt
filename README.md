@@ -85,3 +85,26 @@ JPype1-1.2.0-cp39-cp39-win_amd64.whl
 
 
 ※ 개발 툴(파이참 & SQLite) 설치는 점프투장고 문서 참조( https://wikidocs.net/book/4223 ).
+
+
+## 파이썬 3.9에서 3.8.9로 변경시 수정
+
+1.파이썬 3.9 삭제
+•제어판 - 프로그램 및 기능 - Python 3.9.0 삭제 (각 설치버전 기준)
+
+2.파이썬 3.8.9 설치 •파일다운로드 : \\52.90.236.200\foodville\24. DT과제\02. 빅데이터 활용한 경비현황 자동분석\99. 참고자료\00. 설치파일\python-3.8.9-amd64.exe 
+•Path 설정 : 파이썬 설치 시 첫 화면 내 'Add Python 3. 8. 9 to PATH' 체크박스 선택
+
+3.가상환경 생성•C:\venvs> python -m venv mysite (기존 가상환경 폴더 명 변경 후 생성 진행)
+
+4.패키지 재설치•(mysite) python -m pip install --upgrade pip
+•(mysite) pip install django==3.1.3
+•(mysite) pip install markdown
+•(mysite) pip install django-mptt
+•(mysite) pip install cx_Oracle
+•(mysite) pip install pytesseract
+•(mysite) pip install opencv-python
+•(mysite) pip install konlpy
+•(mysite) pip install JPype1-1.2.0-cp38-cp38-win_amd64.whl
+•(mysite) pip install pandas
+
