@@ -4,7 +4,7 @@
 <div class="container my-3" style="padding-top:80px">
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3">OCR Test</h4>
-        <form method="post" class="post-form my-3">
+        <form id="main_form" method="post" class="post-form my-3">
             {% csrf_token %}
             <!-- 오류표시 Start -->
             {% if form.errors %}
@@ -19,21 +19,125 @@
             {% endif %}
             <div class="form-group">
                 <div class="col-md-12 mb-3">
-                    <label for="image_path">이미지 경로</label>
-                    <input type="text" class="form-control" id="image_path" name="image_path" value="upload/2021/04/26/">
+                    <input type="file" id="image_file" name="image_file"/>
+                    <input type="button" value="Load" onclick="LoadImage();" />
+                    <canvas id="canvas"></canvas>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <input type="button" value="Crop" onclick="CropImage();" />
+                    <canvas id="canvas_crop"></canvas>
+                    <input type="hidden" id="crop_image" name="crop_image"/>
                 </div>
             </div>
             <hr class="mb-4">
             <button class="btn btn-primary btn-lg btn-block" type="submit">분석 실행</button>
-
-            <div class="form-group">
-                <div class="col-md-12 mb-3">
-                    <label for="image_path">분석 결과</label>
-                    <textarea class="form-control"name="result_text" id="result_text"
-                              rows="10">{{ result_text|default_if_none:'' }}</textarea>
-                </div>
-            </div>
         </form>
+        <div class="form-group">
+            {% if result_text %}
+            <div class="col-md-12 mb-3">
+                <label for="result_text">분석 결과</label>
+                <textarea class="form-control"name="result_text" id="result_text"
+                          rows="10">{{ result_text|default_if_none:'' }}</textarea>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+    var clsImage;
+    var iCropLeft, iCropTop, iCropWidth, iCropHeight;
+
+    // 로컬 이미지 파일을 Canvas 에 로드한다.
+    function LoadImage() {
+        if(typeof window.FileReader !== 'function') {
+            alert("FileReader is not supported");
+            return;
+        }
+
+        var inputFile = document.getElementById('image_file');
+        var clsFileReader = new FileReader();
+        clsFileReader.onload = function() {
+            clsImage = new Image();
+            clsImage.onload = function() {
+                var canvas = document.getElementById("canvas");
+                canvas.width = clsImage.width;
+                canvas.height = clsImage.height;
+
+                iImageWidth = clsImage.width;
+                iImageHeight = clsImage.height;
+
+                //최초 그리기
+                var canvas = document.getElementById("canvas");
+                var ctx = canvas.getContext("2d");
+
+                ctx.drawImage(clsImage, 0, 0);
+                //마우스 드레그 이벤트 설정
+                AddCropMoveEvent();
+            };
+
+            clsImage.src = clsFileReader.result;
+        };
+
+        clsFileReader.readAsDataURL(inputFile.files[0]);
+    }
+
+    // 로컬 이미지 파일과 Crop 을 위한 사각형 박스를 그려준다.
+    function DrawCropRect() {
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+        ctx.drawImage(clsImage, 0, 0);
+
+        ctx.strokeStyle = "#ff0000";
+        ctx.beginPath();
+        ctx.rect(iCropLeft, iCropTop, iCropWidth, iCropHeight);
+        ctx.stroke();
+    }
+
+    // 이미지를 crop 하여서 하단 Canvas 에 그려준다.
+    function CropImage() {
+        var canvas = document.getElementById("canvas");
+
+        img = new Image();
+        img.onload = function() {
+            var canvas = document.getElementById("canvas_crop");
+            canvas.width = iCropWidth;
+            canvas.height = iCropHeight;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, iCropLeft + 1, iCropTop + 1, iCropWidth - 2, iCropHeight - 2, 0, 0, iCropWidth - 2, iCropHeight - 2);
+
+            var image = document.getElementById("crop_image");
+            image.value = canvas.toDataURL();
+        };
+
+        img.src = canvas.toDataURL();
+    }
+
+    // 마우스 이동에 따른 Crop 사각 박스을 이동하기 위한 이벤트 핸들러를 등록한다.
+    function AddCropMoveEvent() {
+        var canvas = document.getElementById("canvas");
+        var bDrag = false;
+
+        canvas.onmousedown = function(e) {
+            bDrag = true;
+            iCropLeft = (window.pageXOffset + e.clientX) - (window.pageXOffset + e.target.getBoundingClientRect().left);
+            iCropTop = (window.pageYOffset + e.clientY) - (window.pageYOffset + e.target.getBoundingClientRect().top);
+        };
+
+        canvas.onmousemove = function(e) {
+            if( bDrag == false ) return;
+
+            iCropWidth = (window.pageXOffset + e.clientX) - (window.pageXOffset + e.target.getBoundingClientRect().left) - iCropLeft;
+            iCropHeight = (window.pageYOffset + e.clientY) - (window.pageYOffset + e.target.getBoundingClientRect().top) - iCropTop;
+
+            DrawCropRect();
+        };
+
+        canvas.onmouseup = function(e) {
+            bDrag = false;
+        };
+    }
+</script>
 {% endblock %}

@@ -1,3 +1,5 @@
+import base64
+
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from board.models import Board, Comment, Reply
@@ -7,9 +9,10 @@ from django.db.models.functions import Coalesce
 import cx_Oracle
 from konlpy.tag import Okt
 from django.core.mail import EmailMessage
-import pytesseract
 import cv2
 import pandas as pd
+import numpy as np
+import easyocr
 
 def chart_js(request):
     pie_label = []
@@ -123,19 +126,29 @@ def api_open(request):
     return render(request, 'sample/api_open.html', context)
 
 def image_ocr(request):
-    # gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # binary_img = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    # kernel = np.ones((5, 5), np.uint8)
-    # open_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
-    # custom_config = '--oem3'
-    image_path = request.POST.get('image_path')
+    #pip install easyocr
 
     if request.method == 'POST':
-        img = cv2.imread(image_path)
+        crop_file = request.POST.get('crop_image')
+        crop_file = crop_file[22:]
+
+        image = open("static/images/sample.png", "wb")
+        image.write(base64.b64decode(crop_file))
+        image.close()
+
+        reader = easyocr.Reader(['ko', 'en'])  # 한국어 인식할 때 ko 추가
+
+        img = cv2.imread("static/images/sample.png")
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        #로컬설정
-        #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-        result_text = pytesseract.image_to_string(gray_img, lang="kor")
+        binary_img = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+        kernel = np.ones((5, 5), np.uint8)
+        open_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
+
+        result_text = reader.readtext(open_img)
+
+        # 로컬설정
+        # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        # result_text = pytesseract.image_to_string(open_img, lang="kor+eng")
 
         context = {'result_text': result_text}
         return render(request, 'sample/image_ocr.html', context)
