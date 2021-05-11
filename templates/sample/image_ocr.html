@@ -19,20 +19,27 @@
             {% endif %}
             <div class="form-group">
                 <div class="col-md-12 mb-3">
-                    <input type="file" id="image_file" name="image_file"/>
-                    <input type="button" value="Load" onclick="LoadImage();" />
-                    <canvas id="canvas"></canvas>
+                    <label for="image_path">Image Path</label>
+                    <input type="text" class="form-control" id="image_path" name="image_path" value="upload/2021/">
                 </div>
-                <div class="col-md-12 mb-3">
-                    <input type="button" value="Crop" onclick="CropImage();" />
-                    <canvas id="canvas_crop"></canvas>
-                    <input type="hidden" id="crop_image" name="crop_image"/>
-                </div>
+<!--                <div class="col-md-12 mb-3">-->
+<!--                    <input type="file" id="image_file" name="image_file"/>-->
+<!--                    <input type="button" value="Load" onclick="LoadImage();" />-->
+<!--                    <canvas id="canvas"></canvas>-->
+<!--                </div>-->
+<!--                <div class="col-md-12 mb-3">-->
+<!--                    <input type="button" value="Crop" onclick="CropImage();" />-->
+<!--                    <canvas id="canvas_crop"></canvas>-->
+<!--                    <input type="hidden" id="crop_image" name="crop_image"/>-->
+<!--                </div>-->
             </div>
             <hr class="mb-4">
             <button class="btn btn-primary btn-lg btn-block" type="submit">분석 실행</button>
         </form>
         <div class="form-group">
+            {% if result_image %}
+            <img src="/{{ result_image }}"/>
+            {% endif %}
             {% if result_text %}
             <div class="col-md-12 mb-3">
                 <label for="result_text">분석 결과</label>
@@ -48,6 +55,7 @@
 <script type='text/javascript'>
     var clsImage;
     var iCropLeft, iCropTop, iCropWidth, iCropHeight;
+    var imgWidth, imgHeight;
 
     // 로컬 이미지 파일을 Canvas 에 로드한다.
     function LoadImage() {
@@ -62,17 +70,29 @@
             clsImage = new Image();
             clsImage.onload = function() {
                 var canvas = document.getElementById("canvas");
-                canvas.width = clsImage.width;
-                canvas.height = clsImage.height;
 
-                iImageWidth = clsImage.width;
-                iImageHeight = clsImage.height;
+                var sizeRatio = 0;
+
+                if(clsImage.width > clsImage.height) {
+                    sizeRatio = 1000 / clsImage.width;
+                } else {
+                    sizeRatio = 1000 / clsImage.height;
+                }
+
+                imgWidth = clsImage.width * sizeRatio;
+                imgHeight = clsImage.height * sizeRatio;
+
+                canvas.width = imgWidth;
+                canvas.height = imgHeight;
+
+                iImageWidth = imgWidth;
+                iImageHeight = imgHeight;
 
                 //최초 그리기
                 var canvas = document.getElementById("canvas");
                 var ctx = canvas.getContext("2d");
 
-                ctx.drawImage(clsImage, 0, 0);
+                ctx.drawImage(clsImage, 0, 0, imgWidth, imgHeight);
                 //마우스 드레그 이벤트 설정
                 AddCropMoveEvent();
             };
@@ -88,7 +108,7 @@
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
 
-        ctx.drawImage(clsImage, 0, 0);
+        ctx.drawImage(clsImage, 0, 0, imgWidth, imgHeight);
 
         ctx.strokeStyle = "#ff0000";
         ctx.beginPath();
