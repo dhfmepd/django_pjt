@@ -253,3 +253,7 @@ def pandas_sample(request):
     df = df.to_html(classes='mystyle')
 
     return render(request, 'sample/pandas_sample.html', {'table': df})
+
+def test_crontab_job():
+    print('TEST !!!!')
+# pip install django-crontab

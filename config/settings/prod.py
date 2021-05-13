@@ -1,5 +1,19 @@
 from .base import *
 
+INSTALLED_APPS = [
+    'mptt',
+    'common.apps.CommonConfig',
+    'board.apps.BoardConfig',
+    'sample.apps.SampleConfig',
+    'django_crontab',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+
 ALLOWED_HOSTS = ['52.90.236.160']
 STATIC_ROOT = BASE_DIR / 'static/'
 STATICFILES_DIRS = []
@@ -18,3 +32,8 @@ DATABASES = {
         'PORT' : '3306',
     }
 }
+
+""" Cron Job 설정 방식 """
+CRONJOBS = [
+    ('*/5 * * * *', 'app.sample.test_crontab_job')
+]
