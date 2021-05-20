@@ -37,21 +37,21 @@
                 <i class="fas fa-fw fa-cog"></i>
                 <span>{{ child_menu.title }}</span>
             </a>
-                <div id="child_menu_{{ child_menu.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">{{ root_menu.title }} :</h6>
-                        {% for leaf_menu in child_menu.children %}
-                            {% if leaf_menu.url is not null %}
-                                {% if leaf_menu.argument is null %}
-                                    <a class="collapse-item" href="{% url leaf_menu.url %}">{{ leaf_menu.title }}</a>
-                                {% else %}
-                                    <a class="collapse-item" href="{% url leaf_menu.url leaf_menu.argument %}">{{ leaf_menu.title }}
-                                {% endif %}
+            <div id="child_menu_{{ child_menu.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{{ child_menu.title }} :</h6>
+                    {% for leaf_menu in child_menu.children %}
+                        {% if leaf_menu.url is not null %}
+                            {% if leaf_menu.argument is null %}
+                                <a class="collapse-item" href="{% url leaf_menu.url %}">{{ leaf_menu.title }}</a>
+                            {% else %}
+                                <a class="collapse-item" href="{% url leaf_menu.url leaf_menu.argument %}">{{ leaf_menu.title }}</a>
                             {% endif %}
-                        {% endfor %}
-                    </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-            </li>
+            </div>
+        </li>
         {% endfor %}
     {% endfor %}
 
