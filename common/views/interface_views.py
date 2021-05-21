@@ -36,7 +36,7 @@ def data_receive(request):
             db.close()
 
             for r_idx, row in enumerate(result_list):
-                temp_sql = target_sql + '(' # Target SQL FILE로 관리 후 Read 하여 처리
+                temp_sql = target_sql + ' (' # Target SQL FILE로 관리 후 Read 하여 처리
                 for c_idx, column in enumerate(row):
                     if r_idx == 0:
                         label_list.append(c_idx)
@@ -46,15 +46,23 @@ def data_receive(request):
 
                     # TIMESTAMP
                     if type(column) is datetime:
-                        temp_sql += 'datetime(\'NOW\')' # MySQL 용 처리로 변경
+                        temp_sql += 'str_to_date(' + column.strftime("%Y%m%d%H%M%S") + ', \'%Y%m%d%H%i%s\')' # MySQL 용 처리로 변경
                     # NUMBER
                     elif type(column) is int:
                         temp_sql += str(column)
+                    # FLOAT
+                    elif type(column) is float:
+                        temp_sql += str(column)
                     # VARCHAR or CHAR
                     elif type(column) is str:
+                        if str(column).find('\'') >= 0:
+                            column = str(column).replace('\'', '')
+
                         temp_sql += '\'' + column + '\''
                     # 기타 Null 처리
                     else:
+                        if column is not None:
+                            print("[INFO] {} : {}".format(type(column), column))
                         temp_sql += 'Null'
 
                 temp_sql += ')'
