@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 from django.db import connection
 from datetime import datetime
+from common.models import ReceiveHistory
 import cx_Oracle
 
 @login_required(login_url='common:login')
@@ -17,6 +19,7 @@ def data_receive(request):
     source_user     = request.POST.get('source_user')
     source_password = request.POST.get('source_password')
     target_sql      = request.POST.get('target_sql')
+    target_table    = request.POST.get('target_table')
 
     if request.method == 'POST':
         label_list = []
@@ -77,6 +80,15 @@ def data_receive(request):
 
                 connection.commit()
                 connection.close()
+            
+            #데이터 처리이력 저장
+            # history = ReceiveHistory()
+            # history.table_name = target_table
+            # history.receive_count = len(result_list)
+            # history.total_count = 0
+            # history.performer = request.user
+            # history.create_date = timezone.now()
+            # history.save()
 
             context = {'label_list': label_list, 'data_list': data_list}
             return render(request, 'common/data_receive.html', context)

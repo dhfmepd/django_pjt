@@ -3,6 +3,7 @@ import uuid
 from config.settings import base
 from django.utils import timezone
 from django.db import models
+from django.contrib.auth.models import User
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
@@ -44,3 +45,10 @@ class Menu(MPTTModel):
 
     def __str__(self):
         return self.title
+
+class ReceiveHistory(models.Model):
+    table_name = models.CharField(max_length=30)
+    receive_count = models.IntegerField(default=0)
+    total_count = models.IntegerField(default=0)
+    performer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='performer_receive_history')
+    create_date = models.DateTimeField()
