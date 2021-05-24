@@ -82,9 +82,14 @@ def main(request):
     c_bar_data = []
     e_bar_data = []
 
-    c_total_count = '{:,}'.format(top_info[0])
-    e_total_count = '{:,}'.format(top_info[1])
-    last_create_date = top_info[2]
+    if top_info is not None:
+        c_total_count = '{:,}'.format(top_info[0])
+        e_total_count = '{:,}'.format(top_info[1])
+        last_create_date = top_info[2]
+    else:
+        c_total_count = '{:,}'.format(0)
+        e_total_count = '{:,}'.format(0)
+        last_create_date = 'N/A'
 
     for r_idx, chart_info in enumerate(chart_list):
         bar_label.append(chart_info[0])

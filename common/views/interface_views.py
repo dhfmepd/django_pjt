@@ -82,13 +82,20 @@ def data_receive(request):
                 connection.close()
             
             #데이터 처리이력 저장
-            # history = ReceiveHistory()
-            # history.table_name = target_table
-            # history.receive_count = len(result_list)
-            # history.total_count = 0
-            # history.performer = request.user
-            # history.create_date = timezone.now()
-            # history.save()
+            lastHistory = ReceiveHistory.objects.filter(table_name=word_case_change('upper', target_table)).order_by('-create_date').first()
+
+            if lastHistory is not None:
+                last_total_count = lastHistory.total_count
+            else:
+                last_total_count = 0
+
+            history = ReceiveHistory()
+            history.table_name = word_case_change('upper', target_table)
+            history.receive_count = len(result_list)
+            history.total_count = last_total_count + len(result_list)
+            history.performer = request.user
+            history.create_date = timezone.now()
+            history.save()
 
             context = {'label_list': label_list, 'data_list': data_list}
             return render(request, 'common/data_receive.html', context)
@@ -97,3 +104,30 @@ def data_receive(request):
 
     context = {}
     return render(request, 'common/data_receive.html', context)
+
+
+def word_case_change(type, text):
+    re_text = ''
+    length = len(text)
+
+    for x in range(length):
+        letter = text[x]
+        # 대문자 --> 소문자로
+        if type == 'lower':
+            if 64 < ord(letter) < 96:
+                num = ord(letter) + 32
+                str = chr(num)
+                re_text = re_text + str
+            else:
+                re_text = re_text + letter
+
+        # 소문자 --> 대문자로
+        if type == 'upper':
+            if ord(letter) > 96:
+                num = ord(letter) - 32
+                str = chr(num)
+                re_text = re_text + str
+            else:
+                re_text = re_text + letter
+
+    return re_text
