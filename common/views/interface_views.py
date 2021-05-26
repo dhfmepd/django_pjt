@@ -8,7 +8,7 @@ from common.models import ReceiveHistory
 import cx_Oracle
 
 @login_required(login_url='common:login')
-def data_receive(request):
+def interface_ora(request):
     """
     데이터 수신
     """
@@ -98,12 +98,12 @@ def data_receive(request):
             history.save()
 
             context = {'label_list': label_list, 'data_list': data_list}
-            return render(request, 'common/data_receive.html', context)
+            return render(request, 'common/interface_ora.html', context)
         else:
             messages.error(request, '올바르지 않은 SELECT문 입니다.')
 
     context = {}
-    return render(request, 'common/data_receive.html', context)
+    return render(request, 'common/interface_ora.html', context)
 
 
 def word_case_change(type, text):

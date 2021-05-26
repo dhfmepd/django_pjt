@@ -33,7 +33,7 @@ class Menu(MPTTModel):
     title = models.CharField(max_length=50)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.CASCADE)
     url = models.CharField(max_length=20, null=True, blank=True)
-    argument = models.CharField(max_length=20, null=True, blank=True)
+    argument = models.CharField(max_length=100, null=True, blank=True)
     remark = models.TextField()
     sort_no = models.IntegerField()
 
