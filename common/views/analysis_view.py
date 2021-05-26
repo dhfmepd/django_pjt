@@ -7,5 +7,7 @@ def analysis_nlp(request):
     """
     자연어 분석
     """
+    if request.method == 'POST':
+        print('gyu')
 
     return render(request, 'common/analysis_nlp.html', {})
