@@ -6,5 +6,5 @@ def analysis_nlp(request):
     """
     자연어 분석
     """
-    
+    return HttpResponse('hello')
     return render(request, 'common/analysis_nlp.html', {})
