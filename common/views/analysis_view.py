@@ -20,7 +20,7 @@ def analysis_nlp(request):
                 data_list.append(word[:idx])
 
         context = {'context': context, 'data_list': data_list}
-        return render(request, 'sample/api_open.html', context)
+        # return render(request, 'sample/api_open.html', context)
 
     context = {'context': context}
-    return render(request, 'common/analysis_nlp.html', {})
+    return render(request, 'common/analysis_nlp.html',context)
