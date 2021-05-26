@@ -37,21 +37,21 @@
                 <i class="fas fa-fw fa-cog"></i>
                 <span>{{ child_menu.title }}</span>
             </a>
-                <div id="child_menu_{{ child_menu.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">{{ root_menu.title }} :</h6>
-                        {% for leaf_menu in child_menu.children %}
-                            {% if leaf_menu.url is not null %}
-                                {% if leaf_menu.argument is null %}
-                                    <a class="collapse-item" href="{% url leaf_menu.url %}">{{ leaf_menu.title }}</a>
-                                {% else %}
-                                    <a class="collapse-item" href="{% url leaf_menu.url leaf_menu.argument %}">{{ leaf_menu.title }}
-                                {% endif %}
+            <div id="child_menu_{{ child_menu.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{{ child_menu.title }} :</h6>
+                    {% for leaf_menu in child_menu.children %}
+                        {% if leaf_menu.url is not null %}
+                            {% if leaf_menu.argument is null %}
+                                <a class="collapse-item" href="{% url leaf_menu.url %}">{{ leaf_menu.title }}</a>
+                            {% else %}
+                                <a class="collapse-item" href="{% url leaf_menu.url leaf_menu.argument %}">{{ leaf_menu.title }}</a>
                             {% endif %}
-                        {% endfor %}
-                    </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-            </li>
+            </div>
+        </li>
         {% endfor %}
     {% endfor %}
 
@@ -64,10 +64,12 @@
     </div>
 
     <!-- Sidebar Message -->
+
     <div class="sidebar-card">
-        <img class="sidebar-card-illustration mb-2" src="{% static '/images/undraw_rocket.svg' %}" alt="">
-        <p class="text-center mb-2"><strong>One Expense</strong> is packed with premium features, components, and more!</p>
-        <a class="btn btn-success btn-sm" href="https://cj.cj.com">Upgrade to Pro!</a>
+        <img class="sidebar-card-illustration mb-2" width="150" src="https://www.gstatic.com/devrel-devsite/prod/v1674d466be3b1154327dd11cf186e748303b1e92ae31ff35df0f5192fbd777ea/cloud/images/cloud-logo.svg" alt="">
+        <p class="text-center text-gray-800 mb-2"><strong>Cloud Vision API</strong>를 활용한 영수증 OCR 분석</p>
+        <a class="btn btn-success btn-sm" href="https://cloud.google.com/vision">사이트 가기</a>
     </div>
+
 
 </ul>

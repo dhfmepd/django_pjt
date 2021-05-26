@@ -1,13 +1,11 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, OuterRef, Subquery
-from django.db.models.functions import Coalesce
-from django.contrib.auth.models import User
-from django.contrib.auth import login as auth_login
-from django.contrib.auth.forms import AuthenticationForm
-from board.models import Board, Comment, Reply
-from common.models import Menu
+from django.core.paginator import Paginator
+from django.db import connection
+from datetime import datetime
+from board.models import Board
+from common.models import Menu, ReceiveHistory
 from common.forms import UserForm
 
 def get_menu_list():
@@ -37,23 +35,6 @@ def get_menu_list():
                                'title': root_menu.title,
                                'children': child_menu_list})
     return root_menu_list
-
-def login(request):
-    if request.method == 'POST':
-        # data는 forms.form 두번쨰 인자이므로 data = 은 생략 가능
-        form = AuthenticationForm(request, data = request.POST) # 먼저 request 인자를 받아야함
-        if form.is_valid():
-            # 메뉴정보 세션저장
-            request.session['menu_list'] = get_menu_list()
-
-            # 세션 CREATE/ form.get_user는 User 객체 반환
-            auth_login(request, form.get_user())
-            return redirect('common:main') # 로그인 성공시 메인페이지 이동
-    else:
-        form = AuthenticationForm()
-
-    context = {'form': form}
-    return render(request, 'common/login.html', context)
 
 def signup(request):
     """
@@ -87,53 +68,84 @@ def main(request):
     """
     Dashboard 출력
     """
-    pie_label = []
-    pie_data = []
-    user_a_label = ''
-    user_b_label = ''
-    user_a_data = []
-    user_b_data = []
+    # 1. Menu List 설정
+    menu_list = request.session.get('menu_list')
 
-    user_sub_qset = User.objects.filter(
-        id=OuterRef("author")
-    )
-    pie_qset = Board.objects.values('author').annotate(
-        label=Subquery(user_sub_qset.values('username')[:1]),
-        data=Count('id'),
-    ).order_by('-data')
+    if menu_list is None:
+        request.session['menu_list'] = get_menu_list()
 
-    for pie_dset in pie_qset:
-        pie_label.append(pie_dset['label'])
-        pie_data.append(pie_dset['data'])
+    # 2. ReceiveHistory 처리(차트포함)
+    top_info = get_top_info()
+    chart_list = get_chart_info()
 
-    bar_qset = Board.objects.values('author').annotate(
-        label=Subquery(user_sub_qset.values('username')[:1]),
-        b_cnt=Count('id'),
-        c_cnt=Coalesce(Subquery(
-            Comment.objects.filter(author=OuterRef("author")).values('author').annotate(count=Count('id')).values(
-                'count')), 0),
-        r_cnt=Coalesce(Subquery(
-            Reply.objects.filter(author=OuterRef("author")).values('author').annotate(count=Count('id')).values(
-                'count')), 0),
-    )
+    bar_label = []
+    c_bar_data = []
+    e_bar_data = []
 
-    for bar_dset in bar_qset:
-        # 테스트 용으로 2,3위 선택
-        if bar_dset['author'] == 4:
-            user_a_label = bar_dset['label']
-            user_a_data.append(bar_dset['b_cnt'])
-            user_a_data.append(bar_dset['c_cnt'])
-            user_a_data.append(bar_dset['r_cnt'])
+    if top_info is not None:
+        c_total_count = '{:,}'.format(top_info[0])
+        e_total_count = '{:,}'.format(top_info[1])
+        last_create_date = top_info[2]
+    else:
+        c_total_count = '{:,}'.format(0)
+        e_total_count = '{:,}'.format(0)
+        last_create_date = 'N/A'
 
-        if bar_dset['author'] == 5:
-            user_b_label = bar_dset['label']
-            user_b_data.append(bar_dset['b_cnt'])
-            user_b_data.append(bar_dset['c_cnt'])
-            user_b_data.append(bar_dset['r_cnt'])
+    for r_idx, chart_info in enumerate(chart_list):
+        bar_label.append(chart_info[0])
+        c_bar_data.append(str(chart_info[1]))
+        e_bar_data.append(str(chart_info[2]))
 
-    context = {'pie_label': pie_label, 'pie_data': pie_data, 'user_a_label': user_a_label, 'user_b_label': user_b_label,
-               'user_a_data': user_a_data, 'user_b_data': user_b_data, 'menu_list': Menu.objects.all()}
+    # 3. 공지사항 Board 조회
+    board_list = Board.objects.filter(menu='1').order_by('-create_date')
+    paginator = Paginator(board_list, 5)
+    page_obj = paginator.get_page(1)
+
+    context = {'c_total_count': c_total_count, 'e_total_count': e_total_count, 'last_create_date': last_create_date,
+               'board_list': page_obj, 'bar_label': bar_label, 'c_bar_data': c_bar_data, 'e_bar_data': e_bar_data}
+
     return render(request, 'common/main.html', context)
+
+def get_top_info():
+    sql_str = "SELECT a.total_count as c_total_count, b.total_count as e_total_count, "
+    sql_str += "      CASE WHEN a.create_date > b.create_date THEN a.create_date ELSE b.create_date END as max_create_date "
+    sql_str += "  FROM "
+    sql_str += "(SELECT '1' as key_field, total_count, create_date "
+    sql_str += "   FROM common_receivehistory "
+    sql_str += "  WHERE table_name = 'EX_CORPCARD_ASK' "
+    sql_str += "  ORDER BY create_date DESC LIMIT 1) a, "
+    sql_str += "(SELECT '1' as key_field, total_count, create_date "
+    sql_str += "   FROM common_receivehistory "
+    sql_str += "  WHERE table_name = 'EX_EXPN_ETC' "
+    sql_str += "  ORDER BY create_date DESC LIMIT 1) b "
+    sql_str += "WHERE a.key_field = b.key_field "
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        row = cursor.fetchone()
+
+    return row
+
+def get_chart_info():
+    sql_str = "SELECT a.key_ym "
+    sql_str += "    , COALESCE(SUM(CASE WHEN b.table_name = 'EX_CORPCARD_ASK' THEN b.receive_count ELSE 0 END), 0) AS c_count "
+    sql_str += "    , COALESCE(SUM(CASE WHEN b.table_name = 'EX_EXPN_ETC' THEN b.receive_count ELSE 0 END), 0) AS e_count "
+    sql_str += "FROM ( "
+    sql_str += "SELECT DATE_FORMAT(NOW(), '%Y%m') AS key_ym "
+    sql_str += "UNION ALL "
+    sql_str += "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y%m') AS key_ym "
+    sql_str += "UNION ALL "
+    sql_str += "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y%m') AS key_ym "
+    sql_str += ") a "
+    sql_str += "LEFT OUTER JOIN common_receivehistory b "
+    sql_str += "ON a.key_ym = DATE_FORMAT(b.create_date, '%Y%m') "
+    sql_str += "GROUP BY a.key_ym "
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
 
 def page_not_found(request, exception):
     """

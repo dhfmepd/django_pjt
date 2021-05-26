@@ -51,13 +51,13 @@
                                 <div class="form-group row">
                                     <div class="col-sm-6">
                                         <label for="source_user">USER</label>
-                                        <input type="text" class="form-control" id="source_user" name="source_user" value="fvsrm">
+                                        <input type="text" class="form-control" id="source_user" name="source_user" value="system">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6">
                                         <label for="source_password">PASSWORD</label>
-                                        <input type="text" class="form-control" id="source_password" name="source_password" value="qwer!@">
+                                        <input type="text" class="form-control" id="source_password" name="source_password" value="oracle">
                                     </div>
                                 </div>
                             </div>
@@ -68,8 +68,20 @@
             <div class="col-xl-6 col-md-6 mb-4">
                 <!-- DataTales Example -->
                 <div class="card border-left-primary shadow">
-                    <div class="card-header py-3">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">SQL 정보</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Target Table :</div>
+                                <a class="dropdown-item so" href="#" data-so="ex_corpcard_ask">EX_CORPCARD_ASK</a>
+                                <a class="dropdown-item so" href="#" data-so="ex_expn_etc">EX_EXPN_ETC</a>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card-body">
@@ -91,6 +103,11 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" id="target_table" name="target_table">
+        <input type="hidden" id="ex_corpcard_ask_source_sql" name="ex_corpcard_ask_source_sql" value="select COM_CD,SEND_YMD,SEND_DIV,APV_DD,CARD_NO,APV_NO,IFKEY,APV_AMT,APV_TM,TAX_AMT,APV_SUM_AMT,FC_CUST_NO,FC_NM,FC_ADDR1,FC_ADDR2,MCC_CD,MCC_NM,K_WORK_NM,K_CODE_NM,APP_USER_NO,IN_YMD,ACC_CD,CST_APPV_METH,ELEC_APPV_STAT_CD,ELEC_APPV_DOC_NO,ECAL_STAT_CD,ELEC_APPV_YMD,SLIP_HANDL_YN,SLIP_NO,RGSPE_ID,RGS_DH,SLIP_YY,AUTO_APPV_YN from EX_CORPCARD_ASK@PRDSEL where COM_CD = '1000' and SEND_YMD like '202105%'">
+        <input type="hidden" id="ex_corpcard_ask_target_sql" name="ex_corpcard_ask_target_sql" value="insert into EX_CORPCARD_ASK (COM_CD,SEND_YMD,SEND_DIV,APV_DD,CARD_NO,APV_NO,IFKEY,APV_AMT,APV_TM,TAX_AMT,APV_SUM_AMT,FC_CUST_NO,FC_NM,FC_ADDR1,FC_ADDR2,MCC_CD,MCC_NM,K_WORK_NM,K_CODE_NM,APP_USER_NO,IN_YMD,ACC_CD,CST_APPV_METH,ELEC_APPV_STAT_CD,ELEC_APPV_DOC_NO,ECAL_STAT_CD,ELEC_APPV_YMD,SLIP_HANDL_YN,SLIP_NO,RGSPE_ID,RGS_DH,SLIP_YY,AUTO_APPV_YN) values">
+        <input type="hidden" id="ex_expn_etc_source_sql" name="ex_expn_etc_source_sql" value="select ECAL_NO,SEQ,OCCR_ACC_CD,REV_ACC_CD,BSS_YMD,END_YMD,OPEN_YMD,VAT_CD,CST_APPV_METH,OCCR_YMD,ECAL_AMT,SUPPLY_AMT,TAX_AMT,DTLS,CUST_NM,CUST_NO,CUST_CD,CHRPE_NM,PRAMT_SLIP_NO,STTL_AMT,TOT_RTN_AMT,ELEC_APPV_STAT_CD,ELEC_APPV_DOC_NO,ECAL_STAT_CD,ELEC_APPV_YMD,SLIP_HANDL_YN,SLIP_NO,RGSPE_ID,RGS_DH,UTIL_YN,KNDNR_NM,KUNDE_PA,COM_CD,YY from EX_EXPN_ETC@PRDSEL where OCCR_YMD like '202105%'">
+        <input type="hidden" id="ex_expn_etc_target_sql" name="ex_expn_etc_target_sql" value="insert into EX_EXPN_ETC (ECAL_NO,SEQ,OCCR_ACC_CD,REV_ACC_CD,BSS_YMD,END_YMD,OPEN_YMD,VAT_CD,CST_APPV_METH,OCCR_YMD,ECAL_AMT,SUPPLY_AMT,TAX_AMT,DTLS,CUST_NM,CUST_NO,CUST_CD,CHRPE_NM,PRAMT_SLIP_NO,STTL_AMT,TOT_RTN_AMT,ELEC_APPV_STAT_CD,ELEC_APPV_DOC_NO,ECAL_STAT_CD,ELEC_APPV_YMD,SLIP_HANDL_YN,SLIP_NO,RGSPE_ID,RGS_DH,UTIL_YN,KNDNR_NM,KUNDE_PA,COM_CD,YY) values">
         <button class="btn btn-primary btn-lg btn-block mb-4" type="submit">데이터 수신 실행</button>
     </form>
     <div class="card border-left-primary shadow">
@@ -135,8 +152,18 @@
 {% endblock %}
 {% block script %}
 <script type='text/javascript'>
+$(document).ready(function(){
+    $(".dropdown-item").on('click', function() {
+        var source_sql = $(this).data("so")+"_source_sql";
+        var target_sql = $(this).data("so")+"_target_sql";
+        $("#source_sql").val($("#" + source_sql).val());
+        $("#target_sql").val($("#" + target_sql).val());
+        $("#target_table").val($(this).data("so"));
+    });
+
     jQuery(function($){
 		$("#dataTable").DataTable();
 	});
+});
 </script>
 {% endblock %}
