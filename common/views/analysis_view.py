@@ -21,7 +21,8 @@ def analysis_nlp(request):
         print(param_data)
         # 모델 만들었던 학습 데이터 및 신규 데이터 read
         train_data = pd.read_csv("./train_data.csv")
-        test_data = pd.read_csv("./new_data3.csv")
+        # test_data = pd.read_csv("./new_data3.csv")
+        test_data = param_data
         okt = Okt()
         X_train = []
         for sentence in train_data['title']:
@@ -30,12 +31,12 @@ def analysis_nlp(request):
             #   temp_X = [word for word in temp_X if not word in stopwords] # 불용어 제거
             X_train.append(temp_X)
 
-        X_test = []
-        for sentence in test_data['title']:
-            temp_X = []
-            temp_X = okt.morphs(sentence, stem=True)  # 토큰화
-            #   temp_X = [word for word in temp_X if not word in stopwords] # 불용어 제거
-            X_test.append(temp_X)
+        X_test = okt.morphs(param_data, stem=True)
+        # for sentence in test_data['title']:
+        #     temp_X = []
+        #     temp_X = okt.morphs(sentence, stem=True)  # 토큰화
+        #     #   temp_X = [word for word in temp_X if not word in stopwords] # 불용어 제거
+        #     X_test.append(temp_X)
         max_words = 35000
         tokenizer = Tokenizer(num_words=max_words)
         tokenizer.fit_on_texts(X_train)
@@ -76,9 +77,8 @@ def analysis_nlp(request):
         class_map_dict = {0: '교통비', 1: '주유비', 2: '주차비', 3: '공과금', 4: '시장조사', 5: '수수료', 6: '식대'}
         pred_pred = np.vectorize(class_map_dict.get)(predict_labels)
         # 100개 데이터만 먼저 확인
-        for i in range(10):
+        for i in range(1):
             print("경비 내용 : ", test_data['title'].iloc[i], "/\t예측한 라벨 : ", pred_pred[i])
-
 
         result = okt.pos(param_data, norm=True, stem=True, join=True)
         data_list = []
