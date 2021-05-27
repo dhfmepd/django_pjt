@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-rom django.db import connection
+from django.db import connection
 from konlpy.tag import Okt
 import pandas as pd
 import numpy as np
