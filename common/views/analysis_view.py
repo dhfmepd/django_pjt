@@ -78,8 +78,8 @@ def analysis_nlp(request):
         pred_pred = np.vectorize(class_map_dict.get)(predict_labels)
         # 100개 데이터만 먼저 확인
         for i in range(1):
-            print("경비 내용 : ", test_data['title'].iloc[i], "/\t예측한 라벨 : ", pred_pred[i])
-
+            # print("경비 내용 : ", test_data['title'].iloc[i], "/\t예측한 라벨 : ", pred_pred[i])
+            print("경비 내용 : ", param_data, "/\t예측한 라벨 : ", pred_pred[i])
         result = okt.pos(param_data, norm=True, stem=True, join=True)
         data_list = []
         for word in result:
