@@ -1,0 +1,36 @@
+SELECT ECAL_NO
+      ,SEQ
+      ,OCCR_ACC_CD
+      ,REV_ACC_CD
+      ,BSS_YMD
+      ,END_YMD
+      ,OPEN_YMD
+      ,VAT_CD
+      ,CST_APPV_METH
+      ,OCCR_YMD
+      ,ECAL_AMT
+      ,SUPPLY_AMT
+      ,TAX_AMT
+      ,DTLS
+      ,CUST_NM
+      ,CUST_NO
+      ,CUST_CD
+      ,CHRPE_NM
+      ,PRAMT_SLIP_NO
+      ,STTL_AMT
+      ,TOT_RTN_AMT
+      ,ELEC_APPV_STAT_CD
+      ,FVNSMNG.FC_CM_DECRYPT_AES(ELEC_APPV_DOC_NO)
+      ,ECAL_STAT_CD
+      ,ELEC_APPV_YMD
+      ,SLIP_HANDL_YN
+      ,SLIP_NO,RGSPE_ID
+      ,RGS_DH
+      ,UTIL_YN
+      ,KNDNR_NM
+      ,KUNDE_PA
+      ,COM_CD
+      ,YY
+ FROM EX_EXPN_ETC@PRDSEL
+WHERE COM_CD = '1000'
+  AND OCCR_YMD like '202104%'
