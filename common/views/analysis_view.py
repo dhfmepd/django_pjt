@@ -15,6 +15,7 @@ def analysis_nlp(request):
         # 설치: pip install JPype1-1.2.0-cp39-cp39-win_amd64.whl
         # JDK 8 설치(이슈) + JAVA_HOME 설정
     param_data = request.POST.get('param_data', '내용없음')
+    print(param_data)
     if request.method == 'POST':
         okt = Okt()
         result = okt.pos(param_data, norm=True, stem=True, join=True)
