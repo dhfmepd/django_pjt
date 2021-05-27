@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-
+rom django.db import connection
 from konlpy.tag import Okt
 import pandas as pd
 import numpy as np
@@ -18,6 +18,17 @@ def analysis_nlp(request):
     param_data = request.POST.get('param_data', '내용없음')
 
     if request.method == 'POST':
+        sql_str = "SELECT *"
+        sql_str += "FROM EX_EXPN_ETC"
+        sql_str += "LIMIT 1 "
+
+        with connection.cursor() as cursor:
+            cursor.execute(sql_str)
+            list = cursor.fetchall()
+
+        return list
+
+
         print(param_data)
         # 모델 만들었던 학습 데이터 및 신규 데이터 read
         train_data = pd.read_csv("./train_data.csv")
