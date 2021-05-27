@@ -23,6 +23,19 @@
                     <input type="text" class="form-control" id="param_data" name="param_data" placeholder="점심식대 : 홍길동 외 2명">
                 </div>
             </div>
+            <div class="panel-heading">
+                <h3 class ="panel-title">파일 업로드 폼</h3>
+                {% if documents %}
+                    <ul>
+                    {% for document in documents %}
+                        <li><a href="{{ document.docfile.url}}">{{ document.docfile.name }}</a></li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No documents</p>
+                {% endif %}
+            </div>
+
             <hr class="mb-4">
             <button class="btn btn-primary btn-lg btn-block" type="submit">실행</button>
         </form>
