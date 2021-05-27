@@ -1,0 +1,36 @@
+SELECT COM_CD
+      ,SEND_YMD
+      ,SEND_DIV
+      ,APV_DD
+      ,FVNSMNG.FC_CM_DECRYPT_AES(CARD_NO)
+      ,APV_NO
+      ,IFKEY
+      ,APV_AMT
+      ,APV_TM
+      ,TAX_AMT
+      ,APV_SUM_AMT
+      ,FC_CUST_NO
+      ,FC_NM
+      ,FC_ADDR1
+      ,FVNSMNG.FC_CM_DECRYPT_AES(FC_ADDR2)
+      ,MCC_CD
+      ,MCC_NM
+      ,K_WORK_NM
+      ,K_CODE_NM
+      ,APP_USER_NO
+      ,IN_YMD
+      ,ACC_CD
+      ,CST_APPV_METH
+      ,ELEC_APPV_STAT_CD
+      ,ELEC_APPV_DOC_NO
+      ,ECAL_STAT_CD
+      ,ELEC_APPV_YMD
+      ,SLIP_HANDL_YN
+      ,SLIP_NO
+      ,RGSPE_ID
+      ,RGS_DH
+      ,SLIP_YY
+      ,AUTO_APPV_YN
+  FROM EX_CORPCARD_ASK@PRDSEL
+ WHERE COM_CD = '1000'
+   AND APV_DD like '202104%'
