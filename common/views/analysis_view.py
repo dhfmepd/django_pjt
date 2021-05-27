@@ -89,7 +89,7 @@ def analysis_nlp(request):
         print(data_list)
         if not data_list:
             print('error')
-        param_data = {'param_data': param_data, 'data_list': data_list}
+        param_data = {'param_data': param_data, 'data_list': data_list[1]}
         return render(request, 'common/analysis_nlp.html', param_data)
 
     param_data = {'param_data': param_data}
