@@ -36,6 +36,19 @@
                 {% endif %}
             </div>
 
+            <div class="panel-body">
+                <form action =""method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <p>{{ form.non_field_errors }}</p>
+                    <p>{{ form.non_field_errors }} {{ form.docfile.help_text}}</p>
+                    <p>
+                        {{ form.docfile.errors }}
+                        {{ form.docfile }}
+                    </p>
+                    <p><input type="submit" value="Upload"/></p>
+                </form>
+            </div>
+
             <hr class="mb-4">
             <button class="btn btn-primary btn-lg btn-block" type="submit">실행</button>
         </form>
