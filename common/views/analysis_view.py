@@ -25,7 +25,9 @@ def analysis_nlp(request):
             idx = word.find('/')
             if word[idx + 1:] in ['Noun']:
                 data_list.append(word[:idx])
-
+        print(data_list)
+        if not data_list:
+            print('error')
         param_data = {'param_data': param_data, 'data_list': data_list}
         return render(request, 'common/analysis_nlp.html', param_data)
 
