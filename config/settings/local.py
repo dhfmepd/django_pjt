@@ -18,8 +18,8 @@ DATABASES = {
         'NAME': 'cjfv_oneexp',
         # 여기부터 connection 정보
         'USER' : 'cjfv_oneexp',
-        'PASSWORD' : 'qwer1234!',
-        'HOST' : '127.0.0.1',
+        'PASSWORD' : 'cjfv2021@@',
+        'HOST' : '52.90.236.160',
         'PORT' : '3306',
     }
 }
