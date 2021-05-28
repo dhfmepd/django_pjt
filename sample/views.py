@@ -191,20 +191,23 @@ def image_ocr(request):
 
         result_text = ""
 
+        tgt_height_value = 0
+
         for (bbox, text, prob) in results:
             (tl, tr, br, bl) = bbox
             tl = (int(tl[0]), int(tl[1]))
-            tr = (int(tr[0]), int(tr[1]))
             br = (int(br[0]), int(br[1]))
-            bl = (int(bl[0]), int(bl[1]))
 
-            result_text += "[INFO] 시작점({}), 종료점({}), 문구 : {}".format(tl, br, text) + "\n"
+            if tgt_height_value > 0:
+                if tgt_height_value > int(tl[1]) and tgt_height_value < int(br[1]):
+                    result_text += "[INFO] 시작점({}), 종료점({}), 결재금액 : {}".format(tl, br, text) + "\n"
+                    cv2.rectangle(image, tl, br, (0, 255, 0), 2)
 
-            cv2.rectangle(image, tl, br, (0, 255, 0), 2)
+            if find_pay_phrases(text):
+                tgt_height_value = (int(br[1]) - int(tl[1])) / 2 + int(tl[1])
 
-            # OpenCV put Text 한글 미지원
-            # cv2.putText(image, cleanup_text(text), (tl[0], tl[1] - 10),
-            #             cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+                result_text += "[INFO] 시작점({}), 종료점({}), 결재문구 : {}".format(tl, br, text) + "\n"
+                cv2.rectangle(image, tl, br, (0, 255, 0), 2)
 
         image_name = image_path.split('/')[-1]
         temp_image_path = "static/ocr_temp/"
@@ -214,6 +217,13 @@ def image_ocr(request):
         return render(request, 'sample/image_ocr.html', context)
 
     return render(request, 'sample/image_ocr.html', {})
+
+# ML을 통한 거래관련 문구 찾기
+def find_pay_phrases(text):
+    if text == '거래금액':
+        return True
+
+    return False
 
 def cleanup_text(text):
 	return "".join([c if ord(c) < 128 else "" for c in text]).strip()
