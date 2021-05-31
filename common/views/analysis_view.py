@@ -33,7 +33,7 @@ def analysis_nlp(request):
         # test_data = pd.read_csv("./new_data3.csv")
         # test_data = param_data
         test_data = rows
-        df = pd.DataFrame(test_data, columns = ['number', 'SEQ', 'title'])
+        df = pd.DataFrame(test_data, columns = ['number', 'seq', 'title'])
 
         okt = Okt()
         X_train = []
