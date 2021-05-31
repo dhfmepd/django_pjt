@@ -94,6 +94,7 @@ def analysis_nlp(request):
             # print("경비 내용 : ", test_data['title'].iloc[i], "/\t예측한 라벨 : ", pred_pred[i])
             # print("경비 내용 : ", param_data, "/\t예측한 라벨 : ", pred_pred[i])
             ecal_number = df['number'][i]
+            ecal_number = string(ecal_number)
             print(ecal_number)
             ecal_info_label = predict_labels[i]
             print(ecal_info_label)
