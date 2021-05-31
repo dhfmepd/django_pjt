@@ -22,8 +22,8 @@ def analysis_nlp(request):
 
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
-            list = cursor.fetchall()
-            print(list)
+            rows = cursor.fetchall()
+            print(list(rows))
         # return list
 
 
