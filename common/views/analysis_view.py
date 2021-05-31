@@ -18,14 +18,12 @@ def analysis_nlp(request):
     param_data = request.POST.get('param_data', '내용없음')
 
     if request.method == 'POST':
-        sql_str = "SELECT * "
-        sql_str += "FROM EX_EXPN_ETC "
-        sql_str += "LIMIT 1 "
+        sql_str = "SELECT * FROM EX_EXPN_ETC LIMIT 1"
 
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
             list = cursor.fetchall()
-
+            print(list)
         return list
 
 
