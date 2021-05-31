@@ -97,7 +97,8 @@ def analysis_nlp(request):
             print(doc_number)
             ecal_info_label = predict_labels[i]
             print(ecal_info_label)
-            sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = ecal_info_label WHERE ECAL_NO = doc_number"
+            sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = ecal_info_label WHERE ECAL_NO = %s", [doc_number]
+
             with connection.cursor() as cursor:
                 cursor.execute(sql_update)
                 rows = cursor.fetchall()
