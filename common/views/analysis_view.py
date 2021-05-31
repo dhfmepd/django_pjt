@@ -103,9 +103,12 @@ def analysis_nlp(request):
             with connection.cursor() as cursor:
                 cursor.execute(sql_update)
                 rows = cursor.fetchall()
-                print(rows)
+                cursor.commit()
             print("경비 내용 : ", df['title'][i], "/\t예측한 라벨 : ", predict_labels[i])
-            data_list.append(pred_pred[i])
+
+            data_list.append(predict_labels[i])
+        rows = pd.DataFrame(rows)
+        rows
     #     if not data_list:
     #         print('error')
     #     param_data = {'param_data': param_data, 'data_list': data_list}
