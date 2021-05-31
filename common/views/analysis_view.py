@@ -18,7 +18,7 @@ def analysis_nlp(request):
     param_data = request.POST.get('param_data', '내용없음')
 
     if request.method == 'POST':
-        sql_str = "SELECT ECAL_NO, DTLS FROM EX_EXPN_ETC LIMIT 100"
+        sql_str = "SELECT ECAL_NO, SEQ, DTLS FROM EX_EXPN_ETC LIMIT 100"
 
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
@@ -33,7 +33,7 @@ def analysis_nlp(request):
         # test_data = pd.read_csv("./new_data3.csv")
         # test_data = param_data
         test_data = rows
-        df = pd.DataFrame(test_data, columns = ['number', 'title'])
+        df = pd.DataFrame(test_data, columns = ['number', 'SEQ', 'title'])
 
         okt = Okt()
         X_train = []
@@ -95,9 +95,10 @@ def analysis_nlp(request):
             # print("경비 내용 : ", param_data, "/\t예측한 라벨 : ", pred_pred[i])
             ecal_number = str(df['number'][i])
             print(ecal_number)
+            seq = str(df['seq'][i])
             ecal_info_label = str(predict_labels[i])
             print(ecal_info_label)
-            sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = " + ecal_number
+            sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = " + ecal_number +"\' AND SEQ = " + seq
             # sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + ecal_info_label + "' WHERE ECAL_NO = '" + ecal_number + "'
             with connection.cursor() as cursor:
                 cursor.execute(sql_update)
