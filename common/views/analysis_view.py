@@ -45,7 +45,7 @@ def analysis_nlp(request):
 
         X_test = []
 
-        for sentence in df['title']
+        for sentence in df['title']:
             temp_X = []
             temp_X = okt.morphs(sentence, stem=True)
             X_test.append(temp_X)
