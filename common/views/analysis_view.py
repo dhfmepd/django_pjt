@@ -93,12 +93,10 @@ def analysis_nlp(request):
         for i in range(100):
             # print("경비 내용 : ", test_data['title'].iloc[i], "/\t예측한 라벨 : ", pred_pred[i])
             # print("경비 내용 : ", param_data, "/\t예측한 라벨 : ", pred_pred[i])
-            ecal_number = df['number'][i]
+            ecal_number = str(df['number'][i])
             print(ecal_number)
-            ecal_number = str(ecal_number)
-            ecal_info_label = predict_labels[i]
+            ecal_info_label = str(predict_labels[i])
             print(ecal_info_label)
-            ecal_info_label = str(ecal_info_label)
             sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = " + ecal_number
             # sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + ecal_info_label + "' WHERE ECAL_NO = '" + ecal_number + "'
             with connection.cursor() as cursor:
