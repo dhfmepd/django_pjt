@@ -1,6 +1,4 @@
 import os
-import base64
-from django.utils import timezone
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from board.models import Board, Comment, Reply
@@ -12,7 +10,6 @@ from konlpy.tag import Okt
 from django.core.mail import EmailMessage
 import cv2
 import pandas as pd
-import numpy as np
 import easyocr
 
 def chart_js(request):
@@ -126,60 +123,6 @@ def api_open(request):
     context = {'context': context}
     return render(request, 'sample/api_open.html', context)
 
-def image_ocr_bak(request):
-    # EasyOCR 설치 : pip install easyocr
-
-    if request.method == 'POST':
-        crop_file = request.POST.get('crop_image')
-        crop_file = crop_file[22:]
-
-        ymd_path = timezone.now().strftime('%Y/%m/%d')
-
-        img = open("upload/images/sample.png", "wb")
-        img.write(base64.b64decode(crop_file))
-        img.close()
-
-        image = cv2.imread("static/images/sample.png")
-
-        reader = easyocr.Reader(['ko', 'en'])  # 한국어 인식할 때 ko 추가
-
-        # img = cv2.imread("static/images/sample.png")
-        # gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # binary_img = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        # kernel = np.ones((5, 5), np.uint8)
-        # open_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
-
-        result_text = reader.readtext("static/images/sample.png")
-
-        # loop over the results
-        for (bbox, text, prob) in result_text:
-            # display the OCR'd text and associated probability
-            print("[INFO] {:.4f}: {}".format(prob, text))
-            # unpack the bounding box
-            (tl, tr, br, bl) = bbox
-            tl = (int(tl[0]), int(tl[1]))
-            tr = (int(tr[0]), int(tr[1]))
-            br = (int(br[0]), int(br[1]))
-            bl = (int(bl[0]), int(bl[1]))
-            # cleanup the text and draw the box surrounding the text along
-            # with the OCR'd text itself
-            text = cleanup_text(text)
-            cv2.rectangle(image, tl, br, (0, 255, 0), 2)
-            cv2.putText(image, text, (tl[0], tl[1] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-        # show the output image
-        cv2.imshow("Image", image)
-        cv2.waitKey(0)
-
-        # 로컬설정
-        # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-        # result_text = pytesseract.image_to_string(open_img, lang="kor+eng")
-
-        context = {'result_text': result_text}
-        return render(request, 'sample/image_ocr.html', context)
-
-    return render(request, 'sample/image_ocr.html', {})
-
 def image_ocr(request):
     # EasyOCR 설치 : pip install easyocr
 
@@ -189,25 +132,19 @@ def image_ocr(request):
         reader = easyocr.Reader(['ko', 'en'])  # 한국어 인식할 때 ko 추가
         results = reader.readtext(image_path)
 
-        result_text = ""
+        result_text = ""  # 화면 리턴 문구
+        amt_text_list = get_text_list(results)
 
-        tgt_height_value = 0
+        for amt_text_dic in amt_text_list:
+            if find_pay_phrases(amt_text_dic['label_text']):
+                cv2.rectangle(image, amt_text_dic['data_st_point'], amt_text_dic['data_ed_point'], (0, 0, 255), 2)
+            else:
+                cv2.rectangle(image, amt_text_dic['data_st_point'], amt_text_dic['data_ed_point'], (255, 0, 0), 2)
 
-        for (bbox, text, prob) in results:
-            (tl, tr, br, bl) = bbox
-            tl = (int(tl[0]), int(tl[1]))
-            br = (int(br[0]), int(br[1]))
-
-            if tgt_height_value > 0:
-                if tgt_height_value > int(tl[1]) and tgt_height_value < int(br[1]):
-                    result_text += "[INFO] 시작점({}), 종료점({}), 결재금액 : {}".format(tl, br, text) + "\n"
-                    cv2.rectangle(image, tl, br, (0, 255, 0), 2)
-
-            if find_pay_phrases(text):
-                tgt_height_value = (int(br[1]) - int(tl[1])) / 2 + int(tl[1])
-
-                result_text += "[INFO] 시작점({}), 종료점({}), 결재문구 : {}".format(tl, br, text) + "\n"
-                cv2.rectangle(image, tl, br, (0, 255, 0), 2)
+            result_text += "[INFO] 시작점({}), 종료점({}), {} : {}".format(amt_text_dic['data_st_point'],
+                                                                     amt_text_dic['data_ed_point'],
+                                                                     amt_text_dic['label_text'],
+                                                                     amt_text_dic['data_text']) + "\n"
 
         image_name = image_path.split('/')[-1]
         temp_image_path = "static/ocr_temp/"
@@ -218,10 +155,79 @@ def image_ocr(request):
 
     return render(request, 'sample/image_ocr.html', {})
 
-# ML을 통한 거래관련 문구 찾기
+# 전체 텍스트 추출
+def get_text_list(results):
+    amt_text_list = []
+
+    for (bbox, text, prob) in results:
+        (tl, tr, br, bl) = bbox
+        tl = (int(tl[0]), int(tl[1]))
+        br = (int(br[0]), int(br[1]))
+
+        # 1. 전체 인식 Text 처리
+        # cv2.rectangle(image, tl, br, (0, 255, 0), 2)
+        print("[INFO] 시작점({}), 종료점({}), 일반문구 : {}".format(tl, br, text))
+
+        # 2. 금액문구(예: 콤마포함숫자 + 원)의 경우, 변수 적재
+        if find_amt_phrases(text):
+            avg_height = (int(br[1]) - int(tl[1])) / 2 + int(tl[1])
+            label_text = get_label_text(results, avg_height)
+            amt_text_list.append({'label_text': label_text, 'data_st_point': tl, 'data_ed_point': br, 'data_text': text})
+
+    return amt_text_list
+
+# 라벨 텍스트 추출
+def get_label_text(results, value):
+    label_text = ''
+
+    for (bbox, text, prob) in results:
+        (tl, tr, br, bl) = bbox
+        tl = (int(tl[0]), int(tl[1]))
+        br = (int(br[0]), int(br[1]))
+
+        if value > int(tl[1]) and value < int(br[1]):
+            if not find_amt_phrases(text):
+                if len(label_text) > 0:
+                    label_text += ' ' + text
+                else:
+                    label_text += text
+
+    print("[INFO] 라벨문구 : {}".format(label_text))
+
+    return label_text
+
+
+# ML을 통한 거래관련 문구 찾기(현재 임시처리)
 def find_pay_phrases(text):
-    if text == '거래금액':
+    print("[INFO] 거래문구 : {}".format(text))
+    print("[INFO] 값 : {}".format(text.find('거래금액')))
+    if text.find('거래금액') >= 0 :
+        print("[INFO] 성공 : {}".format(text))
         return True
+
+    if text.find('부가세') >= 0 or text.find('봉사료') >= 0 or text.find('캐시백') >= 0 or text.find('공급가액') >= 0:
+        print("[INFO] 실패 : {}".format(text))
+        return False
+
+    return True
+
+# ML을 통한 금액관련 문구 찾기(현재 임시처리)
+# 현기준 원으로 끝나는 쉽표 제거한 숫자
+def find_amt_phrases(text):
+    #print("[TEST] 문구 1 : {}".format(text))
+    if len(text) > 1:
+        won_index = len(text) - 1
+        #print("[TEST] 문구 2 : {}".format(won_index))
+        if text.find('원') == won_index:
+            try:
+                amt_text = text[0:won_index] # 원 문구 제거
+                amt_text = amt_text.replace(',', '') # 숫자 변환을 위한 콤마 제거
+                amt_int = int(amt_text) # 숫자 변환
+                # print("[TEST] 문구 3 : {}".format(amt_int))
+                if amt_int is not None:
+                    return True
+            except ValueError:
+                return False
 
     return False
 
