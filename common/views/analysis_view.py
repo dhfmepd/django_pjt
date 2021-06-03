@@ -19,7 +19,7 @@ def analysis_nlp(request):
 
     if request.method == 'POST':
         sql_str = "SELECT ECAL_NO, SEQ, DTLS FROM EX_EXPN_ETC LIMIT 100"
-
+        # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
             rows = cursor.fetchall()
@@ -32,7 +32,9 @@ def analysis_nlp(request):
         train_data = pd.read_csv("./train_data.csv")
         # test_data = pd.read_csv("./new_data3.csv")
         # test_data = param_data
+        # DB 적요를 TEST_DATA로 선정
         test_data = rows
+
         df = pd.DataFrame(test_data, columns = ['number', 'seq', 'title'])
 
         okt = Okt()
