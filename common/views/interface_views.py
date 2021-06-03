@@ -39,7 +39,7 @@ def interface_ora(request):
     proc_type       = request.POST.get('proc_type')
 
     if target_table is not None:
-        target_table = word_case_change('upper', request.POST.get('target_table'))
+        target_table = str(target_table).upper()
 
     if request.method == 'POST':
         label_list = []
