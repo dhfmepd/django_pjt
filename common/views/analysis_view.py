@@ -102,7 +102,7 @@ def analysis_nlp(request):
             # print("경비 내용 : ", param_data, "/\t예측한 라벨 : ", pred_pred[i])
             ecal_number = str(df['number'][i])
             print(ecal_number)
-            seq = df['seq'][i]
+            seq = str(df['seq'][i])
             ecal_info_label = str(predict_labels[i])
             print(ecal_info_label)
             if df['label'][i] != None:
