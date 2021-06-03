@@ -25,7 +25,10 @@ def analysis_nlp(request):
             rows = cursor.fetchall()
             print(list(rows))
         # return list
-
+        temp_data = []
+        temp_data = rows
+        print(temp_data)
+        break
         #
         # print(param_data)
         # 모델 만들었던 학습 데이터 및 신규 데이터 read
