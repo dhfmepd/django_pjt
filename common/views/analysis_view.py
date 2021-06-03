@@ -18,27 +18,29 @@ def analysis_nlp(request):
     param_data = request.POST.get('param_data', '내용없음')
 
     if request.method == 'POST':
-        sql_str = "SELECT ECAL_NO, SEQ, DTLS FROM EX_EXPN_ETC LIMIT 100"
+        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC LIMIT 100"
         # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
             rows = cursor.fetchall()
             print(list(rows))
         # return list
-        temp_data = []
-        temp_data = rows
-        print(temp_data)
-        breakpoint()
+        sql_list = []
+        sql_list = rows
+
+        #print(sql_list)
+
         #
         # print(param_data)
         # 모델 만들었던 학습 데이터 및 신규 데이터 read
         train_data = pd.read_csv("./train_data.csv")
         # test_data = pd.read_csv("./new_data3.csv")
         # test_data = param_data
+
         # DB 적요를 TEST_DATA로 선정
         test_data = rows
 
-        df = pd.DataFrame(test_data, columns = ['number', 'seq', 'title'])
+        df = pd.DataFrame(test_data, columns = ['number', 'seq', 'title', 'label'])
 
         okt = Okt()
         X_train = []
@@ -95,7 +97,7 @@ def analysis_nlp(request):
         # pred_pred = np.vectorize(class_map_dict.get)(predict_labels)
         # 100개 데이터만 먼저 확인
         data_list = []
-        for i in range(100):
+        for i in range(2):
             # print("경비 내용 : ", test_data['title'].iloc[i], "/\t예측한 라벨 : ", pred_pred[i])
             # print("경비 내용 : ", param_data, "/\t예측한 라벨 : ", pred_pred[i])
             ecal_number = str(df['number'][i])
@@ -103,12 +105,13 @@ def analysis_nlp(request):
             seq = str(df['seq'][i])
             ecal_info_label = str(predict_labels[i])
             print(ecal_info_label)
-            sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = " + ecal_number + "\' AND SEQ = " + seq
+            if df['label'][i] != None:
+                sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = " + ecal_number + "\' AND SEQ = " + seq
             # sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + ecal_info_label + "' WHERE ECAL_NO = '" + ecal_number + "'
-            with connection.cursor() as cursor:
-                cursor.execute(sql_update)
-                rows = cursor.fetchall()
-                cursor.commit()
+                with connection.cursor() as cursor:
+                    cursor.execute(sql_update)
+                    rows = cursor.fetchall()
+                    cursor.commit()
             print("경비 내용 : ", df['title'][i], "/\t예측한 라벨 : ", predict_labels[i])
 
             data_list.append(predict_labels[i])
