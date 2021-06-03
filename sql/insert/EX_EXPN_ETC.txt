@@ -25,7 +25,8 @@ INSERT INTO EX_EXPN_ETC (
 ,ECAL_STAT_CD
 ,ELEC_APPV_YMD
 ,SLIP_HANDL_YN
-,SLIP_NO,RGSPE_ID
+,SLIP_NO
+,RGSPE_ID
 ,RGS_DH
 ,UTIL_YN
 ,KNDNR_NM
@@ -34,7 +35,7 @@ INSERT INTO EX_EXPN_ETC (
 ,YY
 ,CST_CENTR_CD
 ) VALUES (
-${VAL_1},${VAL_2},${VAL_3},${VAL_4},${VAL_5},${VAL_6},${VAL_7},${VAL_8},${VAL_9},${VAL_10},${VAL_11},${VAL_12},${VAL_13},${VAL_14},${VAL_15},${VAL_16},${VAL_17},${VAL_18},${VAL_19},${VAL_20},${VAL_21},${VAL_22},${VAL_23},${VAL_24},${VAL_25},${VAL_26},${VAL_27},${VAL_28},${VAL_29},${VAL_30},${VAL_31},${VAL_32},${VAL_33},${VAL_34}
+${VAL_1},${VAL_2},${VAL_3},${VAL_4},${VAL_5},${VAL_6},${VAL_7},${VAL_8},${VAL_9},${VAL_10},${VAL_11},${VAL_12},${VAL_13},${VAL_14},${VAL_15},${VAL_16},${VAL_17},${VAL_18},${VAL_19},${VAL_20},${VAL_21},${VAL_22},${VAL_23},${VAL_24},${VAL_25},${VAL_26},${VAL_27},${VAL_28},${VAL_29},${VAL_30},${VAL_31},${VAL_32},${VAL_33},${VAL_34},${VAL_35}
 ) ON DUPLICATE KEY UPDATE
  OCCR_ACC_CD       = ${VAL_3}
 ,REV_ACC_CD        = ${VAL_4}
@@ -60,11 +61,12 @@ ${VAL_1},${VAL_2},${VAL_3},${VAL_4},${VAL_5},${VAL_6},${VAL_7},${VAL_8},${VAL_9}
 ,ECAL_STAT_CD      = ${VAL_24}
 ,ELEC_APPV_YMD     = ${VAL_25}
 ,SLIP_HANDL_YN     = ${VAL_26}
-,SLIP_NO,RGSPE_ID  = ${VAL_27}
-,RGS_DH            = ${VAL_28}
-,UTIL_YN           = ${VAL_29}
-,KNDNR_NM          = ${VAL_30}
-,KUNDE_PA          = ${VAL_31}
-,COM_CD            = ${VAL_32}
-,YY                = ${VAL_33}
-,CST_CENTR_CD      = ${VAL_34}
+,SLIP_NO           = ${VAL_27}
+,RGSPE_ID          = ${VAL_28}
+,RGS_DH            = ${VAL_29}
+,UTIL_YN           = ${VAL_30}
+,KNDNR_NM          = ${VAL_31}
+,KUNDE_PA          = ${VAL_32}
+,COM_CD            = ${VAL_33}
+,YY                = ${VAL_34}
+,CST_CENTR_CD      = ${VAL_35}

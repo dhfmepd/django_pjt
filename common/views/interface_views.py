@@ -141,7 +141,7 @@ def interface_ora(request):
         history.create_date = timezone.now()
         history.save()
 
-        context = {'label_list': label_list, 'data_list': data_list}
+        context = {'label_list': label_list, 'data_list': data_list[0:10]}
         return render(request, 'common/interface_ora.html', context)
 
     context = {}
