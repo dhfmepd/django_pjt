@@ -28,7 +28,7 @@ def analysis_nlp(request):
         temp_data = []
         temp_data = rows
         print(temp_data)
-        break
+        breakpoint()
         #
         # print(param_data)
         # 모델 만들었던 학습 데이터 및 신규 데이터 read
