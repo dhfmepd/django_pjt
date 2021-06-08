@@ -107,9 +107,10 @@ def analysis_nlp(request):
             print(ecal_info_label)
             print(df['label'][i])
             if df['label'][i] is None:
-                sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = \'" + ecal_number + " \'AND SEQ = \'" + seq +"\'"
+
             # sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + ecal_info_label + "' WHERE ECAL_NO = '" + ecal_number + "'
                 with connection.cursor() as cursor:
+                    sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = \'" + ecal_number + " \'AND SEQ = \'" + seq + "\'"
                     cursor.execute(sql_update)
                     # rows = cursor.fetchall()
                 connection.commit()
