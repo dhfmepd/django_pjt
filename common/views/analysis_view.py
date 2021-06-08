@@ -67,6 +67,8 @@ def analysis_ocr(request):
     # LINUX : sudo nano ~/.profile -> export GOOGLE_APPLICATION_CREDENTIALS=/home/cjfvdtpjt/projects/dtpjt/VisionAPI/visionapitest-314407-3a69a466f455.json
 
     if request.method == 'POST':
+        # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/cjfvdtpjt/projects/dtpjt/VisionAPI/key.json"
+
         image_path = request.POST.get('image_path')
 
         image = cv2.imread(image_path)
