@@ -112,7 +112,7 @@ def analysis_nlp(request):
                 with connection.cursor() as cursor:
                     cursor.execute(sql_update)
                     # rows = cursor.fetchall()
-                    cursor.commit()
+                    connection.commit()
             print("경비 내용 : ", df['title'][i], "/\t예측한 라벨 : ", predict_labels[i])
 
             data_list.append(predict_labels[i])
