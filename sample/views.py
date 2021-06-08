@@ -11,10 +11,8 @@ from konlpy.tag import Okt
 from django.core.mail import EmailMessage
 import cv2
 import pandas as pd
-import easyocr
 from google.cloud import vision
 from enum import Enum
-from PIL import Image, ImageDraw
 
 def chart_js(request):
     pie_label = []
@@ -178,6 +176,7 @@ def image_ocr(request):
 
     return render(request, 'sample/image_ocr.html', {})
 
+# 구글 비젼 API로 Full Text 데이터 추출
 def get_document_info(image_file, feature):
     client = vision.ImageAnnotatorClient()
 
@@ -199,11 +198,11 @@ def get_document_info(image_file, feature):
                 for word in paragraph.words:
                     word_text = ""
                     for symbol in word.symbols:
-                        if (feature == FeatureType.BLOCK):
+                        if (feature == FeatureType.BLOCK): # BLOCK 레벨 초기화 된 변수에 저장
                             block_text += symbol.text
-                        elif (feature == FeatureType.PARA):
+                        elif (feature == FeatureType.PARA): # PARA 레벨 초기화 된 변수에 저장
                             paragraph_text += symbol.text
-                        elif (feature == FeatureType.WORD):
+                        elif (feature == FeatureType.WORD): # WORD 레벨 초기화 된 변수에 저장
                             word_text += symbol.text
 
                         if (feature == FeatureType.SYMBOL):
@@ -216,6 +215,55 @@ def get_document_info(image_file, feature):
                 infos.append({'bounding_box': block.bounding_box, 'data_text': block_text})
 
     return infos
+
+# 라벨 텍스트 추출(평균 Y 좌표 기준으로 중복되는 영역에 해당)
+def get_label_text(infos, value):
+    label_text = ''
+
+    for info in infos:
+        if value > int(info.get('bounding_box').vertices[0].y) and value < int(info.get('bounding_box').vertices[2].y):
+            if not find_amt_phrases(info.get('data_text')):
+                if len(label_text) > 0:
+                    label_text += ' ' + info.get('data_text')
+                else:
+                    label_text += info.get('data_text')
+
+    return label_text
+
+
+# ML을 통한 거래관련 문구 찾기(현재 임시처리)
+def find_pay_phrases(text):
+    print("[INFO] 거래문구 : {}".format(text))
+    print("[INFO] 값 : {}".format(text.find('거래금액')))
+    if text.find('거래금액') >= 0 :
+        print("[INFO] 성공 : {}".format(text))
+        return True
+
+    if text.find('부가세') >= 0 or text.find('봉사료') >= 0 or text.find('캐시백') >= 0 or text.find('공급가액') >= 0:
+        print("[INFO] 실패 : {}".format(text))
+        return False
+
+    return True
+
+# ML을 통한 금액관련 문구 찾기(현재 임시처리)
+# 현기준 원으로 끝나는 쉽표 제거한 숫자
+def find_amt_phrases(text):
+    #print("[TEST] 문구 1 : {}".format(text))
+    if len(text) > 1:
+        won_index = len(text) - 1
+        #print("[TEST] 문구 2 : {}".format(won_index))
+        if text.find('원') == won_index:
+            try:
+                amt_text = text[0:won_index] # 원 문구 제거
+                amt_text = amt_text.replace(',', '') # 숫자 변환을 위한 콤마 제거
+                amt_int = int(amt_text) # 숫자 변환
+                # print("[TEST] 문구 3 : {}".format(amt_int))
+                if amt_int is not None:
+                    return True
+            except ValueError:
+                return False
+
+    return False
 
 # def image_ocr_bak(request):
 #     # EasyOCR 설치 : pip install easyocr
@@ -269,62 +317,6 @@ def get_document_info(image_file, feature):
 #             amt_text_list.append({'label_text': label_text, 'data_st_point': tl, 'data_ed_point': br, 'data_text': text})
 #
 #     return amt_text_list
-
-# 라벨 텍스트 추출
-def get_label_text(infos, value):
-    label_text = ''
-
-    for info in infos:
-        (int(info.get('bounding_box').vertices[2].y) - int(info.get('bounding_box').vertices[0].y)) / 2 + int(info.get('bounding_box').vertices[0].y)
-
-        if value > int(info.get('bounding_box').vertices[0].y) and value < int(info.get('bounding_box').vertices[2].y):
-            if not find_amt_phrases(info.get('data_text')):
-                if len(label_text) > 0:
-                    label_text += ' ' + info.get('data_text')
-                else:
-                    label_text += info.get('data_text')
-
-    print("[INFO] 라벨문구 : {}".format(label_text))
-
-    return label_text
-
-
-# ML을 통한 거래관련 문구 찾기(현재 임시처리)
-def find_pay_phrases(text):
-    print("[INFO] 거래문구 : {}".format(text))
-    print("[INFO] 값 : {}".format(text.find('거래금액')))
-    if text.find('거래금액') >= 0 :
-        print("[INFO] 성공 : {}".format(text))
-        return True
-
-    if text.find('부가세') >= 0 or text.find('봉사료') >= 0 or text.find('캐시백') >= 0 or text.find('공급가액') >= 0:
-        print("[INFO] 실패 : {}".format(text))
-        return False
-
-    return True
-
-# ML을 통한 금액관련 문구 찾기(현재 임시처리)
-# 현기준 원으로 끝나는 쉽표 제거한 숫자
-def find_amt_phrases(text):
-    #print("[TEST] 문구 1 : {}".format(text))
-    if len(text) > 1:
-        won_index = len(text) - 1
-        #print("[TEST] 문구 2 : {}".format(won_index))
-        if text.find('원') == won_index:
-            try:
-                amt_text = text[0:won_index] # 원 문구 제거
-                amt_text = amt_text.replace(',', '') # 숫자 변환을 위한 콤마 제거
-                amt_int = int(amt_text) # 숫자 변환
-                # print("[TEST] 문구 3 : {}".format(amt_int))
-                if amt_int is not None:
-                    return True
-            except ValueError:
-                return False
-
-    return False
-
-def cleanup_text(text):
-	return "".join([c if ord(c) < 128 else "" for c in text]).strip()
 
 def email_send(request):
     from_addr = request.POST.get('from_addr')
