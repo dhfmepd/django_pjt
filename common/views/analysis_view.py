@@ -126,8 +126,8 @@ def analysis_nlp(request):
         connection.close()
     #     if not data_list:
     #         print('error')
-    #     param_data = {'param_data': param_data, 'data_list': data_list}
-    #     return render(request, 'common/analysis_nlp.html', param_data)
+        param_data = {'param_data': param_data, 'data_list': data_list}
+        return render(request, 'common/analysis_nlp.html', param_data)
     #
     param_data = {'param_data': param_data}
     return render(request, 'common/analysis_nlp.html', param_data)
