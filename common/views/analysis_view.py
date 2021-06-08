@@ -37,11 +37,13 @@ def analysis_nlp(request):
         # test_data = pd.read_csv("./new_data3.csv")
         # test_data = param_data
 
-        # DB 적요를 TEST_DATA로 선정
+        # Database 적요를 TEST_DATA로 선정
         test_data = rows
 
-        df = pd.DataFrame(test_data, columns = ['number', 'seq', 'title', 'label'])
+        # 전표번호, 순서, 적요, 라벨링
+        df_test = pd.DataFrame(test_data, columns = ['number', 'seq', 'title', 'label'])
 
+        # train, test 셋 토큰화
         okt = Okt()
         X_train = []
         for sentence in train_data['title']:
@@ -52,7 +54,7 @@ def analysis_nlp(request):
 
         X_test = []
 
-        for sentence in df['title']:
+        for sentence in df_test['title']:
             temp_X = []
             temp_X = okt.morphs(sentence, stem=True)
             X_test.append(temp_X)
@@ -88,25 +90,31 @@ def analysis_nlp(request):
         X_test = pad_sequences(X_test, maxlen=max_len)
         # 저장한 모델 불러오기
         model = load_model("model_name.h5")
-
+        # 모델 예측하기
         predict = model.predict(X_test)
-
+        # 라벨 예측(0~6)
         predict_labels = np.argmax(predict, axis=1)
 
         # class_map_dict = {0: '교통비', 1: '주유비', 2: '주차비', 3: '공과금', 4: '시장조사', 5: '수수료', 6: '식대'}
         # pred_pred = np.vectorize(class_map_dict.get)(predict_labels)
         # 100개 데이터만 먼저 확인
         data_list = []
-        for i in range(len(df['number'])):
+        # 전체 데이터 루프 돌면서 라벨 예측
+        for i in range(len(df_test['number'])):
             # print("경비 내용 : ", test_data['title'].iloc[i], "/\t예측한 라벨 : ", pred_pred[i])
             # print("경비 내용 : ", param_data, "/\t예측한 라벨 : ", pred_pred[i])
-            ecal_number = str(df['number'][i])
+
+            # 전표 번호
+            ecal_number = str(df_test['number'][i])
             print(ecal_number)
-            seq = str(df['seq'][i])
+            # 전표 번호 순서
+            seq = str(df_test['seq'][i])
+            # 적요 예측 라벨
             ecal_info_label = str(predict_labels[i])
             print(ecal_info_label)
-            print(df['label'][i])
-            if df['label'][i] is None:
+            print(df_test['label'][i])
+            # 라벨이 비어있는 값인 경우 update
+            if df_test['label'][i] is None:
 
             # sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + ecal_info_label + "' WHERE ECAL_NO = '" + ecal_number + "'
                 with connection.cursor() as cursor:
@@ -114,11 +122,10 @@ def analysis_nlp(request):
                     cursor.execute(sql_update)
                     # rows = cursor.fetchall()
                 connection.commit()
-            print("경비 내용 : ", df['title'][i], "/\t예측한 라벨 : ", predict_labels[i])
+            print("경비 내용 : ", df_test['title'][i], "/\t예측한 라벨 : ", predict_labels[i])
 
             data_list.append(predict_labels[i])
-        rows = pd.DataFrame(rows)
-        rows
+
     #     if not data_list:
     #         print('error')
     #     param_data = {'param_data': param_data, 'data_list': data_list}
