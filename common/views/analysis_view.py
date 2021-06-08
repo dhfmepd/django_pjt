@@ -18,18 +18,18 @@ def analysis_nlp(request):
     param_data = request.POST.get('param_data', '내용없음')
 
     if request.method == 'POST':
-        sql_cnt = "SELECT COUNT(*) AS CNT FROM EX_EXPN_ETC"
-        with connection.cursor() as cursor:
-            cursor.execute(sql_cnt)
-            cnt_result = cursor.fetchall()
-            print(cnt_result)
 
+        sql_cnt = "SELECT COUNT(*) FROM EX_EXPN_ETC"
         sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC LIMIT"
         # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
             rows = cursor.fetchall()
             print(list(rows))
+
+            cursor.execute(sql_cnt)
+            cnt_result = cursor.fetchall()
+            print(cnt_result)
         # return list
         sql_list = []
         sql_list = rows
