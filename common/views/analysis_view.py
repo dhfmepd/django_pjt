@@ -108,18 +108,18 @@ def analysis_nlp(request):
             ecal_number = str(df_test['number'][i])
             print(ecal_number)
             # 전표 번호 순서
-            seq = str(df_test['seq'][i])
+            ecal_seq = str(df_test['seq'][i])
             # 적요 예측 라벨
             ecal_info_label = str(predict_labels[i])
             print(ecal_info_label)
             print(df_test['label'][i])
             # 라벨이 비어있는 값인 경우 update
-            # if df_test['label'][i] is None:
-            with connection.cursor() as cursor:
-                sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = \'" + ecal_number + " \'AND SEQ = \'" + seq + "\'"
-                cursor.execute(sql_update)
-                    # rows = cursor.fetchall()
-            connection.commit()
+            if df_test['label'][i] is None:
+                with connection.cursor() as cursor:
+                    sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = \'" + ecal_number + "\' AND SEQ = \'" + ecal_seq + "\'"
+                    cursor.execute(sql_update)
+                    rows = cursor.fetchall()
+                connection.commit()
 
             print("경비 내용 : ", df_test['title'][i], "/\t예측한 라벨 : ", predict_labels[i])
             data_list.append(predict_labels[i])
