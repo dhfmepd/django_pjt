@@ -18,7 +18,7 @@ def analysis_nlp(request):
     param_data = request.POST.get('param_data', '내용없음')
 
     if request.method == 'POST':
-        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC LIMIT 1000"
+        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC LIMIT 2"
         # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
