@@ -119,7 +119,7 @@ def analysis_nlp(request):
                     sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = \'" + ecal_number + " \'AND SEQ = \'" + seq + "\'"
                     cursor.execute(sql_update)
                     # rows = cursor.fetchall()
-                    connection.commit()
+                connection.commit(sql_update)
 
             print("경비 내용 : ", df_test['title'][i], "/\t예측한 라벨 : ", predict_labels[i])
             data_list.append(predict_labels[i])
