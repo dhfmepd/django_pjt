@@ -85,10 +85,12 @@ def main(request):
         c_total_count = '{:,}'.format(top_info[0])
         e_total_count = '{:,}'.format(top_info[1])
         last_create_date = top_info[2]
+        text_analy_rate = top_info[3]
     else:
         c_total_count = '{:,}'.format(0)
         e_total_count = '{:,}'.format(0)
         last_create_date = 'N/A'
+        text_analy_rate = '0'
 
     for r_idx, chart_info in enumerate(chart_list):
         bar_label.append(chart_info[0])
@@ -100,14 +102,16 @@ def main(request):
     paginator = Paginator(board_list, 5)
     page_obj = paginator.get_page(1)
 
-    context = {'c_total_count': c_total_count, 'e_total_count': e_total_count, 'last_create_date': last_create_date,
+    context = {'c_total_count': c_total_count, 'e_total_count': e_total_count, 'last_create_date': last_create_date, 'text_analy_rate': text_analy_rate,
                'board_list': page_obj, 'bar_label': bar_label, 'c_bar_data': c_bar_data, 'e_bar_data': e_bar_data}
 
     return render(request, 'common/main.html', context)
 
 def get_top_info():
-    sql_str = "SELECT a.total_count as c_total_count, b.total_count as e_total_count, "
-    sql_str += "      CASE WHEN a.create_date > b.create_date THEN a.create_date ELSE b.create_date END as max_create_date "
+    sql_str = "SELECT a.total_count AS c_total_count, b.total_count AS e_total_count, "
+    sql_str += "      CASE WHEN a.create_date > b.create_date THEN a.create_date ELSE b.create_date END AS max_create_date "
+    sql_str += "      ,(SELECT ROUND(IFNULL(SUM(CASE WHEN label_cate_cd IS NOT NULL THEN 1 ELSE 0 END) / COUNT(1), 0), 1) "
+    sql_str += "          FROM ex_expn_etc) AS text_analy_rate "
     sql_str += "  FROM "
     sql_str += "(SELECT '1' as key_field, total_count, create_date "
     sql_str += "   FROM common_receivehistory "
@@ -118,6 +122,8 @@ def get_top_info():
     sql_str += "  WHERE table_name = 'EX_EXPN_ETC' "
     sql_str += "  ORDER BY create_date DESC LIMIT 1) b "
     sql_str += "WHERE a.key_field = b.key_field "
+
+    print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -130,15 +136,17 @@ def get_chart_info():
     sql_str += "    , COALESCE(SUM(CASE WHEN b.table_name = 'EX_CORPCARD_ASK' THEN b.receive_count ELSE 0 END), 0) AS c_count "
     sql_str += "    , COALESCE(SUM(CASE WHEN b.table_name = 'EX_EXPN_ETC' THEN b.receive_count ELSE 0 END), 0) AS e_count "
     sql_str += "FROM ( "
-    sql_str += "SELECT DATE_FORMAT(NOW(), '%Y%m') AS key_ym "
+    sql_str += "SELECT DATE_FORMAT(NOW(), '%Y-%m') AS key_ym "
     sql_str += "UNION ALL "
-    sql_str += "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y%m') AS key_ym "
+    sql_str += "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m') AS key_ym "
     sql_str += "UNION ALL "
-    sql_str += "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y%m') AS key_ym "
+    sql_str += "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m') AS key_ym "
     sql_str += ") a "
     sql_str += "LEFT OUTER JOIN common_receivehistory b "
-    sql_str += "ON a.key_ym = DATE_FORMAT(b.create_date, '%Y%m') "
+    sql_str += "ON a.key_ym = DATE_FORMAT(b.create_date, '%Y-%m') "
     sql_str += "GROUP BY a.key_ym "
+
+    print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)

@@ -1,9 +1,8 @@
+import datetime
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.utils import timezone
 from django.db import connection
-from datetime import datetime
 from common.models import ReceiveHistory
 import cx_Oracle
 
@@ -48,6 +47,11 @@ def interface_ora(request):
         # Source DB 데이터 조회
         dsn = cx_Oracle.makedsn(source_ip, source_port, source_sid)
         db = cx_Oracle.connect(source_user, source_password, dsn)
+
+        # 일자 설정
+        # now_str = str(datetime.datetime.now())[0:19]
+        now_str = "2021-06-09 16:08:39.177615"
+        now_str = now_str[0:19]
 
         # 테이블 지정 Case
         if (proc_type == 'file'):
@@ -114,6 +118,9 @@ def interface_ora(request):
                 else:
                     temp_sql += tran_val
 
+
+            temp_sql = temp_sql.replace("${NOW}", now_str)
+
             data_list.append(row)
 
             # Target DB 데이터 저장
@@ -126,17 +133,12 @@ def interface_ora(request):
             connection.close()
 
         #데이터 처리이력 저장
-        lastHistory = ReceiveHistory.objects.filter(table_name=target_table).order_by('-create_date').first()
-
-        if lastHistory is not None:
-            last_total_count = lastHistory.total_count
-        else:
-            last_total_count = 0
+        data_cnt_info = get_data_count(target_table, now_str)
 
         history = ReceiveHistory()
         history.table_name = target_table
-        history.receive_count = len(result_list)
-        history.total_count = last_total_count + len(result_list)
+        history.receive_count = data_cnt_info[1]
+        history.total_count = data_cnt_info[0]
         history.performer = request.user
         history.create_date = timezone.now()
         history.save()
@@ -147,6 +149,18 @@ def interface_ora(request):
     context = {}
     return render(request, 'common/interface_ora.html', context)
 
+def get_data_count(table_name, date_str):
+    sql_str = "SELECT (SELECT COUNT(1) FROM " + table_name + ") AS tot_cnt "
+    sql_str += " ,(SELECT COUNT(1) FROM " + table_name + " WHERE IF_DH = STR_TO_DATE('" + date_str + "', '%Y-%m-%d %H:%i:%s')) AS now_cnt "
+    sql_str += " FROM DUAL"
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        row = cursor.fetchone()
+
+    return row
 
 def word_case_change(type, text):
     re_text = ''

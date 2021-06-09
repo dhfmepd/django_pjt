@@ -34,8 +34,9 @@ INSERT INTO EX_EXPN_ETC (
 ,COM_CD
 ,YY
 ,CST_CENTR_CD
+,IF_DH
 ) VALUES (
-${VAL_1},${VAL_2},${VAL_3},${VAL_4},${VAL_5},${VAL_6},${VAL_7},${VAL_8},${VAL_9},${VAL_10},${VAL_11},${VAL_12},${VAL_13},${VAL_14},${VAL_15},${VAL_16},${VAL_17},${VAL_18},${VAL_19},${VAL_20},${VAL_21},${VAL_22},${VAL_23},${VAL_24},${VAL_25},${VAL_26},${VAL_27},${VAL_28},${VAL_29},${VAL_30},${VAL_31},${VAL_32},${VAL_33},${VAL_34},${VAL_35}
+${VAL_1},${VAL_2},${VAL_3},${VAL_4},${VAL_5},${VAL_6},${VAL_7},${VAL_8},${VAL_9},${VAL_10},${VAL_11},${VAL_12},${VAL_13},${VAL_14},${VAL_15},${VAL_16},${VAL_17},${VAL_18},${VAL_19},${VAL_20},${VAL_21},${VAL_22},${VAL_23},${VAL_24},${VAL_25},${VAL_26},${VAL_27},${VAL_28},${VAL_29},${VAL_30},${VAL_31},${VAL_32},${VAL_33},${VAL_34},${VAL_35},STR_TO_DATE('${NOW}', '%Y-%m-%d %H:%i:%s')
 ) ON DUPLICATE KEY UPDATE
  OCCR_ACC_CD       = ${VAL_3}
 ,REV_ACC_CD        = ${VAL_4}
@@ -70,3 +71,4 @@ ${VAL_1},${VAL_2},${VAL_3},${VAL_4},${VAL_5},${VAL_6},${VAL_7},${VAL_8},${VAL_9}
 ,COM_CD            = ${VAL_33}
 ,YY                = ${VAL_34}
 ,CST_CENTR_CD      = ${VAL_35}
+,IF_DH             = STR_TO_DATE('${NOW}', '%Y-%m-%d %H:%i:%s')
