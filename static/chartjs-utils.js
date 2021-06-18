@@ -35,7 +35,8 @@ window.chartColors = {
 		'#166a8f',
 		'#00a950',
 		'#58595b',
-		'#8549ba'
+		'#8549ba',
+		'#FAED7D'
 	];
 
 	var Samples = global.Samples || (global.Samples = {});
