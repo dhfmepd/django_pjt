@@ -2,7 +2,9 @@ INSERT INTO EX_BS_CST_CNTR (
  COM_CD
 ,CST_CNTR_CD
 ,CST_CNTR_NM
+,IF_DH
 ) VALUES (
- ${VAL_1},${VAL_2},${VAL_3}
+ ${VAL_1},${VAL_2},${VAL_3},STR_TO_DATE('${NOW}', '%Y-%m-%d %H:%i:%s')
 ) ON DUPLICATE KEY UPDATE
  CST_CNTR_NM = ${VAL_3}
+ IF_DH       = STR_TO_DATE('${NOW}', '%Y-%m-%d %H:%i:%s')
