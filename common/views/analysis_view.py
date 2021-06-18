@@ -29,23 +29,28 @@ def analysis_nlp(request):
             print(list(rows))
 
         # 모델 만들었던 학습 데이터 Read
+        # train data는 train, validation을 위한 데이터
         train_data = pd.read_csv("./train_data.csv")
 
-        # Database에 적요를 TEST_DATA로 선정
+        # Database에 적요를 test_data로 선정
+        # test_data는 최종적으로 모델을 평가하기 위해 1번 사용되는 데이터
         test_data = rows
 
-        # 전표번호, 순서, 적요, 라벨링을 Pandas 프레임 생성(토큰화 쉽게 하려고)
+        # 전표번호, 순서, 적요, 라벨링을 Pandas dataframe 생성(데이터 처리 및 분석 용이)
         df_test = pd.DataFrame(test_data, columns = ['number', 'seq', 'title', 'label'])
 
         # train, test 셋 토큰화
+        # okt(open korean text) 트위터에서 만든 오픈소스 형태소 분석기
         okt = Okt()
         X_train = []
+        # train_data 적요를 X_train로 사용
         for sentence in train_data['title']:
             temp_X = []
             temp_X = okt.morphs(sentence, stem=True)  # 토큰화
             #   temp_X = [word for word in temp_X if not word in stopwords] # 불용어 제거
             X_train.append(temp_X)
 
+        # test_data 적요를 X_test로 사용
         X_test = []
         for sentence in df_test['title']:
             temp_X = []
@@ -53,16 +58,22 @@ def analysis_nlp(request):
             X_test.append(temp_X)
 
         #최대 단어 갯수 35000개
+        # 토큰화 단어를 컴퓨터 인식할 수 있게 정수인코딩
         max_words = 35000
         tokenizer = Tokenizer(num_words=max_words)
         tokenizer.fit_on_texts(X_train)
+        # X 값은 feature 즉 적요 내용
         X_train = tokenizer.texts_to_sequences(X_train)
         X_test = tokenizer.texts_to_sequences(X_test)
 
+        # y값 즉 라벨링값으로 들어갈 라벨을 컴퓨터가 보고 알 수 있도록 one-hot 인코딩 진행
+        # 원 핫 인코딩은 https://wikidocs.net/22647 참고
+
+        # y값(라벨) 담을 리스트 선언
         y_train = []
         y_test = []
 
-        #train_data 라벨을 numpy 배열로 라벨링
+        #train_data 라벨을 원 핫 인코딩 진행
         for i in range(len(train_data['label'])):
             if train_data['label'].iloc[i] == 0:
                 y_train.append([1, 0, 0, 0, 0, 0, 0])
