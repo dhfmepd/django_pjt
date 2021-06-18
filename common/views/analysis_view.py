@@ -18,30 +18,23 @@ from tensorflow.keras.models import load_model
 def analysis_nlp(request):
     param_data = request.POST.get('param_data', '내용없음')
 
+    #예측 실행 버튼 클릭 시 타는 구문
     if request.method == 'POST':
+
         sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC"
-        # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요
+        # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요, LABEL_CATE_CD : 라벨링
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
             rows = cursor.fetchall()
             print(list(rows))
-        # return list
-        sql_list = []
-        sql_list = rows
 
-        #print(sql_list)
-
-        #
-        # print(param_data)
-        # 모델 만들었던 학습 데이터 및 신규 데이터 read
+        # 모델 만들었던 학습 데이터 Read
         train_data = pd.read_csv("./train_data.csv")
-        # test_data = pd.read_csv("./new_data3.csv")
-        # test_data = param_data
 
-        # Database 적요를 TEST_DATA로 선정
+        # Database에 적요를 TEST_DATA로 선정
         test_data = rows
 
-        # 전표번호, 순서, 적요, 라벨링
+        # 전표번호, 순서, 적요, 라벨링을 Pandas 프레임 생성(토큰화 쉽게 하려고)
         df_test = pd.DataFrame(test_data, columns = ['number', 'seq', 'title', 'label'])
 
         # train, test 셋 토큰화
@@ -54,11 +47,12 @@ def analysis_nlp(request):
             X_train.append(temp_X)
 
         X_test = []
-
         for sentence in df_test['title']:
             temp_X = []
             temp_X = okt.morphs(sentence, stem=True)
             X_test.append(temp_X)
+
+        #최대 단어 갯수 35000개
         max_words = 35000
         tokenizer = Tokenizer(num_words=max_words)
         tokenizer.fit_on_texts(X_train)
@@ -68,6 +62,7 @@ def analysis_nlp(request):
         y_train = []
         y_test = []
 
+        #train_data 라벨을 numpy 배열로 라벨링
         for i in range(len(train_data['label'])):
             if train_data['label'].iloc[i] == 0:
                 y_train.append([1, 0, 0, 0, 0, 0, 0])
@@ -86,7 +81,7 @@ def analysis_nlp(request):
 
         y_train = np.array(y_train)
 
-        max_len = 20  # 전체 데이터의 길이를 20로 맞춘다
+        max_len = 20  # 전체 데이터의 길이를 20로 맞춘다(문장 길이)
         X_train = pad_sequences(X_train, maxlen=max_len)
         X_test = pad_sequences(X_test, maxlen=max_len)
         # 저장한 모델 불러오기
@@ -97,39 +92,29 @@ def analysis_nlp(request):
         predict_labels = np.argmax(predict, axis=1)
 
         # class_map_dict = {0: '교통비', 1: '주유비', 2: '주차비', 3: '공과금', 4: '시장조사', 5: '수수료', 6: '식대'}
-        # pred_pred = np.vectorize(class_map_dict.get)(predict_labels)
-        # 100개 데이터만 먼저 확인
+
         data_list = []
         # 전체 데이터 루프 돌면서 라벨 예측
         for i in range(len(df_test['number'])):
-            # print("경비 내용 : ", test_data['title'].iloc[i], "/\t예측한 라벨 : ", pred_pred[i])
-            # print("경비 내용 : ", param_data, "/\t예측한 라벨 : ", pred_pred[i])
-
             # 전표 번호
             ecal_number = str(df_test['number'][i])
-            print(ecal_number)
             # 전표 번호 순서
             ecal_seq = str(df_test['seq'][i])
             # 적요 예측 라벨
             ecal_info_label = str(predict_labels[i])
-            print(ecal_info_label)
-            print(df_test['label'][i])
-            # 라벨이 비어있는 값인 경우 update
+            # 라벨이 None값인 경우 update
             if df_test['label'][i] is None:
                 with connection.cursor() as cursor:
                     sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = \'" + ecal_number + "\' AND SEQ = \'" + ecal_seq + "\'"
                     cursor.execute(sql_update)
                     rows = cursor.fetchall()
                 connection.commit()
-
-            print("경비 내용 : ", df_test['title'][i], "/\t예측한 라벨 : ", predict_labels[i])
             data_list.append(predict_labels[i])
         connection.close()
-    #     if not data_list:
-    #         print('error')
+
         param_data = {'param_data': param_data, 'data_list': data_list}
         return render(request, 'common/analysis_nlp.html', param_data)
-    #
+
     param_data = {'param_data': param_data}
     return render(request, 'common/analysis_nlp.html', param_data)
 
