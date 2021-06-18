@@ -111,7 +111,7 @@ def get_top_info():
     sql_str = "SELECT a.total_count AS c_total_count, b.total_count AS e_total_count, "
     sql_str += "      CASE WHEN a.create_date > b.create_date THEN a.create_date ELSE b.create_date END AS max_create_date "
     sql_str += "      ,(SELECT ROUND(IFNULL(SUM(CASE WHEN label_cate_cd IS NOT NULL THEN 1 ELSE 0 END) / COUNT(1), 0), 1) "
-    sql_str += "          FROM EX_EXPN_ETC) AS text_analy_rate "
+    sql_str += "          FROM ex_expn_etc) AS text_analy_rate "
     sql_str += "  FROM "
     sql_str += "(SELECT '1' as key_field, total_count, create_date "
     sql_str += "   FROM common_receivehistory "
