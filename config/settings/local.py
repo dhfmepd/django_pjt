@@ -10,7 +10,7 @@ DATABASES = {
     }
 }"""
 
-""" MySQL 접속 방식 ROOT : cjfv2021@@ 
+""" MySQL 접속 방식 ROOT : cjfv2021@@ """
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -22,9 +22,9 @@ DATABASES = {
         'HOST' : '52.90.236.160',
         'PORT' : '3306',
     }
-}"""
+}
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # 사용하려는 DB 이름
@@ -35,4 +35,4 @@ DATABASES = {
         'HOST' : '127.0.0.1',
         'PORT' : '3306',
     }
-}
+}"""

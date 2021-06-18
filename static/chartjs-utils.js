@@ -35,7 +35,8 @@ window.chartColors = {
 		'#166a8f',
 		'#00a950',
 		'#58595b',
-		'#8549ba'
+		'#8549ba',
+		'#8041D9'
 	];
 
 	var Samples = global.Samples || (global.Samples = {});
@@ -115,6 +116,15 @@ window.chartColors = {
 
 		color: function(index) {
 			return COLORS[index % COLORS.length];
+		},
+
+		colors: function(index) {
+		    var arrayReturn = [];
+		    var i;
+		    for(i = 0; i < index; i++){
+		        arrayReturn.push(COLORS[i % COLORS.length]);
+		    }
+			return arrayReturn;
 		},
 
 		transparentize: function(color, opacity) {
