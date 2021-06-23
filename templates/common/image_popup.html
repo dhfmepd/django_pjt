@@ -1,0 +1,62 @@
+{% load static %}
+<!doctype html>
+<html lang="ko">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}"> -->
+    <!-- Fontawesome All CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'fontawesome.all.min.css' %}">
+    <!-- Simplemde CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'simplemde.min.css' %}">
+    <!-- DataTables Bootstrap4 CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'dataTables.bootstrap4.min.css' %}">
+    <!-- SB Admin2 CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'sb-admin-2.css' %}">
+    <title>CJ One Expense</title>
+</head>
+<body>
+    <!-- Simplemde JS -->
+    <script src="{% static 'simplemde.min.js' %}"></script>
+    <!-- Chart JS -->
+    <script src="{% static 'chartjs-2.9.3.min.js' %}"></script>
+    <!-- Chart Utils -->
+    <script src="{% static 'chartjs-utils.js' %}"></script>
+    <!-- Chart doughnut Labels -->
+    <script src="{% static 'chartjs-plugin-doughnutlabel.min.js' %}"></script>
+    <!-- Chart piechart out Labels -->
+    <script src="{% static 'chartjs-plugin-piechart-outlabels.js' %}"></script>
+    <!-- jQuery JS -->
+    <script src="{% static 'jquery-3.5.1.min.js' %}"></script>
+    <!-- jQuery DataTables JS -->
+    <script src="{% static 'jquery.dataTables.min.js' %}"></script>
+    <!-- DataTables Bootstrap4 JS -->
+    <script src="{% static 'dataTables.bootstrap4.min.js' %}"></script>
+    <!-- Bootstrap JS -->
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
+    <!-- SB Admin2 JS -->
+    <script src="{% static 'sb-admin-2.min.js' %}"></script>
+    <!-- jQuery Easing JS -->
+    <script src="{% static 'jquery.easing.min.js' %}"></script>
+
+    <div class="container-fluid">
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">이미지 상세</h6>
+            </div>
+
+            <div class="card-body">
+                <div class="row my-3">
+                    <div class="col-12">
+                        <img id="fileImage" width="100%" height="100%" src="{{ file_path }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

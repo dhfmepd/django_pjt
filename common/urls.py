@@ -14,5 +14,6 @@ urlpatterns = [
     path('file/delete/<int:file_id>/', utility_views.file_delete, name='file_delete'),
     path('interface/ora/', interface_views.interface_ora, name='interface_ora'),
     path('analysis/nlp/', analysis_view.analysis_nlp, name='analysis_nlp'),
-    path('expenseDash/<int:menu_id>', expense_view.dash, name='expenseDash'),
+    path('analysis/ocr/', analysis_view.analysis_ocr, name='analysis_ocr'),
+    path('popup/image/', analysis_view.popup_image, name='popup_image'),
 ]

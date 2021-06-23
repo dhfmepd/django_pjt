@@ -317,8 +317,8 @@ def popup_image(request):
     name = request.POST.get('name')
 
     if type == 'sample':
-        file_path = 'static/ocr/sample/' + os.path.basename(name)
+        file_path = '/static/ocr/sample/' + os.path.basename(name)
     else:
-        file_path = 'static/ocr/temporary/' + os.path.basename(name)
+        file_path = '/static/ocr/temporary/' + os.path.basename(name)
 
     return render(request, 'common/image_popup.html', {'file_path': file_path})

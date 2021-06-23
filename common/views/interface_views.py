@@ -7,22 +7,6 @@ from common.models import ReceiveHistory
 import cx_Oracle
 
 @login_required(login_url='common:login')
-def interface_ora_bak(request):
-    insert_sql = ''
-    file = open('sql/insert/EX_CORPCARD_ASK.txt', 'r')
-    while True:
-        text = file.readline()
-        if not text:
-            break
-        insert_sql += text
-    ssstr = "${VAL_" + str(10) + "}"
-    insert_sql = insert_sql.replace(ssstr, "'TEST'")
-    print(ssstr)
-    print(insert_sql)
-    context = {}
-    return render(request, 'common/interface_ora.html', context)
-
-@login_required(login_url='common:login')
 def interface_ora(request):
     """
     데이터 수신

@@ -6,7 +6,7 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">일반/법인카드 경비분석</h1>
+        <h1 class="h3 mb-0 text-gray-800">{{ menu.title }}</h1>
     </div>
     <!-- Content Row -->
     <div class="row">
@@ -167,13 +167,13 @@
         }
     };
 
-    const exChartConfig2 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
+    const exChartConfig2 = {                                  //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'horizontalBar',                                  //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
-            labels: ['월 평균', '당월 승인 합계'],                 //라벨 명칭
+            labels: ['월 평균', '당월 승인 합계'],        //라벨 명칭
             datasets: [
                 {
-                    data: {{ avg_data|safe }},                   //데이터
+                    data: {{ avg_data|safe }},                     //데이터
                     backgroundColor: Samples.utils.colors(2)     //bar Color
                 }
 
@@ -208,10 +208,10 @@
     const exChartConfig3 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
-            labels: {{ monthly_label|safe }},                   //라벨 명칭
+            labels: {{ monthly_label|safe }},        //라벨 명칭
             datasets: [
                 {
-                    data: {{ monthly_data|safe }},               //데이터
+                    data: {{ monthly_data|safe }},                     //데이터
                     backgroundColor: Samples.utils.colors(2)     //bar Color
                 }
             ],
@@ -245,10 +245,10 @@
     const exChartConfig4 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
-            labels: {{ monthly_year_label|safe }},              //라벨 명칭
+            labels: {{ monthly_year_label|safe }},        //라벨 명칭
             datasets: [
                 {
-                    data: {{ monthly_year_data|safe }},          //데이터
+                    data: {{ monthly_year_data|safe }},                     //데이터
                     backgroundColor: Samples.utils.colors(2)     //bar Color
                 }
             ],
