@@ -118,6 +118,15 @@ window.chartColors = {
 			return COLORS[index % COLORS.length];
 		},
 
+		colors: function(index) {
+		    var arrayReturn = [];
+		    var i;
+		    for(i = 0; i < index; i++){
+		        arrayReturn.push(COLORS[i % COLORS.length]);
+		    }
+			return arrayReturn;
+		},
+
 		transparentize: function(color, opacity) {
 			var alpha = opacity === undefined ? 0.5 : 1 - opacity;
 			return Color(color).alpha(alpha).rgbString();
