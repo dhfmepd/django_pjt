@@ -142,8 +142,20 @@ def analysis_ocr(request):
     # WIN : set GOOGLE_APPLICATION_CREDENTIALS=C:\projects\mysite\VisionAPI\visionapitest-314407-3a69a466f455.json
     # LINUX : sudo nano ~/.profile -> export GOOGLE_APPLICATION_CREDENTIALS=/home/cjfvdtpjt/projects/dtpjt/VisionAPI/visionapitest-314407-3a69a466f455.json
 
+    dir_path = "static/ocr/sample/"
+    file_list = []
+    
+    # 샘플 파일리스트 불러오기
+    dir_list = os.listdir(dir_path)
+    for f_idx, file_name in enumerate(dir_list):
+        file_list.append({'no': f_idx + 1,
+                          'file_name': file_name,
+                          'file_path': dir_path + file_name,
+                          'size': os.path.getsize(dir_path + file_name),
+                          'type': os.path.splitext(dir_path + file_name)[1][1:]})
+
     if request.method == 'POST':
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/cjfvdtpjt/projects/dtpjt/VisionAPI/key.json"
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "VisionAPI/visionapitest-314407-3a69a466f455.json"
 
         image_path = request.POST.get('image_path')
 
@@ -151,6 +163,8 @@ def analysis_ocr(request):
         infos = get_document_info(image_path, FeatureType.PARA)  # 단어 영역
 
         result_text = ""  # 화면 리턴 문구
+
+        result_list = []
 
         for info in infos:
             if find_amt_phrases(info.get('data_text')):
@@ -164,30 +178,40 @@ def analysis_ocr(request):
                                   (info.get('bounding_box').vertices[0].x, info.get('bounding_box').vertices[0].y),
                                   (info.get('bounding_box').vertices[2].x, info.get('bounding_box').vertices[2].y),
                                   (0, 0, 255), 2)
-                    result_text += "[INFO] 시작점({}), 종료점({}), {} : {}".format(
+                    result_text += "[INFO] 1. 시작점({}), 종료점({}), {} : {}".format(
                         (info.get('bounding_box').vertices[0].x, info.get('bounding_box').vertices[0].y),
                         (info.get('bounding_box').vertices[2].x, info.get('bounding_box').vertices[2].y),
                         info.get('label_text'),
                         info.get('data_text')) + "\n"
+
+                    if info.get('label_text') is None or info.get('label_text') == '':
+                        result_list.append({'label': info.get('data_text') + ' (N/A)',
+                                            'data': amt_str_to_num(info.get('data_text'))})
+                    else:
+                        result_list.append({'label': info.get('data_text') + ' (' + info.get('label_text') + ')',
+                                            'data': amt_str_to_num(info.get('data_text'))})
+
                 else:
                     cv2.rectangle(image,
                                   (info.get('bounding_box').vertices[0].x, info.get('bounding_box').vertices[0].y),
                                   (info.get('bounding_box').vertices[2].x, info.get('bounding_box').vertices[2].y),
                                   (255, 0, 0), 2)
-                    result_text += "[INFO] 시작점({}), 종료점({}), {} : {}".format(
+                    result_text += "[INFO] 2. 시작점({}), 종료점({}), {} : {}".format(
                         (info.get('bounding_box').vertices[0].x, info.get('bounding_box').vertices[0].y),
                         (info.get('bounding_box').vertices[2].x, info.get('bounding_box').vertices[2].y),
                         info.get('label_text'),
                         info.get('data_text')) + "\n"
 
         image_name = image_path.split('/')[-1]
-        temp_image_path = "static/ocr_temp/"
+        temp_image_path = "static/ocr/temporary/"
         cv2.imwrite(os.path.join(temp_image_path, image_name), image)
 
-        context = {'result_image': temp_image_path + image_name, 'result_text': result_text}
-        return render(request, 'analysis/image_ocr.html', context)
+        context = {'file_list': file_list, 'target_image': '/' + image_path, 'result_image': os.path.join(temp_image_path, image_name), 'result_list': result_list}
+        return render(request, 'common/image_ocr.html', context)
 
-    return render(request, 'analysis/image_ocr.html', {})
+    image_path = "/static/images/noimg.jpg"
+
+    return render(request, 'common/image_ocr.html', {'file_list': file_list, 'target_image': image_path})
 
 # 구글 비젼 API로 Full Text 데이터 추출
 def get_document_info(image_file, feature):
@@ -277,3 +301,24 @@ def find_amt_phrases(text):
                 return False
 
     return False
+
+def amt_str_to_num(text):
+    won_index = text.find('원')
+    if won_index > 0:
+        amt_text = text[0:won_index]
+        amt_text = amt_text.replace(',', '')  # 숫자 변환을 위한 콤마 제거
+        return amt_text
+
+    return '0'
+
+@login_required(login_url='common:login')
+def popup_image(request):
+    type = request.POST.get('type')
+    name = request.POST.get('name')
+
+    if type == 'sample':
+        file_path = 'static/ocr/sample/' + os.path.basename(name)
+    else:
+        file_path = 'static/ocr/temporary/' + os.path.basename(name)
+
+    return render(request, 'common/image_popup.html', {'file_path': file_path})
