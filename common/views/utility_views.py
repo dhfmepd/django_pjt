@@ -52,3 +52,15 @@ def file_download(request, file_id):
     else:
         messages.error(request, '파일이 존재하지 않습니다.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+@login_required(login_url='common:login')
+def popup_image(request):
+    type = request.POST.get('type')
+    name = request.POST.get('name')
+
+    if type == 'sample':
+        file_path = '/static/ocr/sample/' + os.path.basename(name)
+    else:
+        file_path = '/static/ocr/temporary/' + os.path.basename(name)
+
+    return render(request, 'common/image_popup.html', {'file_path': file_path})

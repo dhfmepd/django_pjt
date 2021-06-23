@@ -20,6 +20,8 @@ def get_menu_list():
             leaf_menu_list = []
             # 3 Level 리스트
             for leaf_menu in child_menu.children.all():
+                print(leaf_menu.title)
+                print(leaf_menu.sort_no)
                 leaf_menu_list.append({'id': leaf_menu.id,
                                        'title': leaf_menu.title,
                                        'level': leaf_menu.level,
