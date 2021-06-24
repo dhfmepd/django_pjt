@@ -10,12 +10,10 @@ from tensorflow.keras.models import load_model
 
 @login_required(login_url='common:login')
 def analysis_nlp(request):
-    param_data = request.POST.get('param_data', '내용없음')
-
     #예측 실행 버튼 클릭 시 타는 구문
     if request.method == 'POST':
 
-        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC"
+        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC WHERE LABEL_CATE_CD IS NULL"
         # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요, LABEL_CATE_CD : 라벨링
         with connection.cursor() as cursor:
             cursor.execute(sql_str)
@@ -112,13 +110,12 @@ def analysis_nlp(request):
                 with connection.cursor() as cursor:
                     sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = \'" + ecal_number + "\' AND SEQ = \'" + ecal_seq + "\'"
                     cursor.execute(sql_update)
-                    rows = cursor.fetchall()
+                    cursor.fetchall()
                 connection.commit()
             data_list.append(predict_labels[i])
         connection.close()
 
-        param_data = {'param_data': param_data, 'data_list': data_list}
-        return render(request, 'common/analysis_nlp.html', param_data)
+        context = {'data_list': data_list}
+        return render(request, 'common/analysis_nlp.html', context)
 
-    param_data = {'param_data': param_data}
-    return render(request, 'common/analysis_nlp.html', param_data)
+    return render(request, 'common/analysis_nlp.html', {})

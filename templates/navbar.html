@@ -34,7 +34,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#child_menu_{{ child_menu.id }}"
                 aria-expanded="true" aria-controls="collapseOne">
-                <i class="fas fa-fw fa-cog"></i>
+                <i class="{{ child_menu.icon }}"></i>
                 <span>{{ child_menu.title }}</span>
             </a>
             <div id="child_menu_{{ child_menu.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
