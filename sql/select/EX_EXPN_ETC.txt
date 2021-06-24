@@ -11,7 +11,7 @@ SELECT ECAL_NO
       ,ECAL_AMT
       ,SUPPLY_AMT
       ,TAX_AMT
-      ,DTLS
+      ,REGEXP_REPLACE(DTLS, '[\]', '') AS DTLS
       ,CUST_NM
       ,CUST_NO
       ,CUST_CD
