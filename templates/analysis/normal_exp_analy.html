@@ -36,6 +36,8 @@
                     <div class="chart-area">
                         <canvas id="exChart1"></canvas>
                     </div>
+                    <hr>
+                    법인카드 상위 10
                 </div>
             </div>
         </div>
@@ -66,6 +68,8 @@
                     <div class="chart-area">
                         <canvas id="exChart2"></canvas>
                     </div>
+                    <hr>
+                    법인카드 평균지출, 평균대비 현지출
                 </div>
             </div>
         </div>
@@ -99,6 +103,8 @@
                     <div class="chart-area">
                         <canvas id="exChart3"></canvas>
                     </div>
+                    <hr>
+                    법인카드 월별 증감 추이
                 </div>
             </div>
         </div>
@@ -129,6 +135,8 @@
                     <div class="chart-area">
                         <canvas id="exChart4"></canvas>
                     </div>
+                    <hr>
+                    법인카드 전년, 전월 비교
                 </div>
             </div>
         </div>
@@ -164,7 +172,7 @@
                 }
             },
             title: {
-                display: true,
+                display: false,
                 text: '법인카드 상위10'
             },
             legend: {
@@ -183,36 +191,65 @@
             datasets: [
                 {
                     data: {{ avg_data|safe }},                   //데이터
-                    backgroundColor: Samples.utils.colors(2)     //bar Color
+                    backgroundColor: ['#4e73df', '#36b9cc'],
+                    hoverBackgroundColor: ['#2e59d9', '#2c9faf'],
+                    borderColor: "rgba(234, 236, 244, 1)",
                 }
 
             ],
         },
         options: {                                               //chart Option
-            plugins: {
-            },
-            elements: {
-              bar: {
-                borderWidth: 2,
-              }
-            },
-            title: {
-                display: true,
-                text: '법인카드 평균지출, 평균대비 현지출'
-            },
-            legend: {
-                display : false
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
             },
             scales: {
                 xAxes: [{
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    },
                     ticks: {
-                        maxTicksLimit: 3
-                    }
+                        maxTicksLimit: 3,
+                        callback: function(value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    },
+                    maxBarThickness: 25,
                 }]
             },
-            responsive : true,
-            maintainAspectRatio: false
-        },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                        return datasetLabel + Number(tooltipItem.xLabel).toLocaleString() + ' 원';
+                    }
+                }
+            }
+        }
     };
 
     const exChartConfig3 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
@@ -235,7 +272,7 @@
               }
             },
             title: {
-                display: true,
+                display: false,
                 text: '법인카드 월별 증감'
             },
             legend: {
@@ -273,7 +310,7 @@
               }
             },
             title: {
-                display: true,
+                display: false,
                 text: '법인카드 전년, 전월 비교'
             },
             scales: {
