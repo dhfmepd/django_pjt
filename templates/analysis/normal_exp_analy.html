@@ -152,10 +152,14 @@
             labels: {{ top10_label|safe }},   //라벨 명칭
             datasets: [{
                 data: {{ top10_data|safe }},                             //데이터
-                backgroundColor: Samples.utils.colors(10)
+                backgroundColor: Samples.utils.colors(10),
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
             }],
         },
         options: {                                                  //chart Option
+            responsive: true,
+			cutoutPercentage: 80,
+			maintainAspectRatio: false,
             plugins: {                                              //chart 기본 옵션 외 plugin
                 doughnutlabel: {                                    //doutnut 안쪽 텍스트 설정()
                     labels: [                                       //배열구조로 {}로 N개 Line으로 설정 가능 추가 기능 API문서 참조
@@ -163,24 +167,37 @@
                             text: '상위 Top10 합계'
                         },
                         {
-                            text: '{{ top10_sum }}'
+                            text: '{{ top10_sum }} 원'
                         }
                     ]
                 },
                 tooltip:{
                     enable: true
+                },
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var currentValue = dataset.data[tooltipItem.index];
+                        return Number(currentValue).toLocaleString() + ' 원';
+                    }
                 }
             },
-            title: {
-                display: false,
-                text: '법인카드 상위10'
-            },
             legend: {
-                position : 'right'
+                position: 'right'
             },
-            responsive : true,
-			cutoutPercentage: 80,
-			maintainAspectRatio: false
         }
     };
 
@@ -244,8 +261,7 @@
                 caretPadding: 10,
                 callbacks: {
                     label: function(tooltipItem, chart) {
-                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                        return datasetLabel + Number(tooltipItem.xLabel).toLocaleString() + ' 원';
+                        return Number(tooltipItem.xLabel).toLocaleString() + ' 원';
                     }
                 }
             }
@@ -285,7 +301,7 @@
                     }
                 }]
             },
-            responsive : true,
+            responsive: true,
             maintainAspectRatio: false
         },
     };
@@ -323,7 +339,7 @@
             legend: {
                 display: false
             },
-            responsive : true,
+            responsive: true,
             maintainAspectRatio: false
         },
     };
