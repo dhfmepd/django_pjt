@@ -5,9 +5,11 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">일반/법인카드 경비분석</h1>
-    </div>
+    <h1 class="h3 mb-2 text-gray-800">
+        <i class="fas fa-fw fa-table"></i>
+        <span class="text">일반/법인카드 경비분석</span>
+    </h1>
+
     <!-- Content Row -->
     <div class="row">
         <!-- exChart1 -->
@@ -36,6 +38,8 @@
                     <div class="chart-area">
                         <canvas id="exChart1"></canvas>
                     </div>
+                    <hr>
+                    법인카드 상위 10
                 </div>
             </div>
         </div>
@@ -66,6 +70,8 @@
                     <div class="chart-area">
                         <canvas id="exChart2"></canvas>
                     </div>
+                    <hr>
+                    법인카드 평균지출, 평균대비 현지출
                 </div>
             </div>
         </div>
@@ -74,7 +80,7 @@
     <!-- Content Row -->
     <div class="row">
         <!-- exChart3 -->
-        <div class="col-xl-6 col-lg-5">
+        <div class="col-xl-7 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -99,12 +105,14 @@
                     <div class="chart-area">
                         <canvas id="exChart3"></canvas>
                     </div>
+                    <hr>
+                    법인카드 월별 증감 추이
                 </div>
             </div>
         </div>
 
         <!-- exChart4 -->
-        <div class="col-xl-6 col-lg-5">
+        <div class="col-xl-5 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -129,6 +137,8 @@
                     <div class="chart-area">
                         <canvas id="exChart4"></canvas>
                     </div>
+                    <hr>
+                    법인카드 전년, 전월 비교
                 </div>
             </div>
         </div>
@@ -144,10 +154,22 @@
             labels: {{ top10_label|safe }},   //라벨 명칭
             datasets: [{
                 data: {{ top10_data|safe }},                             //데이터
-                backgroundColor: Samples.utils.colors(10)
+                backgroundColor: Samples.utils.colors(10),
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
             }],
         },
         options: {                                                  //chart Option
+            responsive: true,
+			cutoutPercentage: 80,
+			maintainAspectRatio: false,
+			layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
             plugins: {                                              //chart 기본 옵션 외 plugin
                 doughnutlabel: {                                    //doutnut 안쪽 텍스트 설정()
                     labels: [                                       //배열구조로 {}로 N개 Line으로 설정 가능 추가 기능 API문서 참조
@@ -155,24 +177,34 @@
                             text: '상위 Top10 합계'
                         },
                         {
-                            text: '{{ top10_sum }}'
+                            text: '{{ top10_sum }} 원'
                         }
                     ]
                 },
-                tooltip:{
-                    enable: true
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var currentValue = dataset.data[tooltipItem.index];
+                        return Number(currentValue).toLocaleString() + ' 원';
+                    }
                 }
             },
-            title: {
-                display: true,
-                text: '법인카드 상위10'
-            },
             legend: {
-                position : 'right'
+                position: 'right'
             },
-            responsive : true,
-			cutoutPercentage: 80,
-			maintainAspectRatio: false
         }
     };
 
@@ -183,36 +215,64 @@
             datasets: [
                 {
                     data: {{ avg_data|safe }},                   //데이터
-                    backgroundColor: Samples.utils.colors(2)     //bar Color
+                    backgroundColor: ['#4e73df', '#36b9cc'],
+                    hoverBackgroundColor: ['#2e59d9', '#2c9faf'],
+                    borderColor: "rgba(234, 236, 244, 1)",
                 }
 
             ],
         },
         options: {                                               //chart Option
-            plugins: {
-            },
-            elements: {
-              bar: {
-                borderWidth: 2,
-              }
-            },
-            title: {
-                display: true,
-                text: '법인카드 평균지출, 평균대비 현지출'
-            },
-            legend: {
-                display : false
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
             },
             scales: {
                 xAxes: [{
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    },
                     ticks: {
-                        maxTicksLimit: 3
-                    }
+                        maxTicksLimit: 3,
+                        callback: function(value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    },
+                    maxBarThickness: 25,
                 }]
             },
-            responsive : true,
-            maintainAspectRatio: false
-        },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        return Number(tooltipItem.xLabel).toLocaleString() + ' 원';
+                    }
+                }
+            }
+        }
     };
 
     const exChartConfig3 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
@@ -235,7 +295,7 @@
               }
             },
             title: {
-                display: true,
+                display: false,
                 text: '법인카드 월별 증감'
             },
             legend: {
@@ -248,7 +308,7 @@
                     }
                 }]
             },
-            responsive : true,
+            responsive: true,
             maintainAspectRatio: false
         },
     };
@@ -273,7 +333,7 @@
               }
             },
             title: {
-                display: true,
+                display: false,
                 text: '법인카드 전년, 전월 비교'
             },
             scales: {
@@ -286,7 +346,7 @@
             legend: {
                 display: false
             },
-            responsive : true,
+            responsive: true,
             maintainAspectRatio: false
         },
     };
