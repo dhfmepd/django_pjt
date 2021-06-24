@@ -31,7 +31,7 @@ def interface_ora(request):
         # Source DB 데이터 조회
         dsn = cx_Oracle.makedsn(source_ip, source_port, source_sid)
         db = cx_Oracle.connect(source_user, source_password, dsn)
-
+        print("Oracle DB Connect Success")
         # 일자 설정
         now_str = str(datetime.datetime.now())[0:19]
         #now_str = "2021-06-09 16:08:39.177615"
@@ -52,11 +52,11 @@ def interface_ora(request):
                 if not text:
                     break
                 target_sql += text
-
+        print("[INFO] SQL : {}".format(source_sql))
         cursor = db.cursor()
         cursor.execute(source_sql) # Source SQL FILE로 관리 후 Read 하여 처리
         result_list = cursor.fetchall()
-        print("[INFO] SQL : {}".format(source_sql))
+
         cursor.close()
         db.close()
 
