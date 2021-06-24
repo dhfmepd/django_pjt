@@ -1,3 +1,4 @@
+import cx_Oracle
 from django.shortcuts import render
 from konlpy.tag import Okt
 from django.core.mail import EmailMessage
@@ -43,3 +44,23 @@ def email_send(request):
         return render(request, 'sample/email_send.html', {})
 
     return render(request, 'sample/email_send.html', {})
+
+def ora_conn(request):
+    sql = request.POST.get('sql', 'SELECT 1 FROM DUAL')
+    if request.method == 'POST':
+
+        dsn = cx_Oracle.makedsn("52.2.142.63", "1525", "FVWQA")
+        db = cx_Oracle.connect("fvsrm", "qwer!@", dsn)
+
+        cursor = db.cursor()
+        cursor.execute(sql)
+        data_list = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        context = {'sql': sql, 'data_list': data_list}
+        return render(request, 'sample/ora_conn.html', context)
+
+    context = {'sql': sql}
+    return render(request, 'sample/ora_conn.html', context)
