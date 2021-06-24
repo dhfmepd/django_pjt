@@ -152,14 +152,84 @@ def get_monthly_year_list():
 
     return list
 
+######################################## 기타경비 #########################################
+
 @login_required(login_url='common:login')
 def etc_exp_analy(request):
     """
     기타 경비분석 Dashboard
     """
-    
-    return render(request, 'analysis/normal_exp_analy.html', {})
 
+    # 1. 예산 Chart
+    budget_info = get_budget_info()
+
+    if budget_info is not None:
+        act_amt = '{:,}'.format(budget_info[0])
+        use_amt = '{:,}'.format(budget_info[1])
+        rem_amt = '{:,}'.format(budget_info[2])
+        gol_amt = '{:,}'.format(budget_info[3])
+    else:
+        act_amt = '{:,}'.format(0)
+        use_amt = '{:,}'.format(0)
+        rem_amt = '{:,}'.format(0)
+        gol_amt = '{:,}'.format(0)
+
+    budget_data = [int(budget_info[0]), int(budget_info[1]), int(budget_info[3])]
+
+    # 2. 부서상위 Top5 Chart
+    top5_list = get_topcost_info()
+
+    top5_label = []
+    top5_data = []
+
+    for r_idx, top5_info in enumerate(top5_list):
+        top5_label.append(top5_info[1])
+        top5_data.append(str(top5_info[2]))
+
+    context = {'act_amt': act_amt, 'use_amt': use_amt, 'rem_amt': rem_amt, 'gol_amt': gol_amt,
+               'budget_data': budget_data, 'top5_label': top5_label, 'top5_data': top5_data}
+
+    return render(request, 'analysis/etc_exp_analy.html', context)
+
+def get_budget_info():
+    sql_str = "SELECT TRUNCATE(act_bud, 0) as act_amt, TRUNCATE(use_bud, 0) as use_amt, TRUNCATE(rem_bud, 0) as rem_amt, TRUNCATE(goal, 0) as gol_amt "
+    sql_str += "  FROM cjfv_oneexp.EX_BUDGET "
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchone()
+
+    return list
+
+def get_topcost_info():
+    """
+    부서 상위 Top 5 SQL
+    """
+    sql_str = "	SELECT Z.CST_CENTR_CD,	"
+    sql_str += " (SELECT CST.CST_CNTR_NM	"
+    sql_str += "	          FROM EX_BS_CST_CNTR CST "
+    sql_str += "			 WHERE CST.COM_CD = '1000'	"
+    sql_str += "	           AND CST.CST_CNTR_CD = Z.CST_CENTR_CD) AS CST_CNTR_NM	"
+    sql_str += "	     , IFNULL(ROUND(Z.TOT_AMT, 0), 0) AS TOT_AMT "
+    sql_str += "	  FROM (	"
+    sql_str += "			SELECT A.CST_CENTR_CD, A.TOT_AMT, RANK()OVER(ORDER BY A.TOT_AMT DESC) AS RANKING FROM	"
+    sql_str += "	        (	SELECT TMP.CST_CENTR_CD, SUM(TMP.TOT_AMT) AS TOT_AMT FROM "
+    sql_str += "		(	SELECT CST_CENTR_CD, APV_SUM_AMT AS TOT_AMT FROM EX_CORPCARD_ASK WHERE COM_CD = '1000' AND APV_DD LIKE '202104%' "
+    sql_str += "			UNION ALL	"
+    sql_str += "				SELECT CST_CENTR_CD, ECAL_AMT AS TOT_AMT FROM EX_EXPN_ETC WHERE COM_CD = '1000' AND OCCR_YMD LIKE '202104%' "
+    sql_str += "				) TMP	"
+    sql_str += "				GROUP BY TMP.CST_CENTR_CD "
+    sql_str += "				    ) A	 "
+    sql_str += "				   ) Z	"
+    sql_str += "				 WHERE Z.RANKING <= 5	"
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+######################################## OCR #########################################
 
 class FeatureType(Enum):
     PAGE = 1

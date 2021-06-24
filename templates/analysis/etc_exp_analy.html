@@ -6,103 +6,82 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">{{ menu.title }}</h1>
-    </div>
-    <!-- Content Row -->
-    <div class="row">
-        <!-- exChart1 -->
-        <div class="col-xl-6 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Category Top 10</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">조회기간 :</div>
-                            <a class="dropdown-item" href="#">최근 3개월</a>
-                            <a class="dropdown-item" href="#">최근 6개월</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="exChart1"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- exChart2 -->
-        <div class="col-xl-6 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Category Trend Line</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">조회기간 :</div>
-                            <a class="dropdown-item" href="#">최근 3개월</a>
-                            <a class="dropdown-item" href="#">최근 6개월</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="exChart2"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        <!--<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>-->
     </div>
 
     <!-- Content Row -->
     <div class="row">
-        <!-- exChart3 -->
-        <div class="col-xl-6 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Monthly 증감 현황</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">조회기간 :</div>
-                            <a class="dropdown-item" href="#">최근 3개월</a>
-                            <a class="dropdown-item" href="#">최근 6개월</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card Body -->
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="exChart3"></canvas>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                실제 예산</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ act_amt }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- exChart4 -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                현재 실적</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ use_amt }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                가용 예산</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ rem_amt }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                목표 실적</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ gol_amt }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+
+    <div class="row">
+        <!-- EX Chart 2-1 -->
         <div class="col-xl-6 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Year/Month 비교</h6>
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">부서 상위 현황</h6>
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -119,7 +98,36 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="exChart4"></canvas>
+                        <canvas id="barChart1"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EX Chart 2-2 -->
+        <div class="col-xl-6 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">예산 현황</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                            aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">조회기간 :</div>
+                            <a class="dropdown-item" href="#">최근 3개월</a>
+                            <a class="dropdown-item" href="#">최근 6개월</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="barChart2"></canvas>
                     </div>
                 </div>
             </div>
@@ -130,164 +138,100 @@
 {% block script %}
 <script type='text/javascript'>
 
-    const exChartConfig1 = {                                        //https://www.chartjs.org/docs/2.9.4/charts/bar.html
-        type: 'doughnut',                                           //Chart Type ex: doughnut, pie, line, bar ...
-        data: {                                                     //Data Setting
-            labels: {{ top10_label|safe }},   //라벨 명칭
+    const barChartConfig1 = {
+        type: 'bar',
+        data: {
+            labels: {{ top5_label|safe }},   //라벨 명칭
             datasets: [{
-                data: {{ top10_data|safe }},                             //데이터
+                label: '경비실적',
+                data: {{ top5_data|safe }},                             //데이터
                 backgroundColor: Samples.utils.colors(10)
             }],
         },
-        options: {                                                  //chart Option
-            plugins: {                                              //chart 기본 옵션 외 plugin
-                doughnutlabel: {                                    //doutnut 안쪽 텍스트 설정()
-                    labels: [                                       //배열구조로 {}로 N개 Line으로 설정 가능 추가 기능 API문서 참조
-                        {
-                            text: '상위 Top10 합계'
-                        },
-                        {
-                            text: '{{ top10_sum }}'
-                        }
-                    ]
-                },
-                tooltip:{
-                    enable: true
+        options: {
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
                 }
             },
-            title: {
-                display: true,
-                text: '법인카드 상위10'
+            scales: {
+                xAxes: [{
+                    stacked: true,
+                    gridLines: {
+                        display: false,
+                    }
+                }],
+                yAxes: [{
+                    stacked: true,
+                    ticks: {
+                        beginAtZero: true,
+                    },
+                    type: 'linear',
+                }]
             },
-             legend: {
-                position : 'right'
-             },
-             responsive : true,
-			cutoutPercentage: 80
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+            },
         }
     };
 
-    const exChartConfig2 = {                                  //https://www.chartjs.org/docs/2.9.4/charts/bar.html
-        type: 'horizontalBar',                                  //Chart Type ex: doughnut, pie, line, bar ...
-        data: {                                                 //Data Setting
-            labels: ['월 평균', '당월 승인 합계'],        //라벨 명칭
+    const barChartConfig2 = {
+        type: 'horizontalBar',
+        data: {
+            labels: ['실제예산', '지출실적', '목표지출실적'],
             datasets: [
                 {
-                    data: {{ avg_data|safe }},                     //데이터
-                    backgroundColor: Samples.utils.colors(2)     //bar Color
+                    label: 'KRW/원',
+                    data: {{ budget_data|safe }},                     //데이터
+                    backgroundColor: window.chartColors.red     //bar Color
                 }
-
             ],
         },
         options: {                                               //chart Option
             plugins: {
             },
             elements: {
-              bar: {
-                borderWidth: 2,
-              }
+               bar: {
+                  borderWidth: 2,
+                }
             },
-            title: {
-                display: true,
-                text: '법인카드 평균지출, 평균대비 현지출'
-            },
-             legend: {
+            legend: {
                 display : false
-             },
+            },
             scales: {
                 xAxes: [{
                     ticks: {
                         maxTicksLimit: 3
                     }
                 }]
-             },
-             responsive : true
-        },
-    };
-
-    const exChartConfig3 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
-        type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
-        data: {                                                 //Data Setting
-            labels: {{ monthly_label|safe }},        //라벨 명칭
-            datasets: [
-                {
-                    data: {{ monthly_data|safe }},                     //데이터
-                    backgroundColor: Samples.utils.colors(2)     //bar Color
-                }
-            ],
-        },
-        options: {                                               //chart Option
-            plugins: {
             },
-            elements: {
-              bar: {
-                borderWidth: 2,
-              }
-            },
-            title: {
-                display: true,
-                text: '법인카드 월별 증감'
-            },
-             legend: {
-                display: false
-             },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        maxTicksLimit: 3
-                    }
-                }]
-             },
-             responsive : true
-        },
-    };
-
-    const exChartConfig4 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
-        type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
-        data: {                                                 //Data Setting
-            labels: {{ monthly_year_label|safe }},        //라벨 명칭
-            datasets: [
-                {
-                    data: {{ monthly_year_data|safe }},                     //데이터
-                    backgroundColor: Samples.utils.colors(2)     //bar Color
-                }
-            ],
-        },
-        options: {                                               //chart Option
-            plugins: {
-            },
-            elements: {
-              bar: {
-                borderWidth: 2,
-              }
-            },
-            title: {
-                display: true,
-                text: '법인카드 전년, 전월 비교'
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        maxTicksLimit: 3
-                    }
-                }]
-             },
-             legend: {
-                display: false
-             },
-             responsive : true
-        },
+            responsive : true
+        }
     };
 
     window.onload = function() {
-        var exChartCanvas1 = document.getElementById('exChart1').getContext('2d');
-        var exChartCanvas2 = document.getElementById('exChart2').getContext('2d');
-        var exChartCanvas3 = document.getElementById('exChart3').getContext('2d');
-        var exChartCanvas4 = document.getElementById('exChart4').getContext('2d');
-        var exChart1 = new Chart(exChartCanvas1, exChartConfig1);
-        var exChart2 = new Chart(exChartCanvas2, exChartConfig2);
-        var exChart3 = new Chart(exChartCanvas3, exChartConfig3);
-        var exChart4 = new Chart(exChartCanvas4, exChartConfig4);
+        var barCanvas1 = document.getElementById('barChart1').getContext('2d');
+        var barCanvas2 = document.getElementById('barChart2').getContext('2d');
+        var barChart1 = new Chart(barCanvas1, barChartConfig1);
+        var barChart2 = new Chart(barCanvas2, barChartConfig2);
     };
+
 </script>
 {% endblock %}
