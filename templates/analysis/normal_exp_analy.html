@@ -5,9 +5,11 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">일반/법인카드 경비분석</h1>
-    </div>
+    <h1 class="h3 mb-2 text-gray-800">
+        <i class="fas fa-fw fa-table"></i>
+        <span class="text">일반/법인카드 경비분석</span>
+    </h1>
+
     <!-- Content Row -->
     <div class="row">
         <!-- exChart1 -->
@@ -160,6 +162,14 @@
             responsive: true,
 			cutoutPercentage: 80,
 			maintainAspectRatio: false,
+			layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
             plugins: {                                              //chart 기본 옵션 외 plugin
                 doughnutlabel: {                                    //doutnut 안쪽 텍스트 설정()
                     labels: [                                       //배열구조로 {}로 N개 Line으로 설정 가능 추가 기능 API문서 참조
