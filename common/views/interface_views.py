@@ -33,8 +33,8 @@ def interface_ora(request):
         db = cx_Oracle.connect(source_user, source_password, dsn)
 
         # 일자 설정
-        # now_str = str(datetime.datetime.now())[0:19]
-        now_str = "2021-06-09 16:08:39.177615"
+        now_str = str(datetime.datetime.now())[0:19]
+        #now_str = "2021-06-09 16:08:39.177615"
         now_str = now_str[0:19]
 
         # 테이블 지정 Case
@@ -56,7 +56,7 @@ def interface_ora(request):
         cursor = db.cursor()
         cursor.execute(source_sql) # Source SQL FILE로 관리 후 Read 하여 처리
         result_list = cursor.fetchall()
-
+        print("[INFO] SQL : {}".format(source_sql))
         cursor.close()
         db.close()
 
@@ -109,7 +109,7 @@ def interface_ora(request):
 
             # Target DB 데이터 저장
             cursor = connection.cursor()
-
+            print("[INFO] SQL : {}".format(temp_sql))
             cursor.execute(temp_sql)
             cursor.fetchall()
 
