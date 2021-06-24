@@ -16,6 +16,7 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">경비 Category Top 10</h6>
+                    <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -28,6 +29,7 @@
                             <a class="dropdown-item" href="#">최근 6개월</a>
                         </div>
                     </div>
+                    -->
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -44,6 +46,7 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">경비 Category Trend Line</h6>
+                    <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -56,6 +59,7 @@
                             <a class="dropdown-item" href="#">최근 6개월</a>
                         </div>
                     </div>
+                    -->
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -75,6 +79,7 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">경비 Monthly 증감 현황</h6>
+                    <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -87,6 +92,7 @@
                             <a class="dropdown-item" href="#">최근 6개월</a>
                         </div>
                     </div>
+                    -->
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -103,6 +109,7 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">경비 Year/Month 비교</h6>
+                    <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -115,6 +122,7 @@
                             <a class="dropdown-item" href="#">최근 6개월</a>
                         </div>
                     </div>
+                    -->
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -159,11 +167,12 @@
                 display: true,
                 text: '법인카드 상위10'
             },
-             legend: {
+            legend: {
                 position : 'right'
-             },
-             responsive : true,
-			cutoutPercentage: 80
+            },
+            responsive : true,
+			cutoutPercentage: 80,
+			maintainAspectRatio: false
         }
     };
 
@@ -191,17 +200,18 @@
                 display: true,
                 text: '법인카드 평균지출, 평균대비 현지출'
             },
-             legend: {
+            legend: {
                 display : false
-             },
+            },
             scales: {
                 xAxes: [{
                     ticks: {
                         maxTicksLimit: 3
                     }
                 }]
-             },
-             responsive : true
+            },
+            responsive : true,
+            maintainAspectRatio: false
         },
     };
 
@@ -228,17 +238,18 @@
                 display: true,
                 text: '법인카드 월별 증감'
             },
-             legend: {
+            legend: {
                 display: false
-             },
+            },
             scales: {
                 yAxes: [{
                     ticks: {
                         maxTicksLimit: 3
                     }
                 }]
-             },
-             responsive : true
+            },
+            responsive : true,
+            maintainAspectRatio: false
         },
     };
 
@@ -271,11 +282,12 @@
                         maxTicksLimit: 3
                     }
                 }]
-             },
-             legend: {
+            },
+            legend: {
                 display: false
-             },
-             responsive : true
+            },
+            responsive : true,
+            maintainAspectRatio: false
         },
     };
 
