@@ -60,7 +60,7 @@ class Code(models.Model):
     detail_code_name = models.CharField(max_length=100)
     use_flag = models.CharField(max_length=1)
     sort_no = models.IntegerField()
-    remark = models.TextField()
+    remark = models.TextField(null=True)
 
 
 
