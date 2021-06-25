@@ -53,3 +53,14 @@ class ReceiveHistory(models.Model):
     total_count = models.IntegerField(default=0)
     performer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='performer_receive_history')
     create_date = models.DateTimeField()
+
+class Code(models.Model):
+    group_code = models.CharField(max_length=10)
+    detail_code = models.CharField(max_length=10)
+    detail_code_name = models.CharField(max_length=100)
+    use_flag = models.CharField(max_length=1)
+    sort_no = models.IntegerField()
+    remark = models.TextField()
+
+
+
