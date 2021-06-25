@@ -15,6 +15,9 @@ class Board(models.Model):
     def __str__(self):
         return self.subject
 
+    class Meta:
+        verbose_name_plural = '게시판'
+
 class Reply(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_reply')
     board = models.ForeignKey(Board, on_delete=models.CASCADE)

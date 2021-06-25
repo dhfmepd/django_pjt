@@ -35,3 +35,6 @@ urlpatterns = [
 ] + static(settings.UPLOAD_URL, protected_file, document_root=settings.UPLOAD_ROOT)
 # DEBUG False 에 페이지 발동
 handler404 = 'common.views.base_views.page_not_found'
+admin.site.site_header = 'CJ ONE EXPENSE Admin'
+admin.site.site_title = 'CJ ONE EXPENSE Admin Portal'
+admin.site.index_title = 'Welcome to CJ ONE EXPENSE Admin Portal'
