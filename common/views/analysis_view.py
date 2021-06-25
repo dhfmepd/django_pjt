@@ -13,7 +13,7 @@ def analysis_nlp(request):
     #예측 실행 버튼 클릭 시 타는 구문
     if request.method == 'POST':
 
-        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC WHERE LABEL_CATE_CD IS NULL"
+        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC WHERE OCCR_YMD LIKE '202106%' LABEL_CATE_CD IS NULL"
         # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요, LABEL_CATE_CD : 라벨링
         with connection.cursor() as cursor:
             cursor.execute(sql_str)

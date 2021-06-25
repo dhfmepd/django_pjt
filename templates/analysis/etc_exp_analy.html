@@ -199,18 +199,18 @@
             datasets: [
                 {
                     label: 'KRW/원',
-                    data: {{ budget_data|safe }},                     //데이터
-                    backgroundColor: window.chartColors.red     //bar Color
+                    data: {{ budget_data|safe }},
+                    backgroundColor: window.chartColors.red
                 }
             ],
         },
-        options: {                                               //chart Option
+        options: {
             plugins: {
             },
             elements: {
                bar: {
                   borderWidth: 2,
-                }
+               }
             },
             legend: {
                 display : false
@@ -222,7 +222,8 @@
                     }
                 }]
             },
-            responsive : true
+            responsive: true,
+            maintainAspectRatio: false,
         }
     };
 
