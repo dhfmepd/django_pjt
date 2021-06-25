@@ -56,10 +56,9 @@ class ReceiveHistory(models.Model):
 
 class Code(models.Model):
     group_code = models.CharField(max_length=10)
-    group_code_name = models.CharField(max_length=100)
     detail_code = models.CharField(max_length=10)
     detail_code_name = models.CharField(max_length=100)
-    reference_value = models.CharField(max_length=50)
+    reference_value = models.CharField(max_length=50, null=True)
     use_flag = models.CharField(max_length=1)
     sort_no = models.IntegerField()
     remark = models.TextField(null=True)
