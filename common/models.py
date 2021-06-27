@@ -23,6 +23,9 @@ class File(models.Model):
     def __str__(self):
         return self.file_name
     
+    class Meta:
+        verbose_name_plural = '첨부파일'
+    
     # 파일 삭제 시 파일데이터 함꼐 삭제
     def delete(self, *args, **kargs):
         if self.file_data:
@@ -40,6 +43,7 @@ class Menu(MPTTModel):
 
     class Meta:
         ordering = ['sort_no', 'lft']
+        verbose_name_plural = '메뉴관리'
 
     class MPTTMeta:
         order_insertion_by = ['sort_no']
@@ -53,18 +57,21 @@ class ReceiveHistory(models.Model):
     total_count = models.IntegerField(default=0)
     performer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='performer_receive_history')
     create_date = models.DateTimeField()
+    
+    class Meta:
+        verbose_name_plural = '수신이력'
 
 class Code(models.Model):
     group_code = models.CharField(max_length=10)
     detail_code = models.CharField(max_length=10)
     detail_code_name = models.CharField(max_length=100)
-    reference_value = models.CharField(max_length=50, null=True)
-    use_flag = models.CharField(max_length=1)
+    reference_value = models.CharField(max_length=50, null=True, blank=True)
+    use_flag = models.BooleanField(default=True)
     sort_no = models.IntegerField()
-    remark = models.TextField(null=True)
+    remark = models.TextField(null=True, blank=True)
 
-    def __str__(self):
-        return self.group_code + ' - ' + self.detail_code + ' (' + self.detail_code_name + ')'
+    class Meta:
+        verbose_name_plural = '공통코드'
 
 
 
