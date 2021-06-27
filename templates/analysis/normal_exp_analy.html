@@ -49,7 +49,7 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Category Trend Line</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">경비 Average and Now</h6>
                     <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
@@ -139,6 +139,39 @@
                     </div>
                     <hr>
                     법인카드 전년, 전월 비교
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- exChart5 -->
+        <div class="col-xl-7 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">경비 Category Trend Line</h6>
+                    <!--
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                            aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">조회기간 :</div>
+                            <a class="dropdown-item" href="#">최근 3개월</a>
+                            <a class="dropdown-item" href="#">최근 6개월</a>
+                        </div>
+                    </div>
+                    -->
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="exChart5"></canvas>
+                    </div>
+                    <hr>
+                    법인카드 최근 3개월 상위 10 증감 추이
                 </div>
             </div>
         </div>
@@ -294,19 +327,44 @@
                 borderWidth: 2,
               }
             },
-            title: {
-                display: false,
-                text: '법인카드 월별 증감'
-            },
             legend: {
                 display: false
             },
             scales: {
                 yAxes: [{
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    },
                     ticks: {
-                        maxTicksLimit: 3
-                    }
+                        maxTicksLimit: 3,
+                        callback: function(value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    },
+                    maxBarThickness: 25,
                 }]
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        return Number(tooltipItem.xLabel).toLocaleString() + ' 원';
+                    }
+                }
             },
             responsive: true,
             maintainAspectRatio: false
@@ -351,15 +409,58 @@
         },
     };
 
+    const exChartConfig5 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
+        type: 'line',                                            //Chart Type ex: doughnut, pie, line, bar ...
+        data: {                                                 //Data Setting
+            labels: {{ top10_monthly_label|safe }},              //라벨 명칭
+            datasets: [
+            {% if top10_monthly_data_list %}
+            {% for monthly_data in top10_monthly_data_list %}
+                {
+                    label: {{ monthly_data.label|safe }},
+                    data: {{ monthly_data.data|safe }},              //데이터
+                    borderColor: Samples.utils.color({{forloop.counter0}}),       //line Color
+                    fill: false                                 //chart backgroundcolor 채우기 여부
+                },
+            {% endfor %}
+            {% endif %}
+            ],
+        },
+        options: {                                               //chart Option
+            plugins: {
+            },
+            elements: {
+              bar: {
+                borderWidth: 2,
+              }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        maxTicksLimit: 3
+                    }
+                }]
+            },
+            legend: {
+                display: 'true',
+                position : 'right'
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        },
+    };
+
     window.onload = function() {
         var exChartCanvas1 = document.getElementById('exChart1').getContext('2d');
         var exChartCanvas2 = document.getElementById('exChart2').getContext('2d');
         var exChartCanvas3 = document.getElementById('exChart3').getContext('2d');
         var exChartCanvas4 = document.getElementById('exChart4').getContext('2d');
+        var exChartCanvas5 = document.getElementById('exChart5').getContext('2d');
         var exChart1 = new Chart(exChartCanvas1, exChartConfig1);
         var exChart2 = new Chart(exChartCanvas2, exChartConfig2);
         var exChart3 = new Chart(exChartCanvas3, exChartConfig3);
         var exChart4 = new Chart(exChartCanvas4, exChartConfig4);
+        var exChart5 = new Chart(exChartCanvas5, exChartConfig5);
     };
 </script>
 {% endblock %}
