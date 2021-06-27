@@ -10848,7 +10848,9 @@ form.user .custom-checkbox.small label {
 form.user .form-control-user {
   font-size: 0.8rem;
   border-radius: 10rem;
-  padding: 1.5rem 1rem;
+  //IE 호환성 문제 개선
+  //padding: 1.5rem 1rem;
+  padding: 1.5 1rem;
 }
 
 form.user .btn-user {
