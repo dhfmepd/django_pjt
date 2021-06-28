@@ -109,22 +109,18 @@ def main(request):
     return render(request, 'common/main.html', context)
 
 def get_top_info():
-    sql_str = "SELECT a.total_count AS c_total_count, b.total_count AS e_total_count, "
-    sql_str += "      CASE WHEN a.create_date > b.create_date THEN a.create_date ELSE b.create_date END AS max_create_date "
-    sql_str += "      ,(SELECT ROUND(IFNULL(SUM(CASE WHEN label_cate_cd IS NOT NULL THEN 1 ELSE 0 END) / COUNT(1), 0), 1) "
-    sql_str += "          FROM EX_EXPN_ETC) AS text_analy_rate "
-    sql_str += "  FROM "
-    sql_str += "(SELECT '1' as key_field, total_count, create_date "
-    sql_str += "   FROM common_receivehistory "
-    sql_str += "  WHERE table_name = 'EX_CORPCARD_ASK' "
-    sql_str += "  ORDER BY create_date DESC LIMIT 1) a, "
-    sql_str += "(SELECT '1' as key_field, total_count, create_date "
-    sql_str += "   FROM common_receivehistory "
-    sql_str += "  WHERE table_name = 'EX_EXPN_ETC' "
-    sql_str += "  ORDER BY create_date DESC LIMIT 1) b "
-    sql_str += "WHERE a.key_field = b.key_field "
+    sql_str = "SELECT TMP.c_total_count "
+    sql_str += "     , TMP.e_total_count "
+    sql_str += "     , TMP.last_create_date "
+    sql_str += "     , ROUND(IFNULL(TMP.e_ml_fin_count / TMP.e_total_count, 0), 0) AS e_ml_fin_rate "
+    sql_str += "  FROM ( "
+    sql_str += "	SELECT (SELECT COUNT(1) FROM EX_CORPCARD_ASK) AS c_total_count "
+    sql_str += "		 , (SELECT COUNT(1) FROM EX_EXPN_ETC) AS e_total_count "
+    sql_str += "		 , (SELECT MAX(create_date) FROM common_receivehistory) AS last_create_date "
+    sql_str += "         , (SELECT COUNT(1) FROM EX_EXPN_ETC WHERE LABEL_CATE_CD IS NOT NULL) AS e_ml_fin_count "
+    sql_str += "	  FROM DUAL) TMP "
 
-    print("[INFO] SQL : {}".format(sql_str))
+    # print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -147,7 +143,7 @@ def get_chart_info():
     sql_str += "ON a.key_ym = DATE_FORMAT(b.create_date, '%Y-%m') "
     sql_str += "GROUP BY a.key_ym "
 
-    print("[INFO] SQL : {}".format(sql_str))
+    # print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)

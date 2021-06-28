@@ -76,12 +76,12 @@
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ e_total_count }}%</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ text_analy_rate }}%</div>
                                 </div>
                                 <div class="col">
                                     <div class="progress progress-sm mr-2">
                                         <div class="progress-bar bg-warning" role="progressbar"
-                                            style="width: {{ e_total_count }}%" aria-valuenow="{{ e_total_count }}" aria-valuemin="0"
+                                            style="width: {{ text_analy_rate }}%" aria-valuenow="{{ text_analy_rate }}" aria-valuemin="0"
                                             aria-valuemax="100"></div>
                                     </div>
                                 </div>
@@ -236,16 +236,19 @@
                 {
                     label: '법인카드 데이터 수신',
                     data: {{ c_bar_data|safe }},
-                    backgroundColor: '#caf270',
+                    backgroundColor: '#4e73df',
+                    hoverBackgroundColor: '#2e59d9',
                 },
                 {
                     label: '기타경비 데이터 수신',
                     data: {{ e_bar_data|safe }},
-                    backgroundColor: '#45c490',
+                    backgroundColor: '#36b9cc',
+                    hoverBackgroundColor: '#2c9faf',
                 },
             ],
         },
         options: {
+            responsive: true,
             maintainAspectRatio: false,
             layout: {
                 padding: {
@@ -257,17 +260,31 @@
             },
             scales: {
                 xAxes: [{
-                    stacked: true,
-                    gridLines: {
-                        display: false,
-                    }
+                        stacked: true,
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 6,
+                        },
+                        maxBarThickness: 50,
                 }],
                 yAxes: [{
-                    stacked: true,
-                    ticks: {
-                        beginAtZero: true,
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
                     },
-                    type: 'linear',
+                    ticks: {
+                        maxTicksLimit: 4,
+                        callback: function(value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    },
+                    maxBarThickness: 25,
                 }]
             },
             legend: {
@@ -285,8 +302,14 @@
                 yPadding: 15,
                 displayColors: false,
                 caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        return chart.datasets[tooltipItem.datasetIndex].label + ' : ' + Number(tooltipItem.yLabel).toLocaleString() + ' 건';
+                    }
+                }
             },
         }
+
     };
 
     window.onload = function() {

@@ -82,6 +82,7 @@
                 <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">부서 상위 현황</h6>
+                    <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -94,6 +95,7 @@
                             <a class="dropdown-item" href="#">최근 6개월</a>
                         </div>
                     </div>
+                    -->
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -111,6 +113,7 @@
                 <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">예산 현황</h6>
+                    <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -123,6 +126,7 @@
                             <a class="dropdown-item" href="#">최근 6개월</a>
                         </div>
                     </div>
+                    -->
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -143,12 +147,13 @@
         data: {
             labels: {{ top5_label|safe }},   //라벨 명칭
             datasets: [{
-                label: '경비실적',
                 data: {{ top5_data|safe }},                             //데이터
-                backgroundColor: Samples.utils.colors(10)
+                backgroundColor: ['#4e73df', '#36b9cc', '#1cc88a', '#f6c23e', '#e74a3b'],
+                hoverBackgroundColor: ['#2e59d9', '#2c9faf', '#169b6b', '#f4b619', '#e02d1b'],
             }],
         },
-        options: {
+        options: {                                               //chart Option
+            responsive: true,
             maintainAspectRatio: false,
             layout: {
                 padding: {
@@ -160,17 +165,29 @@
             },
             scales: {
                 xAxes: [{
-                    stacked: true,
-                    gridLines: {
-                        display: false,
-                    }
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 6,
+                        },
+                        maxBarThickness: 70,
                 }],
                 yAxes: [{
-                    stacked: true,
-                    ticks: {
-                        beginAtZero: true,
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
                     },
-                    type: 'linear',
+                    ticks: {
+                        maxTicksLimit: 4,
+                        callback: function(value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    },
                 }]
             },
             legend: {
@@ -188,8 +205,15 @@
                 yPadding: 15,
                 displayColors: false,
                 caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        return Number(tooltipItem.yLabel).toLocaleString() + ' 원';
+                    }
+                }
             },
-        }
+            responsive: true,
+            maintainAspectRatio: false
+        },
     };
 
     const barChartConfig2 = {
@@ -200,30 +224,67 @@
                 {
                     label: 'KRW/원',
                     data: {{ budget_data|safe }},
-                    backgroundColor: window.chartColors.red
+                    backgroundColor: ['#36b9cc', '#1cc88a', '#4e73df'],
+                    hoverBackgroundColor: ['#2c9faf', '#169b6b', '#2e59d9'],
                 }
             ],
         },
         options: {
-            plugins: {
-            },
-            elements: {
-               bar: {
-                  borderWidth: 2,
-               }
-            },
-            legend: {
-                display : false
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
             },
             scales: {
                 xAxes: [{
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    },
                     ticks: {
-                        maxTicksLimit: 3
+                        maxTicksLimit: 4,
+                        callback: function(value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
                     }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    maxBarThickness: 50,
                 }]
             },
-            responsive: true,
-            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        return Number(tooltipItem.xLabel).toLocaleString() + ' 원';
+                    }
+                }
+            }
         }
     };
 

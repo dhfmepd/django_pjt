@@ -13,7 +13,7 @@
     <!-- Content Row -->
     <div class="row">
         <!-- exChart1 -->
-        <div class="col-xl-6 col-lg-5">
+        <div class="col-xl-5 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -44,107 +44,6 @@
             </div>
         </div>
 
-        <!-- exChart2 -->
-        <div class="col-xl-6 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Average and Now</h6>
-                    <!--
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">조회기간 :</div>
-                            <a class="dropdown-item" href="#">최근 3개월</a>
-                            <a class="dropdown-item" href="#">최근 6개월</a>
-                        </div>
-                    </div>
-                    -->
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="exChart2"></canvas>
-                    </div>
-                    <hr>
-                    법인카드 평균지출, 평균대비 현지출
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Content Row -->
-    <div class="row">
-        <!-- exChart3 -->
-        <div class="col-xl-7 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Monthly 증감 현황</h6>
-                    <!--
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">조회기간 :</div>
-                            <a class="dropdown-item" href="#">최근 3개월</a>
-                            <a class="dropdown-item" href="#">최근 6개월</a>
-                        </div>
-                    </div>
-                    -->
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="exChart3"></canvas>
-                    </div>
-                    <hr>
-                    법인카드 월별 증감 추이
-                </div>
-            </div>
-        </div>
-
-        <!-- exChart4 -->
-        <div class="col-xl-5 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Year/Month 비교</h6>
-                    <!--
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">조회기간 :</div>
-                            <a class="dropdown-item" href="#">최근 3개월</a>
-                            <a class="dropdown-item" href="#">최근 6개월</a>
-                        </div>
-                    </div>
-                    -->
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="exChart4"></canvas>
-                    </div>
-                    <hr>
-                    법인카드 전년, 전월 비교
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <!-- exChart5 -->
         <div class="col-xl-7 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -168,10 +67,108 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-area">
+                        <canvas id="exChart2"></canvas>
+                    </div>
+                    <hr>
+                    법인카드 최근 6개월 상위 10 증감 추이
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <!-- exChart2 -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">경비 Average and Now</h6>
+                    <!--
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                            aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">조회기간 :</div>
+                            <a class="dropdown-item" href="#">최근 3개월</a>
+                            <a class="dropdown-item" href="#">최근 6개월</a>
+                        </div>
+                    </div>
+                    -->
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="exChart3"></canvas>
+                    </div>
+                    <hr>
+                    법인카드 평균지출, 평균대비 현지출
+                </div>
+            </div>
+        </div>
+        <!-- exChart3 -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">경비 Monthly 증감 현황</h6>
+                    <!--
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                            aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">조회기간 :</div>
+                            <a class="dropdown-item" href="#">최근 3개월</a>
+                            <a class="dropdown-item" href="#">최근 6개월</a>
+                        </div>
+                    </div>
+                    -->
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="exChart4"></canvas>
+                    </div>
+                    <hr>
+                    법인카드 월별 증감 추이
+                </div>
+            </div>
+        </div>
+
+        <!-- exChart4 -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">경비 Year/Month 비교</h6>
+                    <!--
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                            aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">조회기간 :</div>
+                            <a class="dropdown-item" href="#">최근 3개월</a>
+                            <a class="dropdown-item" href="#">최근 6개월</a>
+                        </div>
+                    </div>
+                    -->
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
                         <canvas id="exChart5"></canvas>
                     </div>
                     <hr>
-                    법인카드 최근 3개월 상위 10 증감 추이
+                    법인카드 전년, 전월 비교
                 </div>
             </div>
         </div>
@@ -186,12 +183,12 @@
         data: {                                                     //Data Setting
             labels: {{ top10_label|safe }},   //라벨 명칭
             datasets: [{
-                data: {{ top10_data|safe }},                             //데이터
+                data: {{ top10_data|safe }},                        //데이터
                 backgroundColor: Samples.utils.colors(10),
                 hoverBorderColor: "rgba(234, 236, 244, 1)",
             }],
         },
-        options: {                                                  //chart Option
+        options: {
             responsive: true,
 			cutoutPercentage: 80,
 			maintainAspectRatio: false,
@@ -203,14 +200,23 @@
                     bottom: 0
                 }
             },
-            plugins: {                                              //chart 기본 옵션 외 plugin
-                doughnutlabel: {                                    //doutnut 안쪽 텍스트 설정()
-                    labels: [                                       //배열구조로 {}로 N개 Line으로 설정 가능 추가 기능 API문서 참조
+            plugins: {
+                doughnutlabel: {
+                    labels: [
                         {
-                            text: '상위 Top10 합계'
+                            text: '상위 Top10 합계',
+                            font: {
+                                size: '20',
+                                weight: 'bold',
+                            },
+                            color: '#6e707e'
                         },
                         {
-                            text: '{{ top10_sum }} 원'
+                            text: '{{ top10_sum }} 원',
+                            font: {
+                                size: '15'
+                            },
+                            color: '#6e707e'
                         }
                     ]
                 },
@@ -242,20 +248,106 @@
     };
 
     const exChartConfig2 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
+        type: 'line',                                           //Chart Type ex: doughnut, pie, line, bar ...
+        data: {                                                 //Data Setting
+            labels: {{ top10_monthly_label|safe }},             //라벨 명칭
+            datasets: [
+            {% if top10_monthly_data_list %}
+            {% for monthly_data in top10_monthly_data_list %}
+                {
+                    label: '{{ monthly_data.label|safe }}',
+                    data: {{ monthly_data.data|safe }},
+                    borderColor: Samples.utils.color({{forloop.counter0}}),
+                    fill: false,
+                    lineTension: 0,
+                },
+            {% endfor %}
+            {% endif %}
+            ],
+        },
+        options: {                                               //chart Option
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
+            legend: {
+                display: 'true',
+                position : 'right'
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        userCallback: function (value, index, values) {
+                            return value.substr(0, 4) + '-' + value.substr(4, 2);
+                        }
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        maxTicksLimit: 5,
+                        padding: 10,
+                        userCallback: function (value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    },
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    }
+                }],
+
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    title: function(tooltipItem, data) {
+                        return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
+                    },
+                    label: function(tooltipItem, data) {
+                        return ' ' + data.datasets[tooltipItem.datasetIndex].label + ' : ' + Number(tooltipItem.yLabel).toLocaleString() + ' 원';
+                    },
+                },
+            },
+        },
+    };
+
+    const exChartConfig3 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'horizontalBar',                                  //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
             labels: ['월 평균', '당월 승인 합계'],                 //라벨 명칭
             datasets: [
                 {
-                    data: {{ avg_data|safe }},                   //데이터
-                    backgroundColor: ['#4e73df', '#36b9cc'],
-                    hoverBackgroundColor: ['#2e59d9', '#2c9faf'],
-                    borderColor: "rgba(234, 236, 244, 1)",
+                    data: {{ avg_data|safe }},                  //데이터
+                    backgroundColor: ['#36b9cc', '#1cc88a'],
+                    hoverBackgroundColor: ['#2c9faf', '#169b6b'],
                 }
 
             ],
         },
-        options: {                                               //chart Option
+        options: {
             responsive: true,
             maintainAspectRatio: false,
             layout: {
@@ -276,12 +368,18 @@
                         zeroLineBorderDash: [2]
                     },
                     ticks: {
-                        maxTicksLimit: 3,
+                        maxTicksLimit: 4,
                         callback: function(value, index, values) {
                             return Number(value).toLocaleString();
                         }
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
                     },
-                    maxBarThickness: 25,
+                    maxBarThickness: 50,
                 }]
             },
             legend: {
@@ -308,29 +406,43 @@
         }
     };
 
-    const exChartConfig3 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
+    const exChartConfig4 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
             labels: {{ monthly_label|safe }},                   //라벨 명칭
             datasets: [
                 {
-                    data: {{ monthly_data|safe }},               //데이터
-                    backgroundColor: Samples.utils.colors(2)     //bar Color
+                    data: {{ monthly_data|safe }},              //데이터
+                    backgroundColor: ['#1cc88a', '#1cc88a', '#1cc88a'],
+                    hoverBackgroundColor: ['#169b6b', '#169b6b', '#169b6b'],
                 }
             ],
         },
         options: {                                               //chart Option
-            plugins: {
-            },
-            elements: {
-              bar: {
-                borderWidth: 2,
-              }
-            },
-            legend: {
-                display: false
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
             },
             scales: {
+                xAxes: [{
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 6,
+                            callback: function(value, index, values) {
+                                return value.substr(0, 4) + '-' + value.substr(4, 2);
+                            }
+                        },
+                        maxBarThickness: 50,
+                }],
                 yAxes: [{
                     gridLines: {
                         color: "rgb(234, 236, 244)",
@@ -340,13 +452,16 @@
                         zeroLineBorderDash: [2]
                     },
                     ticks: {
-                        maxTicksLimit: 3,
+                        maxTicksLimit: 4,
                         callback: function(value, index, values) {
                             return Number(value).toLocaleString();
                         }
                     },
                     maxBarThickness: 25,
                 }]
+            },
+            legend: {
+                display: false
             },
             tooltips: {
                 titleMarginBottom: 10,
@@ -361,97 +476,92 @@
                 displayColors: false,
                 caretPadding: 10,
                 callbacks: {
+                    title: function(tooltipItem, data) {
+                        return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
+                    },
                     label: function(tooltipItem, chart) {
-                        return Number(tooltipItem.xLabel).toLocaleString() + ' 원';
+                        return Number(tooltipItem.yLabel).toLocaleString() + ' 원';
                     }
                 }
             },
-            responsive: true,
-            maintainAspectRatio: false
         },
     };
 
-    const exChartConfig4 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
+    const exChartConfig5 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
-            labels: {{ monthly_year_label|safe }},              //라벨 명칭
+            labels: ['전년(당월)', '전월', '당월'],                //라벨 명칭
             datasets: [
                 {
                     data: {{ monthly_year_data|safe }},          //데이터
-                    backgroundColor: Samples.utils.colors(2)     //bar Color
+                    backgroundColor: ['#4e73df', '#36b9cc', '#1cc88a'],
+                    hoverBackgroundColor: ['#2e59d9', '#2c9faf', '#169b6b'],
                 }
             ],
         },
         options: {                                               //chart Option
-            plugins: {
-            },
-            elements: {
-              bar: {
-                borderWidth: 2,
-              }
-            },
-            title: {
-                display: false,
-                text: '법인카드 전년, 전월 비교'
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
             },
             scales: {
+                xAxes: [{
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 6,
+                        },
+                        maxBarThickness: 50,
+                }],
                 yAxes: [{
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    },
                     ticks: {
-                        maxTicksLimit: 3
-                    }
+                        maxTicksLimit: 4,
+                        callback: function(value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    },
+                    maxBarThickness: 25,
                 }]
             },
             legend: {
                 display: false
             },
-            responsive: true,
-            maintainAspectRatio: false
-        },
-    };
-
-    const exChartConfig5 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
-        type: 'line',                                            //Chart Type ex: doughnut, pie, line, bar ...
-        data: {                                                 //Data Setting
-            labels: {{ top10_monthly_label|safe }},              //라벨 명칭
-            datasets: [
-            {% if top10_monthly_data_list %}
-            {% for monthly_data in top10_monthly_data_list %}
-                {
-                    label: '{{ monthly_data.label|safe }}',
-                    data: {{ monthly_data.data|safe }},              //데이터
-                    borderColor: Samples.utils.color({{forloop.counter0}}),       //line Color
-                    fill: false                                 //chart backgroundcolor 채우기 여부
-                },
-            {% endfor %}
-            {% endif %}
-            ],
-        },
-        options: {                                               //chart Option
-            plugins: {
-            },
-            elements: {
-              bar: {
-                borderWidth: 2,
-              }
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        maxTicksLimit: 3
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    title: function(tooltipItem, data) {
+                        return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
                     },
-                }],
-                xAxes: [{
-                    ticks: {
-
+                    label: function(tooltipItem, chart) {
+                        return Number(tooltipItem.yLabel).toLocaleString() + ' 원';
                     }
-                }]
+                }
             },
-            legend: {
-                display: 'true',
-                position : 'right'
-            },
-            responsive: true,
-            maintainAspectRatio: false
         },
     };
 
