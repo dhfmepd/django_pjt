@@ -417,7 +417,7 @@
             {% if top10_monthly_data_list %}
             {% for monthly_data in top10_monthly_data_list %}
                 {
-                    label: {{ monthly_data.label|safe }},
+                    label: '{{ monthly_data.label|safe }}',
                     data: {{ monthly_data.data|safe }},              //데이터
                     borderColor: Samples.utils.color({{forloop.counter0}}),       //line Color
                     fill: false                                 //chart backgroundcolor 채우기 여부
@@ -438,6 +438,11 @@
                 yAxes: [{
                     ticks: {
                         maxTicksLimit: 3
+                    },
+                }],
+                xAxes: [{
+                    ticks: {
+
                     }
                 }]
             },
