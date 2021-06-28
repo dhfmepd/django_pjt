@@ -120,16 +120,27 @@ def get_top10_list():
     """
     경비 Category Top 10 SQL
     """
-    sql_str = "SELECT dt.MCC_NM, TRUNCATE(dt.APV_SUM_AMT, 0) "
-    sql_str += "    FROM ( "
-    sql_str += "        SELECT 	MCC_NM, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "            FROM cjfv_oneexp.EX_CORPCARD_ASK "
-    sql_str += "        WHERE SEND_DIV = '01' "
-    sql_str += "            AND APV_DD LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y'), '%') "
-    sql_str += "        GROUP BY MCC_CD, MCC_NM "
-    sql_str += "    ) AS dt "
-    sql_str += "ORDER BY dt.APV_SUM_AMT DESC "
-    sql_str += "    LIMIT 10"
+    sql_str = "SELECT RSLT.MCC_NM, IFNULL(RSLT.APV_SUM_AMT, 0) AS APV_SUM_AMT "
+    sql_str += "  FROM ( "
+    sql_str += "	SELECT BASE.DISP_CATE_CD "
+    sql_str += "         , (SELECT detail_code_name "
+    sql_str += "			  FROM common_code "
+    sql_str += "			 WHERE group_code = 'C002' "
+    sql_str += "			   AND detail_code = BASE.DISP_CATE_CD "
+    sql_str += "			   AND use_flag = 1) AS MCC_NM "
+    sql_str += "		 , BASE.APV_SUM_AMT "
+    sql_str += "	  FROM "
+    sql_str += "	( "
+    sql_str += "			SELECT DISP_CATE_CD, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "					FROM EX_CORPCARD_ASK "
+    sql_str += "					WHERE SEND_DIV = '01' "
+    sql_str += "					AND APV_DD LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m'), '%') "
+    # sql_str += "					AND APV_DD LIKE '202104%' "
+    sql_str += "					GROUP BY DISP_CATE_CD "
+    sql_str += "	) BASE "
+    sql_str += ") RSLT "
+    sql_str += "ORDER BY RSLT.APV_SUM_AMT DESC "
+    sql_str += "LIMIT 10 "
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -143,13 +154,13 @@ def get_yearAvg_info():
     경비 Average and Now
     """
     sql_str = "SELECT IFNULL(ROUND(AVG(DT.APV_SUM_AMT), 0), 0) "
-    sql_str += "    FROM ( "
-    sql_str += "        SELECT 	SUM(APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "            FROM cjfv_oneexp.EX_CORPCARD_ASK "
-    sql_str += "        WHERE SEND_DIV = '01' "
-    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(SYSDATE(), '%Y0101') AND DATE_FORMAT(DATE_FORMAT(SYSDATE(), '%Y%m%01') + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "        GROUP BY SUBSTR(APV_DD, 1, 6) "
-    sql_str += "    ) AS DT "
+    sql_str += "  FROM ( "
+    sql_str += "        SELECT SUM(APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "          FROM EX_CORPCARD_ASK "
+    sql_str += "         WHERE SEND_DIV = '01' "
+    sql_str += "           AND APV_DD BETWEEN DATE_FORMAT(SYSDATE(), '%Y0101') AND DATE_FORMAT(DATE_FORMAT(SYSDATE(), '%Y%m%01') + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "         GROUP BY SUBSTR(APV_DD, 1, 6) "
+    sql_str += "  ) AS DT "
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -162,10 +173,10 @@ def get_monSum_info():
     """
     경비 Average and Now
     """
-    sql_str = "SELECT 	IFNULL(TRUNCATE(SUM(APV_SUM_AMT), 0), 0) AS APV_SUM_AMT "
-    sql_str += "    FROM cjfv_oneexp.EX_CORPCARD_ASK "
-    sql_str += "WHERE SEND_DIV = '01' "
-    sql_str += "    AND APV_DD LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m'), '%') "
+    sql_str = "SELECT IFNULL(TRUNCATE(SUM(APV_SUM_AMT), 0), 0) AS APV_SUM_AMT "
+    sql_str += "  FROM EX_CORPCARD_ASK "
+    sql_str += " WHERE SEND_DIV = '01' "
+    sql_str += "   AND APV_DD LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m'), '%') "
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -179,20 +190,20 @@ def get_monthly_list():
     경비 Monthly 증감 현황 SQL
     """
     sql_str = "SELECT M.YEARMONTH, IFNULL(DT.APV_SUM_AMT, 0) AS APV_SUM_AMT FROM ( "
-    sql_str += "SELECT 	DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -2 MONTH), '%Y%m') AS YEARMONTH "
-    sql_str += "UNION "
-    sql_str += "SELECT 	DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m') AS YEARMONTH "
-    sql_str += "UNION "
-    sql_str += "SELECT 	DATE_FORMAT(SYSDATE(), '%Y%m') AS YEARMONTH "
-    sql_str += ")M LEFT OUTER JOIN "
+    sql_str += "       SELECT DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -2 MONTH), '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(SYSDATE(), '%Y%m') AS YEARMONTH "
+    sql_str += ") M LEFT OUTER JOIN "
     sql_str += "(SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "    FROM cjfv_oneexp.EX_CORPCARD_ASK "
-    sql_str += "WHERE SEND_DIV = '01' "
+    sql_str += "   FROM EX_CORPCARD_ASK "
+    sql_str += "  WHERE SEND_DIV = '01' "
     sql_str += "    AND APV_DD BETWEEN DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -2 MONTH), '%Y%m%01') AND DATE_FORMAT(SYSDATE(), '%Y%m%d') "
-    sql_str += "GROUP BY SUBSTR(APV_DD, 1, 6) "
+    sql_str += "  GROUP BY SUBSTR(APV_DD, 1, 6) "
     sql_str += ") AS DT "
-    sql_str += "ON M.YEARMONTH = DT.YEARMONTH "
-    sql_str += "ORDER BY M.YEARMONTH "
+    sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
+    sql_str += " ORDER BY M.YEARMONTH "
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
         list = cursor.fetchall()
@@ -205,26 +216,26 @@ def get_monthly_year_list():
     경비 Year/Month 비교 SQL
     """
     sql_str = "SELECT M.YEARMONTH, IFNULL(DT.APV_SUM_AMT, 0) AS APV_SUM_AMT FROM ( "
-    sql_str += "SELECT 	DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -12 MONTH), '%Y%m') AS YEARMONTH "
-    sql_str += "UNION "
-    sql_str += "SELECT 	DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m') AS YEARMONTH "
-    sql_str += "UNION "
-    sql_str += "SELECT 	DATE_FORMAT(SYSDATE(), '%Y%m') AS YEARMONTH "
-    sql_str += ")M LEFT OUTER JOIN "
-    sql_str += "(SELECT 	SUBSTR(APV_DD, 1, 6) AS YEARMONTH, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "    FROM cjfv_oneexp.EX_CORPCARD_ASK "
-    sql_str += "WHERE SEND_DIV = '01' "
+    sql_str += "       SELECT DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -12 MONTH), '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(SYSDATE(), '%Y%m') AS YEARMONTH "
+    sql_str += ") M LEFT OUTER JOIN "
+    sql_str += "(SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "   FROM EX_CORPCARD_ASK "
+    sql_str += "  WHERE SEND_DIV = '01' "
     sql_str += "    AND APV_DD BETWEEN DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m%01') AND DATE_FORMAT(SYSDATE(), '%Y%m%d') "
-    sql_str += "GROUP BY SUBSTR(APV_DD, 1, 6) "
-    sql_str += "UNION "
-    sql_str += "SELECT 	SUBSTR(APV_DD, 1, 6) AS YEARMONTH, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "    FROM cjfv_oneexp.EX_CORPCARD_ASK "
-    sql_str += "WHERE SEND_DIV = '01' "
+    sql_str += "  GROUP BY SUBSTR(APV_DD, 1, 6) "
+    sql_str += "  UNION "
+    sql_str += " SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "   FROM EX_CORPCARD_ASK "
+    sql_str += "  WHERE SEND_DIV = '01' "
     sql_str += "    AND APV_DD BETWEEN DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -12 MONTH), '%Y%m%01') AND DATE_FORMAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -11 MONTH), '%Y%m%01') + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "GROUP BY SUBSTR(APV_DD, 1, 6) "
+    sql_str += "  GROUP BY SUBSTR(APV_DD, 1, 6) "
     sql_str += ") AS DT "
-    sql_str += "ON M.YEARMONTH = DT.YEARMONTH "
-    sql_str += "ORDER BY M.YEARMONTH "
+    sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
+    sql_str += " ORDER BY M.YEARMONTH "
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
         list = cursor.fetchall()
@@ -266,8 +277,8 @@ def get_TOP10_monthly_list():
     sql_str += "			SELECT DISP_CATE_CD, RANK() over(ORDER BY SUM(APV_SUM_AMT) DESC) AS TOPRANK, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
     sql_str += "					FROM EX_CORPCARD_ASK "
     sql_str += "					WHERE SEND_DIV = '01' "
-    # sql_str += "					AND APV_DD LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m'), '%') "
-    sql_str += "					AND APV_DD LIKE '202104%' "
+    sql_str += "					AND APV_DD LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m'), '%') "
+    # sql_str += "					AND APV_DD LIKE '202104%' "
     sql_str += "					GROUP BY DISP_CATE_CD "
     sql_str += "			) AS DT "
     sql_str += "		WHERE TOPRANK <= 10 "
@@ -278,8 +289,8 @@ def get_TOP10_monthly_list():
     sql_str += "		 ,SUM(APV_SUM_AMT) AS APV_SUM_AMT "
     sql_str += "	  FROM EX_CORPCARD_ASK "
     sql_str += "	 WHERE SEND_DIV = '01' "
-    # sql_str += "	   AND APV_DD BETWEEN DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -5 MONTH), '%Y%m%01') AND DATE_FORMAT(SYSDATE(), '%Y%m%d') "
-    sql_str += "	   AND APV_DD BETWEEN '20210101' AND '20210430' "
+    sql_str += "	   AND APV_DD BETWEEN DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -5 MONTH), '%Y%m%01') AND DATE_FORMAT(SYSDATE(), '%Y%m%d') "
+    # sql_str += "	   AND APV_DD BETWEEN '20210101' AND '20210430' "
     sql_str += "	 GROUP BY SUBSTR(APV_DD, 1, 6), DISP_CATE_CD "
     sql_str += ") RSLT "
     sql_str += "   ON BASE.APV_YM = RSLT.APV_YM "
@@ -291,9 +302,6 @@ def get_TOP10_monthly_list():
         list = cursor.fetchall()
 
     return list
-
-
-######################################## 기타경비 #########################################
 
 @login_required(login_url='common:login')
 def etc_exp_analy(request):
@@ -335,7 +343,7 @@ def etc_exp_analy(request):
 
 def get_budget_info():
     sql_str = "SELECT TRUNCATE(act_bud, 0) as act_amt, TRUNCATE(use_bud, 0) as use_amt, TRUNCATE(rem_bud, 0) as rem_amt, TRUNCATE(goal, 0) as gol_amt "
-    sql_str += "  FROM cjfv_oneexp.EX_BUDGET "
+    sql_str += "  FROM EX_BUDGET "
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)

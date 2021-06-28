@@ -259,7 +259,7 @@
                     data: {{ monthly_data.data|safe }},
                     borderColor: Samples.utils.color({{forloop.counter0}}),
                     fill: false,
-                    lineTension: 0,
+                    lineTension: 0.25,
                 },
             {% endfor %}
             {% endif %}
@@ -457,7 +457,6 @@
                             return Number(value).toLocaleString();
                         }
                     },
-                    maxBarThickness: 25,
                 }]
             },
             legend: {
@@ -534,8 +533,7 @@
                         callback: function(value, index, values) {
                             return Number(value).toLocaleString();
                         }
-                    },
-                    maxBarThickness: 25,
+                    }
                 }]
             },
             legend: {
