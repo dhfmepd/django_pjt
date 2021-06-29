@@ -212,7 +212,7 @@
                             color: '#6e707e'
                         },
                         {
-                            text: '{{ top10_sum }} 원',
+                            text: '{{ top10_sum }} 만원',
                             font: {
                                 size: '15'
                             },
@@ -237,7 +237,7 @@
                     label: function(tooltipItem, data) {
                         var dataset = data.datasets[tooltipItem.datasetIndex];
                         var currentValue = dataset.data[tooltipItem.index];
-                        return Number(currentValue).toLocaleString() + ' 원';
+                        return Number(currentValue).toLocaleString() + ' 만원';
                     }
                 }
             },
@@ -327,7 +327,7 @@
                         return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
                     },
                     label: function(tooltipItem, data) {
-                        return ' ' + data.datasets[tooltipItem.datasetIndex].label + ' : ' + Number(tooltipItem.yLabel).toLocaleString() + ' 원';
+                        return ' ' + data.datasets[tooltipItem.datasetIndex].label + ' : ' + Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
                     },
                 },
             },
@@ -399,7 +399,7 @@
                 caretPadding: 10,
                 callbacks: {
                     label: function(tooltipItem, chart) {
-                        return Number(tooltipItem.xLabel).toLocaleString() + ' 원';
+                        return Number(tooltipItem.xLabel).toLocaleString() + ' 만원';
                     }
                 }
             }
@@ -479,7 +479,7 @@
                         return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
                     },
                     label: function(tooltipItem, chart) {
-                        return Number(tooltipItem.yLabel).toLocaleString() + ' 원';
+                        return Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
                     }
                 }
             },
@@ -556,7 +556,7 @@
                         return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
                     },
                     label: function(tooltipItem, chart) {
-                        return Number(tooltipItem.yLabel).toLocaleString() + ' 원';
+                        return Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
                     }
                 }
             },
