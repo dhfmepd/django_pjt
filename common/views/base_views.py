@@ -129,19 +129,16 @@ def get_top_info():
     return row
 
 def get_chart_info():
-    sql_str = "SELECT a.key_ym "
-    sql_str += "    , COALESCE(SUM(CASE WHEN b.table_name = 'EX_CORPCARD_ASK' THEN b.receive_count ELSE 0 END), 0) AS c_count "
-    sql_str += "    , COALESCE(SUM(CASE WHEN b.table_name = 'EX_EXPN_ETC' THEN b.receive_count ELSE 0 END), 0) AS e_count "
+    sql_str = "SELECT A.KEY_YM "
+    sql_str += "    , IFNULL((SELECT COUNT(1) FROM EX_CORPCARD_ASK WHERE IF_DH BETWEEN A.FROM_DATE AND A.TO_DATE), 0) AS C_COUNT "
+    sql_str += "    , IFNULL((SELECT COUNT(1) FROM EX_EXPN_ETC WHERE IF_DH BETWEEN A.FROM_DATE AND A.TO_DATE), 0) AS E_COUNT "
     sql_str += "FROM ( "
-    sql_str += "SELECT DATE_FORMAT(NOW(), '%Y-%m') AS key_ym "
-    sql_str += "UNION ALL "
-    sql_str += "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m') AS key_ym "
-    sql_str += "UNION ALL "
-    sql_str += "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m') AS key_ym "
-    sql_str += ") a "
-    sql_str += "LEFT OUTER JOIN common_receivehistory b "
-    sql_str += "ON a.key_ym = DATE_FORMAT(b.create_date, '%Y-%m') "
-    sql_str += "GROUP BY a.key_ym "
+    sql_str += "	SELECT DATE_FORMAT(NOW(), '%Y-%m') AS KEY_YM, LAST_DAY(NOW() - INTERVAL 1 MONTH) + INTERVAL 1 DAY AS FROM_DATE, LAST_DAY(NOW()) AS TO_DATE "
+    sql_str += "	UNION ALL "
+    sql_str += "	SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m') AS KEY_YM, LAST_DAY(NOW() - INTERVAL 2 MONTH) + INTERVAL 1 DAY AS FROM_DATE, LAST_DAY(NOW() - INTERVAL 1 MONTH) AS TO_DATE "
+    sql_str += "	UNION ALL "
+    sql_str += "	SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m') AS KEY_YM, LAST_DAY(NOW() - INTERVAL 3 MONTH) + INTERVAL 1 DAY AS FROM_DATE, LAST_DAY(NOW() - INTERVAL 2 MONTH) AS TO_DATE "
+    sql_str += ") A "
 
     # print("[INFO] SQL : {}".format(sql_str))
 

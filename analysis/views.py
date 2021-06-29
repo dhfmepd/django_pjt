@@ -107,7 +107,6 @@ def normal_exp_analy(request):
     top10_monthly_data_list.append({'label': top10_monthly_data_label[8], 'data': top10_monthly_data9})
     top10_monthly_data_list.append({'label': top10_monthly_data_label[9], 'data': top10_monthly_data10})
 
-    print(top10_monthly_data_list)
     context = {'top10_label': top10_label, 'top10_data': top10_data, 'top10_sum': top10_sum, 'avg_data': avg_data,
                'monthly_label': monthly_label, 'monthly_data': monthly_data,
                'monthly_year_label': monthly_year_label, 'monthly_year_data': monthly_year_data,
