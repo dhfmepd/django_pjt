@@ -25,7 +25,7 @@ DATABASES = {
     }
 }
 
-""" Local MySQL 
+""" Local MySQL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -37,4 +37,4 @@ DATABASES = {
         'HOST' : '127.0.0.1',
         'PORT' : '3306',
     }
-}"""
+} """
