@@ -96,16 +96,16 @@ def normal_exp_analy(request):
         if r_idx % 10 == 9:
             top10_monthly_data10.append(int(top10_monthly_info[2]))
 
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[0], 'data': top10_monthly_data1})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[1], 'data': top10_monthly_data2})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[2], 'data': top10_monthly_data3})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[3], 'data': top10_monthly_data4})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[4], 'data': top10_monthly_data5})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[5], 'data': top10_monthly_data6})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[6], 'data': top10_monthly_data7})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[7], 'data': top10_monthly_data8})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[8], 'data': top10_monthly_data9})
-    # top10_monthly_data_list.append({'label': top10_monthly_data_label[9], 'data': top10_monthly_data10})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[0], 'data': top10_monthly_data1})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[1], 'data': top10_monthly_data2})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[2], 'data': top10_monthly_data3})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[3], 'data': top10_monthly_data4})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[4], 'data': top10_monthly_data5})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[5], 'data': top10_monthly_data6})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[6], 'data': top10_monthly_data7})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[7], 'data': top10_monthly_data8})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[8], 'data': top10_monthly_data9})
+    top10_monthly_data_list.append({'label': top10_monthly_data_label[9], 'data': top10_monthly_data10})
 
     context = {'top10_label': top10_label, 'top10_data': top10_data, 'top10_sum': top10_sum, 'avg_data': avg_data,
                'monthly_label': monthly_label, 'monthly_data': monthly_data,
@@ -141,7 +141,7 @@ def get_top10_list():
     sql_str += "ORDER BY RSLT.APV_SUM_AMT DESC "
     sql_str += "LIMIT 10 "
 
-    print("[INFO] SQL : {}".format(sql_str))
+    # print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -171,7 +171,7 @@ def get_yearAvg_info():
     sql_str += "          GROUP BY A.APV_DD "
     sql_str += "   ) AS DT "
 
-    print("[INFO] SQL : {}".format(sql_str))
+    # print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -201,7 +201,7 @@ def get_monSum_info():
     sql_str += "          GROUP BY A.APV_DD "
     sql_str += "   ) AS DT "
 
-    print("[INFO] SQL : {}".format(sql_str))
+    # print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -238,7 +238,7 @@ def get_monthly_list():
     sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
     sql_str += " ORDER BY M.YEARMONTH "
 
-    print("[INFO] SQL : {}".format(sql_str))
+    # print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -289,7 +289,7 @@ def get_monthly_year_list():
     sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
     sql_str += " ORDER BY M.YEARMONTH "
 
-    print("[INFO] SQL : {}".format(sql_str))
+    # print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
@@ -352,7 +352,7 @@ def get_TOP10_monthly_list():
     sql_str += "  AND BASE.DISP_CATE_CD = RSLT.DISP_CATE_CD "
     sql_str += "ORDER BY BASE.APV_YM, BASE.TOPRANK "
 
-    print("[INFO] SQL : {}".format(sql_str))
+    # print("[INFO] SQL : {}".format(sql_str))
 
     with connection.cursor() as cursor:
         cursor.execute(sql_str)
