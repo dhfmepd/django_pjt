@@ -99,7 +99,7 @@ def main(request):
         e_bar_data.append(str(chart_info[2]))
 
     # 3. 공지사항 Board 조회
-    board_list = Board.objects.filter(menu='1').order_by('-create_date')
+    board_list = Board.objects.filter(menu='18').order_by('-create_date')
     paginator = Paginator(board_list, 5)
     page_obj = paginator.get_page(1)
 
