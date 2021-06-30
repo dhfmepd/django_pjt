@@ -105,8 +105,8 @@ def init_label_info():
 
 # 이미 선점 된 분류코드 가 존재 할 경우.
 def set_exists_label_info(code, keyword):
-    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = X "
-    sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD != " + code + " "
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = 'X' "
+    sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD != '" + code + "' "
 
     print("[INFO] SQL : {}".format(sql_str))
 
@@ -121,7 +121,7 @@ def set_exists_label_info(code, keyword):
 
 # 선점 된 분류코드 가 존재하지 않는 경우
 def set_label_info(code, keyword):
-    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = " + code + " "
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + code + "' "
     sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD IS NULL "
 
     print("[INFO] SQL : {}".format(sql_str))
