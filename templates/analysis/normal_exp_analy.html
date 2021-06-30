@@ -39,7 +39,7 @@
                         <canvas id="exChart1"></canvas>
                     </div>
                     <hr>
-                    법인카드 상위 10
+                    전체경비 상위 10
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                         <canvas id="exChart2"></canvas>
                     </div>
                     <hr>
-                    법인카드 최근 6개월 상위 10 증감 추이
+                    전체경비 최근 6개월 상위 10 증감 추이
                 </div>
             </div>
         </div>
@@ -105,7 +105,7 @@
                         <canvas id="exChart3"></canvas>
                     </div>
                     <hr>
-                    법인카드 평균지출, 평균대비 현지출
+                    전체경비 평균지출, 평균대비 현지출
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
                         <canvas id="exChart4"></canvas>
                     </div>
                     <hr>
-                    법인카드 월별 증감 추이
+                    전체경비 월별 증감 추이
                 </div>
             </div>
         </div>
@@ -168,7 +168,7 @@
                         <canvas id="exChart5"></canvas>
                     </div>
                     <hr>
-                    법인카드 전년, 전월 비교
+                    전체경비 전년, 전월 비교
                 </div>
             </div>
         </div>
@@ -369,10 +369,11 @@
                     },
                     ticks: {
                         maxTicksLimit: 5,
+                        suggestedMin: 0,
                         callback: function(value, index, values) {
                             return Number(value).toLocaleString();
                         }
-                    }
+                    },
                 }],
                 yAxes: [{
                     gridLines: {
@@ -489,7 +490,7 @@
     const exChartConfig5 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
-            labels: ['전년(당월)', '전월', '당월'],                //라벨 명칭
+            labels: {{ monthly_year_label|safe }},                //라벨 명칭
             datasets: [
                 {
                     data: {{ monthly_year_data|safe }},          //데이터
@@ -517,6 +518,9 @@
                         },
                         ticks: {
                             maxTicksLimit: 6,
+                            callback: function(value, index, values) {
+                                return [value[0], '( ' + value[1].substr(0, 4) + '-' + value[1].substr(4, 2) + ' )'];
+                            }
                         },
                         maxBarThickness: 50,
                 }],
@@ -553,7 +557,7 @@
                 caretPadding: 10,
                 callbacks: {
                     title: function(tooltipItem, data) {
-                        return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
+                        return tooltipItem[0].xLabel[0];
                     },
                     label: function(tooltipItem, chart) {
                         return Number(tooltipItem.yLabel).toLocaleString() + ' 만원';

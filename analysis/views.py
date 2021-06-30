@@ -48,8 +48,8 @@ def normal_exp_analy(request):
     monthly_year_list = get_monthly_year_list()
 
     for r_idx, monthly_year_info in enumerate(monthly_year_list):
-        monthly_year_label.append(monthly_year_info[0])
-        monthly_year_data.append(int(monthly_year_info[1]))
+        monthly_year_label.append([monthly_year_info[0], monthly_year_info[1]])
+        monthly_year_data.append(int(monthly_year_info[2]))
 
     # 5. 5. 경비 항목별 Top10 최근 3개월 증감
     top10_monthly_label = []
@@ -251,12 +251,12 @@ def get_monthly_year_list():
     """
     경비 Year/Month 비교 SQL
     """
-    sql_str = "SELECT M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
-    sql_str += "       SELECT DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -12 MONTH), '%Y%m') AS YEARMONTH "
+    sql_str = "SELECT M.YEARMONTH_LABEL, M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
+    sql_str += "       SELECT DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -12 MONTH), '%Y%m') AS YEARMONTH, '전년(당월)' AS YEARMONTH_LABEL "
     sql_str += "       UNION "
-    sql_str += "       SELECT DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m') AS YEARMONTH "
+    sql_str += "       SELECT DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m') AS YEARMONTH, '전월' AS YEARMONTH_LABEL "
     sql_str += "       UNION "
-    sql_str += "       SELECT DATE_FORMAT(SYSDATE(), '%Y%m') AS YEARMONTH "
+    sql_str += "       SELECT DATE_FORMAT(SYSDATE(), '%Y%m') AS YEARMONTH, '당월' AS YEARMONTH_LABEL "
     sql_str += ") M LEFT OUTER JOIN ( "
     sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
     sql_str += "           FROM ( "
