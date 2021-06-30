@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container my-3" style="padding-top:80px">
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3">라벨링 테스트</h4>
+        <form method="post" class="post-form my-3">
+            {% csrf_token %}
+            <!-- 오류표시 Start -->
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                {% for field in form %}
+                    {% if field.errors %}
+                    <strong>{{ field.label }}</strong>
+                    {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <div class="col-md-12 mb-3">
+                    <label for="group_code">그룹코드</label>
+                    <input type="text" class="form-control" id="group_code" name="group_code" placeholder="C999">
+                </div>
+            </div>
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">라벨링 실행</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -2,6 +2,8 @@ import cx_Oracle
 from django.shortcuts import render
 from konlpy.tag import Okt
 from django.core.mail import EmailMessage
+from django.db import connection
+from common.models import Code
 
 def api_open(request):
     #라이브러리: https://konlpy-ko.readthedocs.io/ko/v0.4.3/
@@ -64,3 +66,71 @@ def ora_conn(request):
 
     context = {'sql': sql}
     return render(request, 'sample/ora_conn.html', context)
+
+def data_labeling(request):
+
+    if request.method == 'POST':
+        group_code = request.POST.get('group_code', 'C999')
+        code_list = Code.objects.filter(group_code=group_code)
+
+        init_label_info()
+
+        print("[INFO] CODE LIST : {}".format(code_list))
+
+        for code_info in code_list:
+            keyword_list = code_info.remark.split('/')
+
+            for keyword in keyword_list:
+                set_exists_label_info(code_info.detail_code, keyword)
+                set_label_info(code_info.detail_code, keyword)
+
+        return render(request, 'sample/data_labeling.html', {})
+
+    return render(request, 'sample/data_labeling.html', {})
+
+# 라벨링 데이터 초기화
+def init_label_info():
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = NULL "
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        result = cursor.fetchall()
+    connection.commit()
+
+    print("[INFO] RESULT : {}".format(result))
+
+    return result
+
+# 이미 선점 된 분류코드 가 존재 할 경우.
+def set_exists_label_info(code, keyword):
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = X "
+    sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD != " + code + " "
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        result = cursor.fetchall()
+    connection.commit()
+
+    print("[INFO] RESULT : {}".format(result))
+
+    return result
+
+# 선점 된 분류코드 가 존재하지 않는 경우
+def set_label_info(code, keyword):
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = " + code + " "
+    sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD IS NULL "
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        result = cursor.fetchall()
+    connection.commit()
+
+    print("[INFO] RESULT : {}".format(result))
+
+    return result
