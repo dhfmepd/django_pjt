@@ -360,6 +360,27 @@ def get_TOP10_monthly_list():
 
     return list
 
+def get_word_anly_list():
+    """
+    키워드 분석 결과 조회
+    """
+    sql_str = "SELECT A.CNT_RANK, A.TEXT AS KEYWORD, A.TOT_CNT "
+    sql_str += "  FROM ( "
+    sql_str += "        SELECT TEXT, COUNT(1) AS TOT_CNT, RANK() over(ORDER BY COUNT(1) DESC) AS CNT_RANK "
+    sql_str += "          FROM EX_EXPN_ETC_WORDS "
+    sql_str += "         WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
+    sql_str += "         GROUP BY TEXT "
+    sql_str += "        ) A "
+    sql_str += " WHERE A.CNT_RANK <= 10 "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
 @login_required(login_url='common:login')
 def etc_exp_analy(request):
     """
