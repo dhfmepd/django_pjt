@@ -13,45 +13,21 @@ def normal_exp_analy(request):
     """
     일반/법인카드 경비분석 Dashboard
     """
-    # 1.  1.Top10 Chart
+    # 1.Top10 Chart
     top10_list = get_top10_list()
 
     top10_label = []
     top10_data = []
     top10_sum = 0
 
-    for r_idx, top10_info in enumerate(top10_list):
+    for top10_info in top10_list:
         top10_label.append(top10_info[0])
         top10_data.append(str(top10_info[1]))
         top10_sum += int(top10_info[1])
 
     top10_sum = '{:,}'.format(top10_sum)
 
-    # 2. 2.평균 지출 Chart
-    year_Avg = get_yearAvg_info()
-    month_Sum = get_monSum_info()
-
-    avg_data = [int(year_Avg[0]), int(month_Sum[0])]
-
-    # 3. 3.월별 경비 증감 Chart
-    monthly_label = []
-    monthly_data = []
-    monthly_list = get_monthly_list()
-
-    for r_idx, monthly_info in enumerate(monthly_list):
-        monthly_label.append(monthly_info[0])
-        monthly_data.append(int(monthly_info[1]))
-
-    # 4. 4. 전년, 전월 비교
-    monthly_year_label = []
-    monthly_year_data = []
-    monthly_year_list = get_monthly_year_list()
-
-    for r_idx, monthly_year_info in enumerate(monthly_year_list):
-        monthly_year_label.append([monthly_year_info[0], monthly_year_info[1]])
-        monthly_year_data.append(int(monthly_year_info[2]))
-
-    # 5. 5. 경비 항목별 Top10 최근 3개월 증감
+    # 2. 경비 항목별 Top10 최근 3개월 증감
     top10_monthly_label = []
     top10_monthly_data_label = []
     top10_monthly_data_list = []
@@ -69,15 +45,15 @@ def normal_exp_analy(request):
 
     for r_idx, top10_monthly_info in enumerate(top10_monthly_list):
 
-        if top10_monthly_info[0] not in top10_monthly_label: # 월(X) 라벨
+        if top10_monthly_info[0] not in top10_monthly_label:  # 월(X) 라벨
             top10_monthly_label.append(top10_monthly_info[0])
 
         if top10_monthly_info[1] not in top10_monthly_data_label:  # 데이터셋 라벨
             top10_monthly_data_label.append(top10_monthly_info[1])
 
-        if r_idx % 10 == 0: # 카테고리 Top 1
+        if r_idx % 10 == 0:  # 카테고리 Top 1
             top10_monthly_data1.append(int(top10_monthly_info[2]))
-        if r_idx % 10 == 1: # 카테고리 Top 2
+        if r_idx % 10 == 1:  # 카테고리 Top 2
             top10_monthly_data2.append(int(top10_monthly_info[2]))
         if r_idx % 10 == 2:
             top10_monthly_data3.append(int(top10_monthly_info[2]))
@@ -107,10 +83,54 @@ def normal_exp_analy(request):
     top10_monthly_data_list.append({'label': top10_monthly_data_label[8], 'data': top10_monthly_data9})
     top10_monthly_data_list.append({'label': top10_monthly_data_label[9], 'data': top10_monthly_data10})
 
+    # 3.평균 지출 Chart
+    year_Avg = get_yearAvg_info()
+    month_Sum = get_monSum_info()
+
+    avg_data = [int(year_Avg[0]), int(month_Sum[0])]
+
+    # 4.월별 경비 증감 Chart
+    monthly_label = []
+    monthly_data = []
+    monthly_list = get_monthly_list()
+
+    for r_idx, monthly_info in enumerate(monthly_list):
+        monthly_label.append(monthly_info[0])
+        monthly_data.append(int(monthly_info[1]))
+
+    # 5. 전년, 전월 비교
+    monthly_year_label = []
+    monthly_year_data = []
+    monthly_year_list = get_monthly_year_list()
+
+    for r_idx, monthly_year_info in enumerate(monthly_year_list):
+        monthly_year_label.append([monthly_year_info[0], monthly_year_info[1]])
+        monthly_year_data.append(int(monthly_year_info[2]))
+
+    # 6. 키워드 분석(건수)
+    keyword_cnt_list = get_keyword_cnt_anly_list()
+    keyword_cnt_label = []
+    keyword_cnt_data = []
+
+    for keyword_cnt_info in keyword_cnt_list:
+        keyword_cnt_label.append(keyword_cnt_info[1])
+        keyword_cnt_data.append(str(keyword_cnt_info[2]))
+
+    # 7. 키워드 분석(금액)
+    keyword_amt_list = get_keyword_amt_anly_list()
+    keyword_amt_label = []
+    keyword_amt_data = []
+
+    for keyword_amt_info in keyword_amt_list:
+        keyword_amt_label.append(keyword_amt_info[1])
+        keyword_amt_data.append(str(keyword_amt_info[2]))
+
     context = {'top10_label': top10_label, 'top10_data': top10_data, 'top10_sum': top10_sum, 'avg_data': avg_data,
                'monthly_label': monthly_label, 'monthly_data': monthly_data,
                'monthly_year_label': monthly_year_label, 'monthly_year_data': monthly_year_data,
-               'top10_monthly_label': top10_monthly_label, 'top10_monthly_data_list': top10_monthly_data_list}
+               'top10_monthly_label': top10_monthly_label, 'top10_monthly_data_list': top10_monthly_data_list,
+               'keyword_cnt_label': keyword_cnt_label, 'keyword_cnt_data': keyword_cnt_data,
+               'keyword_amt_label': keyword_amt_label, 'keyword_amt_data': keyword_amt_data}
 
     return render(request, 'analysis/normal_exp_analy.html', context)
 
@@ -360,18 +380,43 @@ def get_TOP10_monthly_list():
 
     return list
 
-def get_word_anly_list():
+def get_keyword_cnt_anly_list():
     """
-    키워드 분석 결과 조회
+    키워드 분석(건수) 결과 조회
     """
     sql_str = "SELECT A.CNT_RANK, A.TEXT AS KEYWORD, A.TOT_CNT "
     sql_str += "  FROM ( "
-    sql_str += "        SELECT TEXT, COUNT(1) AS TOT_CNT, RANK() over(ORDER BY COUNT(1) DESC) AS CNT_RANK "
-    sql_str += "          FROM EX_EXPN_ETC_WORDS "
-    sql_str += "         WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
+    sql_str += "        SELECT B.TEXT, COUNT(1) AS TOT_CNT, RANK() OVER(ORDER BY COUNT(1) DESC) AS CNT_RANK "
+    sql_str += "          FROM EX_EXPN_ETC A, EX_EXPN_ETC_WORDS B "
+    sql_str += "         WHERE A.ECAL_NO = B.ECAL_NO AND A.SEQ = B.SEQ "
+    sql_str += "           AND A.OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
     sql_str += "         GROUP BY TEXT "
     sql_str += "        ) A "
     sql_str += " WHERE A.CNT_RANK <= 10 "
+    sql_str += " ORDER BY A.CNT_RANK DESC "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+def get_keyword_amt_anly_list():
+    """
+    키워드 분석(금액) 결과 조회
+    """
+    sql_str = "SELECT A.AMT_RANK, A.TEXT AS KEYWORD, IFNULL(ROUND(A.TOT_AMT / 10000, 0), 0) "
+    sql_str += "  FROM ( "
+    sql_str += "        SELECT B.TEXT, SUM(B.ECAL_AMT) AS TOT_AMT, RANK() OVER(ORDER BY SUM(B.ECAL_AMT) DESC) AS AMT_RANK "
+    sql_str += "          FROM EX_EXPN_ETC A, EX_EXPN_ETC_WORDS B "
+    sql_str += "         WHERE A.ECAL_NO = B.ECAL_NO AND A.SEQ = B.SEQ "
+    sql_str += "           AND A.OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
+    sql_str += "         GROUP BY TEXT "
+    sql_str += "        ) A "
+    sql_str += " WHERE A.AMT_RANK <= 10 "
+    sql_str += " ORDER BY A.AMT_RANK DESC "
 
     # print("[INFO] SQL : {}".format(sql_str))
 

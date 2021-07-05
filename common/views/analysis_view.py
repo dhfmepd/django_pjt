@@ -12,7 +12,7 @@ def get_nlp_target_list():
     """
     처리 대상(전월) 데이터 추출
     """
-    sql_str =  "SELECT ECAL_NO, SEQ, OCCR_YMD, DTLS "
+    sql_str =  "SELECT ECAL_NO, SEQ, DTLS "
     sql_str += "  FROM EX_EXPN_ETC "
     sql_str += " WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
 
@@ -39,12 +39,12 @@ def set_init_word_list(ecal_no, seq):
         cursor.fetchall()
     connection.commit()
 
-def set_word_list(ecal_no, seq, w_seq, ymd, word):
+def set_word_list(ecal_no, seq, w_seq, word):
     """
     단어 데이터 등록
     """
-    sql_str =  "INSERT INTO EX_EXPN_ETC_WORDS (ECAL_NO, SEQ, W_SEQ, OCCR_YMD, TEXT, RGS_DH) "
-    sql_str += "VALUES (\'" + ecal_no + "\', \'" + seq + "\', \'" + w_seq + "\', \'" + ymd + "\', \'" + word + "\', NOW())"
+    sql_str =  "INSERT INTO EX_EXPN_ETC_WORDS (ECAL_NO, SEQ, W_SEQ, TEXT, RGS_DH) "
+    sql_str += "VALUES (\'" + ecal_no + "\', \'" + seq + "\', \'" + w_seq + "\', \'" + word + "\', NOW())"
 
     print("[INFO] SQL : {}".format(sql_str))
 
@@ -62,12 +62,12 @@ def analysis_nlp_real(request):
         okt = Okt()
 
         for r_idx, expn_info in enumerate(expn_list):
-            word_list = okt.phrases(expn_info[3]) # 명사 집합 추출
+            word_list = okt.phrases(expn_info[2]) # 명사 집합 추출
 
             set_init_word_list(expn_info[0], expn_info[1])
 
             for w_idx, word_info in enumerate(word_list):
-                set_word_list(expn_info[0], expn_info[1], w_idx, expn_info[2], word_info)
+                set_word_list(expn_info[0], expn_info[1], w_idx, word_info)
 
         return render(request, 'common/analysis_nlp.html', {})
 

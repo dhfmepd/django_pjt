@@ -112,8 +112,7 @@ CREATE TABLE EX_EXPN_ETC_WORDS (
 	 ECAL_NO            VARCHAR(16) NOT NULL
 	,SEQ                INT(4) NOT NULL
 	,W_SEQ              INT(4) NOT NULL
-	,OCCR_YMD           VARCHAR(8)
-    ,TEXT               VARCHAR(100)
+	,TEXT               VARCHAR(100)
 	,RGS_DH             DATETIME
 );
 
