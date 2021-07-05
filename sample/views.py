@@ -81,8 +81,11 @@ def data_labeling(request):
             keyword_list = code_info.remark.split('/')
 
             for keyword in keyword_list:
-                set_exists_label_info(code_info.detail_code, keyword)
                 set_label_info(code_info.detail_code, keyword)
+
+                set_dup_label_info(code_info.detail_code, keyword)
+                
+                set_exists_label_info(code_info.detail_code, keyword)
 
         return render(request, 'sample/data_labeling.html', {})
 
@@ -90,7 +93,7 @@ def data_labeling(request):
 
 # 라벨링 데이터 초기화
 def init_label_info():
-    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = NULL "
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = NULL, KNDNR_NM = NULL "
 
     print("[INFO] SQL : {}".format(sql_str))
 
@@ -103,25 +106,9 @@ def init_label_info():
 
     return result
 
-# 이미 선점 된 분류코드 가 존재 할 경우.
-def set_exists_label_info(code, keyword):
-    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = 'X' "
-    sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD != '" + code + "' "
-
-    print("[INFO] SQL : {}".format(sql_str))
-
-    with connection.cursor() as cursor:
-        cursor.execute(sql_str)
-        result = cursor.fetchall()
-    connection.commit()
-
-    print("[INFO] RESULT : {}".format(result))
-
-    return result
-
-# 선점 된 분류코드 가 존재하지 않는 경우
+# 1. 미분류 데이터 & 키워드 일치 : 분류코드 + 키워드 축적
 def set_label_info(code, keyword):
-    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + code + "' "
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + code + "' , KNDNR_NM = '/" + code + "/' "
     sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD IS NULL "
 
     print("[INFO] SQL : {}".format(sql_str))
@@ -134,3 +121,33 @@ def set_label_info(code, keyword):
     print("[INFO] RESULT : {}".format(result))
 
     return result
+
+# 3. 분류 데이터(동일분류코드제외+X포함) & 키워드 일치 : X + 키워드 축적
+def set_exists_label_info(code, keyword):
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = 'X' , KNDNR_NM = CONCAT(KNDNR_NM, '" + code + "/') "
+    sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD != '" + code + "' AND KNDNR_NM NOT LIKE '%/" + code + "/%' "
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        result = cursor.fetchall()
+    connection.commit()
+
+    print("[INFO] RESULT : {}".format(result))
+
+    return result
+
+# 2. 분류 데이터(중복처리) & 키워드 일치 : 분류코드 + 키워드 축적
+def set_dup_label_info(code, keyword):
+    sql_str = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = '" + code + "' , KNDNR_NM = CONCAT(KNDNR_NM, '" + code + "/') "
+    sql_str += "WHERE DTLS LIKE CONCAT('%', '" + keyword + "', '%') AND LABEL_CATE_CD = 'X' AND KNDNR_NM LIKE '%/" + code + "/%' "
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        result = cursor.fetchall()
+    connection.commit()
+
+    print("[INFO] RESULT : {}".format(result))

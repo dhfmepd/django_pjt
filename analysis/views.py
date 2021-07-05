@@ -526,11 +526,11 @@ def receipt_ocr(request):
 
         context = {'file_list': file_list, 'target_image': '/' + image_path,
                    'result_image': os.path.join(temp_image_path, image_name), 'result_list': result_list}
-        return render(request, 'common/image_ocr.html', context)
+        return render(request, 'analysis/image_ocr.html', context)
 
     image_path = "/static/images/noimg.jpg"
 
-    return render(request, 'common/image_ocr.html', {'file_list': file_list, 'target_image': image_path})
+    return render(request, 'analysis/image_ocr.html', {'file_list': file_list, 'target_image': image_path})
 
 
 # 구글 비젼 API로 Full Text 데이터 추출

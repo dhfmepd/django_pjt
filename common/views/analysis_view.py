@@ -8,36 +8,66 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
 
+def get_nlp_target_list():
+    """
+    처리 대상(전월) 데이터 추출
+    """
+    sql_str =  "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD "
+    sql_str += "  FROM EX_EXPN_ETC "
+    sql_str += " WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+def set_init_word_list(ecal_no, seq):
+    """
+    기 분석 데이터 초기화
+    """
+    sql_str =  "DELETE FROM EX_EXPN_ETC_WORDS "
+    sql_str += " WHERE ECAL_NO = \'" + ecal_no + "\' "
+    sql_str += "   AND SEQ = \'" + seq + "\' "
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        cursor.fetchall()
+    connection.commit()
+
+def set_word_list(ecal_no, seq, w_seq, word):
+    """
+    단어 데이터 등록
+    """
+    sql_str =  "INSERT INTO EX_EXPN_ETC_WORDS (ECAL_NO, SEQ, W_SEQ, TEXT, RGS_DH) "
+    sql_str += "VALUES (\'" + ecal_no + "\', \'" + seq + "\', \'" + w_seq + "\', \'" + word + "\', NOW())"
+
+    print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        cursor.fetchall()
+    connection.commit()
+
 @login_required(login_url='common:login')
 def analysis_nlp_real(request):
     # 예측 실행 버튼 클릭 시 타는 구문
     if request.method == 'POST':
-        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC WHERE OCCR_YMD LIKE '202106%' LABEL_CATE_CD IS NULL"
-        # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요, LABEL_CATE_CD : 라벨링
-        with connection.cursor() as cursor:
-            cursor.execute(sql_str)
-            expn_list = cursor.fetchall()
-            print(list(expn_list))
+        expn_list = get_nlp_target_list()
 
         okt = Okt()
 
         for r_idx, expn_info in enumerate(expn_list):
-            word_list = okt.phrases(expn_info[2]) # 명사집합
+            word_list = okt.phrases(expn_info[2]) # 명사 집합 추출
 
-            # 초기화
-            with connection.cursor() as cursor:
-                sql_update = "DELETE FROM EX_EXPN_ETC_WORDS WHERE ECAL_NO = \'" + \
-                             expn_info[0] + "\' AND SEQ = \'" + expn_info[1] + "\'"
-                cursor.execute(sql_update)
-                cursor.fetchall()
-            connection.commit()
+            set_init_word_list(expn_info[0], expn_info[1])
 
             for w_idx, word_info in enumerate(word_list):
-                with connection.cursor() as cursor:
-                    sql_update = "INSERT INTO EX_EXPN_ETC_WORDS (ECAL_NO, SEQ, WORD_NO, WORD) VALUES ('" + expn_info[0] + "\',\'" + expn_info[1] + "\',\'" + w_idx + "\',\'" + word_info + "\')"
-                    cursor.execute(sql_update)
-                    cursor.fetchall()
-                connection.commit()
+                set_word_list(expn_info[0], expn_info[1], w_idx, word_info)
 
         return render(request, 'common/analysis_nlp.html', {})
 
@@ -48,7 +78,7 @@ def analysis_nlp(request):
     #예측 실행 버튼 클릭 시 타는 구문
     if request.method == 'POST':
 
-        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC WHERE OCCR_YMD LIKE '202106%' LABEL_CATE_CD IS NULL"
+        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') LABEL_CATE_CD IS NULL"
         # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요, LABEL_CATE_CD : 라벨링
         with connection.cursor() as cursor:
             cursor.execute(sql_str)

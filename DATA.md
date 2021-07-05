@@ -244,40 +244,22 @@ COMMIT;
 INSERT INTO EX_BUDGET 
 SELECT 1000, 2021, 3000000000, 1680152314, 1319847686, 2800000000 FROM DUAL;
 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (254, 'C005', NULL, 1, 1, '광고/홍보 /구독료 / 제작비', '0', '광고선전비/촬영/모델비/촬영 포토/배너/도서/구독료/구독비/구독/제작 비용');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (255, 'C005', NULL, 1, 1, '재료비 / 시장조사', '1', '온리원푸드넷/재료비/식재/원두/장터/시장조사비');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (238, 'C005', NULL, 1, 1, '사무용품/소모품비', '2', '사무용품/소모품/명찰/명함/네임텍신메뉴/홍보물/종량제 봉투/운송비/주방용품');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (239, 'C005', NULL, 1, 1, '의료비', '3', '의료비/치료/구급/약품/진료비/치료비/코로나/보건증/치료비용/건강검진');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (240, 'C005', NULL, 1, 1, '복리후생/ 카페테리아 / 포인트', '4', '골프/캐디피/결혼/축의금/부친상/모친상/빙부상/조의금/부조금/부의금/기념품/카페테리아/사택정산/양우내안애/비연고/나인브릿지/국내콘도/해외콘도/헬스장/휘트니스/건강/체력/더마켓/임직원할인/임직원 할인');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (241, 'C005', NULL, 1, 1, '기타 비용', '5', '협회비/연회비/기타매출/포토카드/포토자판기/맥각/보상 처리/과태료/잡손실/장학금/강사비/교재비/강의료/교육훈련비/보험료/자기부담금/송금 수수료/폐수/ 도급비');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (242, 'C005', NULL, 1, 1, '식대', '6', '중식/대가집/식수대/급식비/식당/직원식/시식대/식대비');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (243, 'C005', NULL, 1, 1, '주류', '7', '주류 마감/주류선급금/주류');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (244, 'C005', NULL, 1, 1, '임차료 / 관리비 / 시설이용', '8', '전도금/보증금/임대차/임차/임차료/전대/문정법조단지/임대료');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (245, 'C005', NULL, 1, 1, '대내외 IT 서비스 및 시스템 비용', '9', '수신료/IPTV 시청료/그룹방송/사내방송/시청료/CJ드라이브/IDC/그룹/그룹 지표관리시스템/CJ월드/CJ캠퍼스/CJ IT/ONE ORDER/e-HR/정보인프라서비스/화상장비/그룹 휘슬/그룹커뮤니케이션허브/Smart CJ/법무정보시스템/CJ윤리경영/CJBILL/점포경영/FIMS/상권분석시스템/출입통제 시스템/FD인사시스템/HR 근무관리시스템/아스템즈'); 
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (246, 'C005', NULL, 1, 1, '청소용역수수료 / 음식물 처리', '10', '세스코/음식물 처리/청소비용/잔반/오물/쓰레기/폐기물/폐기/방제');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (247, 'C005', NULL, 1, 1, '택배 수수료/운반비', '11', '퀵비/배달/용달비/식재퀵비/배달대행비/배달대행/배달대행 수수료/운반비/용차비');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (248, 'C005', NULL, 1, 1, '제휴 수수료 / 브랜드 로열티', '12', '제휴수수료/브랜드 로열티/제휴정산/배달팁 프로모션/중계수수료');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (249, 'C005', NULL, 1, 1, '매장음악 서비스', '13', '음악서비스/매장 음악/매장음악/음악수수료/음악방송/BGM'); 
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (250, 'C005', NULL, 1, 1, '렌탈 및 사용 수수료(음악 서비스)', '14', '렌탈료/사용 수수료/테블릿/청호나이스/정수기/복합기/비데/제빙기/렌탈료/실버세척기');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (251, 'C005', NULL, 1, 1, '수선비용(AS비) / 보수공사', '15', '수선/교체/수리/AS/수리비/수리 비용/교체비용');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (252, 'C005', NULL, 1, 1, '공공요금(가스료/ 전기료 / 수도료 / 전기안전료/ 통신비/등록세)', '16', 'LNG/LPG/난방기/가스/전기/수도/통신비/통신 요금/수도료/등록세/등록면허세/전파사용료/전력기금');
- 
-INSERT INTO common_code (id, group_code, reference_value, use_flag, sort_no, detail_code_name, detail_code, remark) values (253, 'C005', NULL, 1, 1, '교통비/주차/주유', '17', '주차비/통행비/주차/톨비/통행료/교통비/KTX/톨게이트비/통행비용');
- 
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 238 ,'C005','2' ,'사무용품/소모품비', null, 1, '1' ,'사무용품/소모품/명찰/명함/네임텍신메뉴/홍보물/종량제 봉투/운송비/주방용품');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 239 ,'C005','3' ,'의료비', null, 1, '1' ,'의료비/치료/구급/약품/진료비/치료비/코로나/보건증/치료비용/건강검진');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 240 ,'C005','4' ,'복리후생/ 카페테리아 / 포인트', null, 1, '1','골프/캐디피/결혼/축의금/부친상/모친상/빙부상/조의금/부조금/부의금/기념품/카페테리아/사택정산/양우내안애/비연고/나인브릿지/국내콘도/해외콘도/헬스장/휘트니스/건강/체력/더마켓/임직원할인/임직원 할인');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 241 ,'C005','5' ,'기타 비용', null, 1, '1' ,'협회비/연회비/기타매출/포토카드/포토자판기/맥각/보상 처리/과태료/잡손실/장학금/강사비/교재비/강의료/교육훈련비/보험료/자기부담금/송금 수수료/폐수/ 도급비');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 242 ,'C005','6' ,'식대', null, 1, '1' ,'식대/식사/석식/식비/중식/식당/직원식/대가집/식수대/급식비/회식/음료대/간식대/다과');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 243 ,'C005','7' ,'주류', null, 1, '1' ,'주류 마감/주류선급금/주류');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 244 ,'C005','8' ,'임차료 / 관리비 / 시설이용', null, 1, '1' ,'전도금/보증금/임대차/임차/임차료/전대/문정법조단지/임대료');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 245 ,'C005','9' ,'대내외 IT 서비스 및 시스템 비용', null, 1, '1' ,'수신료/IPTV 시청료/그룹방송/사내방송/시청료/CJ드라이브/IDC/그룹/그룹 지표관리시스템/CJ월드/CJ캠퍼스/CJ IT/ONE ORDER/e-HR/정보인프라서비스/화상장비/그룹 휘슬/그룹커뮤니케이션허브/Smart CJ/법무정보시스템/CJ윤리경영/CJBILL/점포경영/FIMS/상권분석시스템/출입통제 시스템/FD인사시스템/HR 근무관리시스템/아스템즈');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 246 ,'C005','10' ,'청소용역수수료 / 음식물 처리', null, 1, '1' ,'세스코/음식물 처리/청소비용/잔반/오물/쓰레기/폐기물/폐기/방제');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 247 ,'C005','11' ,'택배 수수료/운반비', null, 1, '1' ,'퀵비/배달/용달비/식재퀵비/배달대행비/배달대행/배달대행 수수료/운반비/용차비');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 248 ,'C005','12' ,'제휴 수수료 / 브랜드 로열티', null, 1, '1' ,'제휴수수료/브랜드 로열티/제휴정산/배달팁 프로모션/중계수수료');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 250 ,'C005','13' ,'렌탈 및 사용 수수료(음악 서비스)', null, 1, '1' ,'렌탈료/사용 수수료/테블릿/청호나이스/정수기/복합기/비데/제빙기/렌탈료/실버세척기/음악서비스/매장 음악/매장음악/음악수수료/음악방송/BGM');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 251 ,'C005','14' ,'수선비용(AS비) / 보수공사', null, 1, '1' ,'수선/교체/수리/AS/수리비/수리 비용/교체비용');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 252 ,'C005','15' ,'공공요금(가스료/ 전기료 / 수도료 / 전기안전료/ 통신비/등록세)', null, 1, '1' ,'LNG/LPG/난방기/가스/전기/수도/통신비/통신 요금/수도료/등록세/등록면허세/전파사용료/전력기금');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 253 ,'C005','16' ,'교통비/주차/주유', null, 1, '1' ,'주차비/통행비/주차/톨비/통행료/교통비/KTX/톨게이트비/통행비용');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 254 ,'C005','0' ,'광고/홍보 /구독료 / 제작비', null, 1, '1' ,'광고선전비/촬영/모델비/촬영 포토/배너/도서/구독료/구독비/구독/제작 비용');
+INSERT INTO common_code (id, group_code, detail_code, detail_code_name, reference_value, use_flag, sort_no, remark) values ( 255 ,'C005','1' ,'재료비 / 시장조사', null, 1, '1' ,'온리원푸드넷/재료비/식재/원두/장터/시장조사비/재료구입/주류구입/식자재/재료구매');
+
 COMMIT;
