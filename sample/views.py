@@ -12,7 +12,7 @@ def api_open(request):
     #설치: pip install JPype1-1.2.0-cp39-cp39-win_amd64.whl
     #JDK 8 설치(이슈) + JAVA_HOME 설정
 
-    context = request.POST.get('context', 'FeatureType내용없음')
+    context = request.POST.get('context', '내용없음')
     if request.method == 'POST':
         okt = Okt()
         result = okt.pos(context, norm=True, stem=True, join=True)
