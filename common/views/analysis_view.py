@@ -9,6 +9,41 @@ from keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
 
 @login_required(login_url='common:login')
+def analysis_nlp_real(request):
+    # 예측 실행 버튼 클릭 시 타는 구문
+    if request.method == 'POST':
+        sql_str = "SELECT ECAL_NO, SEQ, DTLS, LABEL_CATE_CD FROM EX_EXPN_ETC WHERE OCCR_YMD LIKE '202106%' LABEL_CATE_CD IS NULL"
+        # ECAL_NO : 전표번호, SEQ : 순서, DTLS : 적요, LABEL_CATE_CD : 라벨링
+        with connection.cursor() as cursor:
+            cursor.execute(sql_str)
+            expn_list = cursor.fetchall()
+            print(list(expn_list))
+
+        okt = Okt()
+
+        for r_idx, expn_info in enumerate(expn_list):
+            word_list = okt.phrases(expn_info[2]) # 명사집합
+
+            # 초기화
+            with connection.cursor() as cursor:
+                sql_update = "DELETE FROM EX_EXPN_ETC_WORDS WHERE ECAL_NO = \'" + \
+                             expn_info[0] + "\' AND SEQ = \'" + expn_info[1] + "\'"
+                cursor.execute(sql_update)
+                cursor.fetchall()
+            connection.commit()
+
+            for w_idx, word_info in enumerate(word_list):
+                with connection.cursor() as cursor:
+                    sql_update = "INSERT INTO EX_EXPN_ETC_WORDS (ECAL_NO, SEQ, WORD_NO, WORD) VALUES ('" + expn_info[0] + "\',\'" + expn_info[1] + "\',\'" + w_idx + "\',\'" + word_info + "\')"
+                    cursor.execute(sql_update)
+                    cursor.fetchall()
+                connection.commit()
+
+        return render(request, 'common/analysis_nlp.html', {})
+
+    return render(request, 'common/analysis_nlp.html', {})
+
+@login_required(login_url='common:login')
 def analysis_nlp(request):
     #예측 실행 버튼 클릭 시 타는 구문
     if request.method == 'POST':
