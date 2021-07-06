@@ -487,7 +487,7 @@
                         ticks: {
                             maxTicksLimit: 6,
                             callback: function(value, index, values) {
-                                return [value[0], '( ' + value[1].substr(0, 4) + '-' + value[1].substr(4, 2) + ' )'];
+                                return value.substr(0, 4) + '-' + value.substr(4, 2);
                             }
                         },
                         maxBarThickness: 50,
@@ -525,7 +525,7 @@
                 caretPadding: 10,
                 callbacks: {
                     title: function(tooltipItem, data) {
-                        return tooltipItem[0].xLabel[0];
+                        return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
                     },
                     label: function(tooltipItem, chart) {
                         return Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
@@ -626,12 +626,6 @@
                             display: false,
                             drawBorder: false
                         },
-                        ticks: {
-                            maxTicksLimit: 6,
-                            callback: function(value, index, values) {
-                                return value.substr(0, 4) + '-' + value.substr(4, 2);
-                            }
-                        },
                         maxBarThickness: 50,
                 }],
                 yAxes: [{
@@ -666,9 +660,6 @@
                 displayColors: false,
                 caretPadding: 10,
                 callbacks: {
-                    title: function(tooltipItem, data) {
-                        return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
-                    },
                     label: function(tooltipItem, chart) {
                         return Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
                     }
@@ -691,7 +682,7 @@
         var exChart4 = new Chart(exChartCanvas4, exChartConfig4);
         var exChart5 = new Chart(exChartCanvas5, exChartConfig5);
         var exChart6 = new Chart(exChartCanvas6, exChartConfig6);
-        var exChart7 = new Chart(exChartCanvas6, exChartConfig7);
+        var exChart7 = new Chart(exChartCanvas7, exChartConfig7);
     };
 </script>
 {% endblock %}

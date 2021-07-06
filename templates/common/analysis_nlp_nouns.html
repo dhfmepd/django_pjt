@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container my-3" style="padding-top:80px">
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3">일반경비 적요 분석</h4>
+        <form method="post" class="post-form my-3">
+            {% csrf_token %}
+            <!-- 오류표시 Start -->
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                {% for field in form %}
+                    {% if field.errors %}
+                    <strong>{{ field.label }}</strong>
+                    {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <div class="col-md-12 mb-3">
+                    <label for="param_data">파라미터 데이터</label>
+                    <input type="text" class="form-control" id="param_data" name="param_data">
+                </div>
+            </div>
+
+<!--            <div class="panel-body">-->
+<!--                <form action =""method="post" enctype="multipart/form-data">-->
+<!--                    {% csrf_token %}-->
+<!--                    <p>{{ form.non_field_errors }}</p>-->
+<!--                    <p>{{ form.non_field_errors }} {{ form.docfile.help_text}}</p>-->
+<!--                    <p>-->
+<!--                        {{ form.docfile.errors }}-->
+<!--                        {{ form.docfile }}-->
+<!--                    </p>-->
+<!--                    <p><input type="submit" value="Upload"/></p>-->
+<!--                </form>-->
+<!--            </div>-->
+
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">예측 실행</button>
+        </form>
+
+        <table class="table table-striped">
+            <!-- 헤더 영역 End -->
+            <thead>
+            <tr class="text-center thead-dark">
+                <th class="text-center">일반경비 예측 DATA</th>
+            </tr>
+            </thead>
+            <!-- 헤더 영역 End -->
+            <tbody>
+            {% if data_list %}
+            {% for data in data_list %}
+            <tr class="text-center">
+                <td class="text-center">{{ data }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td class="text-center">분석 결과가 없습니다.</td>
+            </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

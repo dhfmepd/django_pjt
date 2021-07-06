@@ -14,7 +14,7 @@ def get_nlp_target_list():
     """
     sql_str =  "SELECT ECAL_NO, SEQ, DTLS "
     sql_str += "  FROM EX_EXPN_ETC "
-    sql_str += " WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
+    sql_str += " WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -2 MONTH), '%Y%m'), '%') "
 
     print("[INFO] SQL : {}".format(sql_str))
 
@@ -54,7 +54,7 @@ def set_word_list(ecal_no, seq, w_seq, word):
     connection.commit()
 
 @login_required(login_url='common:login')
-def analysis_nlp_real(request):
+def analysis_nlp_nouns(request):
     # 예측 실행 버튼 클릭 시 타는 구문
     if request.method == 'POST':
         expn_list = get_nlp_target_list()
@@ -62,16 +62,17 @@ def analysis_nlp_real(request):
         okt = Okt()
 
         for r_idx, expn_info in enumerate(expn_list):
-            word_list = okt.phrases(expn_info[2]) # 명사 집합 추출
+            word_list = okt.nouns(expn_info[2]) # 명사 집합 추출
 
-            set_init_word_list(expn_info[0], expn_info[1])
+            set_init_word_list(expn_info[0], str(expn_info[1]))
 
             for w_idx, word_info in enumerate(word_list):
-                set_word_list(expn_info[0], expn_info[1], w_idx, word_info)
+                if len(word_info) > 1:
+                    set_word_list(expn_info[0], str(expn_info[1]), str(w_idx), word_info)
 
-        return render(request, 'common/analysis_nlp.html', {})
+        return render(request, 'common/analysis_nlp_nouns.html', {})
 
-    return render(request, 'common/analysis_nlp.html', {})
+    return render(request, 'common/analysis_nlp_nouns.html', {})
 
 @login_required(login_url='common:login')
 def analysis_nlp(request):
