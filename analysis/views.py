@@ -390,7 +390,7 @@ def get_keyword_cnt_anly_list():
     sql_str += "        SELECT B.TEXT, COUNT(1) AS TOT_CNT "
     sql_str += "          FROM EX_EXPN_ETC A, EX_EXPN_ETC_WORDS B "
     sql_str += "         WHERE A.ECAL_NO = B.ECAL_NO AND A.SEQ = B.SEQ "
-    sql_str += "           AND A.OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
+    sql_str += "           AND A.OCCR_YMD BETWEEN DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -6 MONTH), '%Y%m%01') AND DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m%d') "
     sql_str += "           AND B.TEXT NOT IN (SELECT detail_code_name "
     sql_str += "                                FROM common_code "
     sql_str += "                               WHERE group_code = 'C006' "

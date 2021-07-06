@@ -17,7 +17,7 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Category Top 10</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">법인카드 Category Top 10</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -25,7 +25,7 @@
                         <canvas id="exChart1"></canvas>
                     </div>
                     <hr>
-                    전체경비 상위 10
+                    전월 법인카드 지출경비 상위 10
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">경비 Category Trend Line</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">법인카드 Category Trend Line</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -42,7 +42,7 @@
                         <canvas id="exChart2"></canvas>
                     </div>
                     <hr>
-                    전체경비 최근 6개월 상위 10 증감 추이
+                    법인카드 최근 6개월 상위 10 증감 추이
                 </div>
             </div>
         </div>
@@ -119,7 +119,7 @@
                         <canvas id="exChart6"></canvas>
                     </div>
                     <hr>
-                    일반경비 전월 키워드 상위 10 분포
+                    일반경비 최근 3개월 키워드 상위 10 분포
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
                         <canvas id="exChart7"></canvas>
                     </div>
                     <hr>
-                    일반경비 전월 키워드 별 금액 비교
+                    전월 일반경비 키워드 별 금액 비교
                 </div>
             </div>
         </div>
@@ -312,7 +312,6 @@
                     backgroundColor: ['#f6c23e', '#e74a3b'],
                     hoverBackgroundColor: ['#f4b619', '#e02d1b'],
                 }
-
             ],
         },
         options: {
@@ -376,15 +375,16 @@
     };
 
     const exChartConfig4 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
-        type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
+        type: 'line',                                           //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
-            labels: {{ monthly_label|safe }},                   //라벨 명칭
+            labels: {{ monthly_label|safe }},             //라벨 명칭
             datasets: [
                 {
-                    data: {{ monthly_data|safe }},              //데이터
-                    backgroundColor: ['#4e73df', '#4e73df', '#4e73df'],
-                    hoverBackgroundColor: ['#2e59d9', '#2e59d9', '#2e59d9'],
-                }
+                    data: {{ monthly_data|safe }},
+                    borderColor: Samples.utils.color(3),
+                    fill: false,
+                    lineTension: 0.25,
+                },
             ],
         },
         options: {                                               //chart Option
@@ -398,38 +398,38 @@
                     bottom: 0
                 }
             },
+            legend: {
+                display: false,
+            },
             scales: {
                 xAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 6,
-                            callback: function(value, index, values) {
-                                return value.substr(0, 4) + '-' + value.substr(4, 2);
-                            }
-                        },
-                        maxBarThickness: 50,
+                    ticks: {
+                        userCallback: function (value, index, values) {
+                            return value.substr(0, 4) + '-' + value.substr(4, 2);
+                        }
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    }
                 }],
                 yAxes: [{
+                    ticks: {
+                        maxTicksLimit: 5,
+                        padding: 10,
+                        userCallback: function (value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    },
                     gridLines: {
                         color: "rgb(234, 236, 244)",
                         zeroLineColor: "rgb(234, 236, 244)",
                         drawBorder: false,
                         borderDash: [2],
                         zeroLineBorderDash: [2]
-                    },
-                    ticks: {
-                        maxTicksLimit: 5,
-                        callback: function(value, index, values) {
-                            return Number(value).toLocaleString();
-                        }
-                    },
-                }]
-            },
-            legend: {
-                display: false
+                    }
+                }],
+
             },
             tooltips: {
                 titleMarginBottom: 10,
@@ -447,10 +447,10 @@
                     title: function(tooltipItem, data) {
                         return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
                     },
-                    label: function(tooltipItem, chart) {
-                        return Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
-                    }
-                }
+                    label: function(tooltipItem, data) {
+                        return ' ' + data.datasets[tooltipItem.datasetIndex].label + ' : ' + Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
+                    },
+                },
             },
         },
     };
