@@ -80,7 +80,7 @@
                 <!-- Card Header - Dropdown -->
                 <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">부서 상위 현황</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">예산 현황</h6>
                     <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
@@ -102,7 +102,7 @@
                         <canvas id="barChart1"></canvas>
                     </div>
                     <hr>
-                    당월 부서 경비 상위 5
+                    전월 예산 지출 현황
                 </div>
             </div>
         </div>
@@ -113,7 +113,7 @@
                 <!-- Card Header - Dropdown -->
                 <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">예산 현황</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">부서 상위 현황</h6>
                     <!--
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button"
@@ -135,10 +135,11 @@
                         <canvas id="barChart2"></canvas>
                     </div>
                     <hr>
-                    당월 예산 지출 현황
+                    전월 부서 경비 상위 5
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}
@@ -146,6 +147,78 @@
 <script type='text/javascript'>
 
     const barChartConfig1 = {
+        type: 'horizontalBar',
+        data: {
+            labels: ['실제예산', '지출실적', '목표지출실적'],
+            datasets: [
+                {
+                    label: 'KRW/원',
+                    data: {{ budget_data|safe }},
+                    backgroundColor: ['#36b9cc', '#1cc88a', '#4e73df'],
+                    hoverBackgroundColor: ['#2c9faf', '#169b6b', '#2e59d9'],
+                }
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    },
+                    ticks: {
+                        maxTicksLimit: 4,
+                        callback: function(value, index, values) {
+                            return Number(value).toLocaleString();
+                        }
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    maxBarThickness: 50,
+                }]
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        return Number(tooltipItem.xLabel).toLocaleString() + ' 만원';
+                    }
+                }
+            }
+        }
+    };
+
+    const barChartConfig2 = {
         type: 'bar',
         data: {
             labels: {{ top5_label|safe }},   //라벨 명칭
@@ -220,78 +293,6 @@
             responsive: true,
             maintainAspectRatio: false
         },
-    };
-
-    const barChartConfig2 = {
-        type: 'horizontalBar',
-        data: {
-            labels: ['실제예산', '지출실적', '목표지출실적'],
-            datasets: [
-                {
-                    label: 'KRW/원',
-                    data: {{ budget_data|safe }},
-                    backgroundColor: ['#36b9cc', '#1cc88a', '#4e73df'],
-                    hoverBackgroundColor: ['#2c9faf', '#169b6b', '#2e59d9'],
-                }
-            ],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: {
-                    left: 10,
-                    right: 25,
-                    top: 25,
-                    bottom: 0
-                }
-            },
-            scales: {
-                xAxes: [{
-                    gridLines: {
-                        color: "rgb(234, 236, 244)",
-                        zeroLineColor: "rgb(234, 236, 244)",
-                        drawBorder: false,
-                        borderDash: [2],
-                        zeroLineBorderDash: [2]
-                    },
-                    ticks: {
-                        maxTicksLimit: 4,
-                        callback: function(value, index, values) {
-                            return Number(value).toLocaleString();
-                        }
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    maxBarThickness: 50,
-                }]
-            },
-            legend: {
-                display: false
-            },
-            tooltips: {
-                titleMarginBottom: 10,
-                titleFontColor: '#6e707e',
-                titleFontSize: 14,
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: false,
-                caretPadding: 10,
-                callbacks: {
-                    label: function(tooltipItem, chart) {
-                        return Number(tooltipItem.xLabel).toLocaleString() + ' 만원';
-                    }
-                }
-            }
-        }
     };
 
     window.onload = function() {
