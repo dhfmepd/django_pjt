@@ -14,7 +14,7 @@ def get_nlp_target_list():
     """
     sql_str =  "SELECT ECAL_NO, SEQ, DTLS "
     sql_str += "  FROM EX_EXPN_ETC "
-    sql_str += " WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -2 MONTH), '%Y%m'), '%') "
+    sql_str += " WHERE OCCR_YMD LIKE CONCAT(DATE_FORMAT(DATE_ADD(SYSDATE(), INTERVAL -1 MONTH), '%Y%m'), '%') "
 
     print("[INFO] SQL : {}".format(sql_str))
 

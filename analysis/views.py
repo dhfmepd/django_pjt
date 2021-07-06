@@ -546,7 +546,7 @@ def receipt_ocr(request):
                           'type': os.path.splitext(dir_path + file_name)[1][1:]})
 
     if request.method == 'POST':
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "VisionAPI/visionapitest-314407-3a69a466f455.json"
+        # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "VisionAPI/visionapitest-314407-3a69a466f455.json"
 
         image_path = request.POST.get('image_path')
 
