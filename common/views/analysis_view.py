@@ -109,7 +109,7 @@ def analysis_nlp(request):
         # 적요 특수문자 제거 정규표현식 사용
         df_test['DTLS'] = df_test['DTLS'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]", "")
         df_test['DTLS'].replace('', np.nan, inplace=True)
-
+        df_test['DTLS'] = df_test['DTLS'].dropna(how='any')  # Null 값 제거
         # train, test 셋 토큰화
         # okt(open korean text) 트위터에서 만든 오픈소스 형태소 분석기
         okt = Okt()
