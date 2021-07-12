@@ -103,7 +103,7 @@ def analysis_nlp(request):
         test_model = load_model('label_model.h5')
 
         # 전표번호, 순서, 적요, 라벨링을 Pandas dataframe 생성(데이터 처리 및 분석 용이)
-        df_test = pd.DataFrame(test_data, columns = ['number', 'seq', 'title', 'label'])
+        df_test = pd.DataFrame(test_data, columns = ['number', 'seq', 'DTLS', 'label'])
 
         print('라벨링 필요한 적요 개수 :', len(df_test))
         # 적요 특수문자 제거 정규표현식 사용
