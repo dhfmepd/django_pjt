@@ -230,13 +230,13 @@ def analysis_nlp(request):
         # 전체 데이터 루프 돌면서 라벨 예측
         for i in range(len(df_test['number'])):
             # 전표 번호
-            ecal_number = str(df_test['number'][i])
+            ecal_number = str(df_test['number'].iloc[i])
             # 전표 번호 순서
-            ecal_seq = str(df_test['seq'][i])
+            ecal_seq = str(df_test['seq'].iloc[i])
             # 적요 예측 라벨
             ecal_info_label = str(predict_labels[i])
             # 라벨이 None값인 경우 update
-            if df_test['label'][i] is None:
+            if df_test['label'].iloc[i] is None:
                 with connection.cursor() as cursor:
                     sql_update = "UPDATE EX_EXPN_ETC SET LABEL_CATE_CD = \'" + ecal_info_label + "\' WHERE ECAL_NO = \'" + ecal_number + "\' AND SEQ = \'" + ecal_seq + "\'"
                     cursor.execute(sql_update)
