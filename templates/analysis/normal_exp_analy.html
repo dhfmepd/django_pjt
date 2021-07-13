@@ -448,7 +448,7 @@
                         return tooltipItem[0].xLabel.substr(0, 4) + '-' + tooltipItem[0].xLabel.substr(4, 2);
                     },
                     label: function(tooltipItem, data) {
-                        return ' ' + data.datasets[tooltipItem.datasetIndex].label + ' : ' + Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
+                        return ' ' + Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
                     },
                 },
             },
