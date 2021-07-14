@@ -6,8 +6,16 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">
-        <i class="fas fa-fw fa-table"></i>
-        <span class="text">일반/법인카드 경비분석</span>
+        <div class="row">
+            <div class="col mr-2">
+                <i class="fas fa-fw fa-table"></i>
+                <span class="text">일반/법인카드 경비분석</span>
+            </div>
+            <div class="col-auto">
+                <select id="target_ym" name="target_ym" class="custom-select custom-select form-control form-control d-block">
+                </select>
+            </div>
+        </div>
     </h1>
 
     <!-- Content Row -->
@@ -70,7 +78,7 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-xl-9">전체경비 평균지출, 평균대비 현지출</div>
+                        <div class="col-xl-9">전체경비 평균지출 대비 현지출</div>
                         <div class="col-xl-3" style="text-align:right;">(단위: 만원)</div>
                     </div>
                 </div>
@@ -163,10 +171,13 @@
         </div>
     </div>
 </div>
+
+<form id="searchForm" method="get" action="{% url 'analysis:normal_exp_analy' %}">
+    <input type="hidden" id="month" name="month" value="{{ month }}">
+</form>
 {% endblock %}
 {% block script %}
 <script type='text/javascript'>
-
     const exChartConfig1 = {                                        //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'doughnut',                                           //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                     //Data Setting
@@ -704,6 +715,35 @@
         var exChart5 = new Chart(exChartCanvas5, exChartConfig5);
         var exChart6 = new Chart(exChartCanvas6, exChartConfig6);
         var exChart7 = new Chart(exChartCanvas7, exChartConfig7);
+
+        var date = new Date();
+        date.setMonth(date.getMonth() - 1);
+        $("#target_ym").append("<option value='" + getFormatDate('data', date) + "'>" + getFormatDate('label', date) + "</option>");
+        date.setMonth(date.getMonth() - 1);
+        $("#target_ym").append("<option value='" + getFormatDate('data', date) + "'>" + getFormatDate('label', date) + "</option>");
+        date.setMonth(date.getMonth() - 1);
+        $("#target_ym").append("<option value='" + getFormatDate('data', date) + "'>" + getFormatDate('label', date) + "</option>");
+
+        {% if month != '' %}
+        $("#target_ym").val('{{ month }}');
+        {% else %}
+        var now = new Date();
+        now.setMonth(now.getMonth() - 1);
+        $("#target_ym").val(getFormatDate('data', now));
+        {% endif %}
     };
+    $("#target_ym").on('change', function() {
+        $("#month").val($(this).val());
+        $("#searchForm").submit();
+    });
+    function getFormatDate(type,date){
+        var year = date.getFullYear();
+        var month = (1 + date.getMonth());
+        month = month >= 10 ? month : '0' + month;
+        if (type == 'data')
+            return year + '' + month;
+        else
+            return year + '-' + month;
+    }
 </script>
 {% endblock %}
