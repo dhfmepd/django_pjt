@@ -60,8 +60,7 @@ def index(request):
     if request.user.is_authenticated == True:
         return redirect('common:main')
 
-    context = {}
-    return render(request, 'common/index.html', context)
+    return redirect('common:login')
 
 @login_required(login_url='common:login')
 def main(request):
