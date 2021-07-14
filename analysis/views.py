@@ -2,6 +2,8 @@ import io
 import os
 import cv2
 from enum import Enum
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from google.cloud import vision
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -13,8 +15,7 @@ def normal_exp_analy(request):
     """
     일반/법인카드 경비분석 Dashboard
     """
-
-    month = request.GET.get('month', '')
+    month = request.GET.get('month', (datetime.today() + relativedelta(months=-1)).strftime("%Y%m"))
 
     print("Target Month : ", month)
 
