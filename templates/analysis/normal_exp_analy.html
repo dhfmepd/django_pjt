@@ -726,10 +726,6 @@
 
         {% if month != '' %}
         $("#target_ym").val('{{ month }}');
-        {% else %}
-        var now = new Date();
-        now.setMonth(now.getMonth() - 1);
-        $("#target_ym").val(getFormatDate('data', now));
         {% endif %}
     };
     $("#target_ym").on('change', function() {

@@ -15,7 +15,7 @@ def normal_exp_analy(request):
     """
     일반/법인카드 경비분석 Dashboard
     """
-    month = request.GET.get('month', (datetime.today() + relativedelta(months=-1)).strftime("%Y%m"))
+    month = request.GET.get('month', (datetime.today() + relativedelta(months=-1)).strftime('%Y%m'))
 
     print("Target Month : ", month)
 
@@ -160,7 +160,7 @@ def get_top10_list(month):
     sql_str += "            SELECT DISP_CATE_CD, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
     sql_str += "                    FROM EX_CORPCARD_ASK "
     sql_str += "                    WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "                    AND APV_DD LIKE CONCAT('" + month + "' '%') "
+    sql_str += "                    AND APV_DD LIKE CONCAT('" + month + "', '%') "
     sql_str += "                    GROUP BY DISP_CATE_CD "
     sql_str += "    ) BASE "
     sql_str += ") RSLT "
