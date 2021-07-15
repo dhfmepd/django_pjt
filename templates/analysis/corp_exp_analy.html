@@ -126,50 +126,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Content Row -->
-    <div class="row">
-        <!-- exChart1 -->
-        <div class="col-xl-5 col-lg-4">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">일반경비 키워드 Top 10</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="exChart6"></canvas>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-xl-9">일반경비 최근 3개월 키워드 상위 10 분포</div>
-                        <div class="col-xl-3" style="text-align:right;">(단위: 건)</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-7 col-lg-4">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">일반경비 키워드 별 지출 현황</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="exChart7"></canvas>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-xl-9">전월 일반경비 키워드 별 금액 비교</div>
-                        <div class="col-xl-3" style="text-align:right;">(단위: 만원)</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <form id="searchForm" method="get" action="{% url 'analysis:normal_exp_analy' %}">
@@ -567,154 +523,17 @@
         },
     };
 
-    const exChartConfig6 = {                                        //https://www.chartjs.org/docs/2.9.4/charts/bar.html
-        type: 'doughnut',                                           //Chart Type ex: doughnut, pie, line, bar ...
-        data: {                                                     //Data Setting
-            labels: {{ keyword_cnt_label|safe }},                   //라벨 명칭
-            datasets: [{
-                data: {{ keyword_cnt_data|safe }},                  //데이터
-                backgroundColor: Samples.utils.colors(10),
-                hoverBorderColor: "rgba(234, 236, 244, 1)",
-            }],
-        },
-        options: {
-            responsive: true,
-			cutoutPercentage: 80,
-			maintainAspectRatio: false,
-			layout: {
-                padding: {
-                    left: 10,
-                    right: 25,
-                    top: 25,
-                    bottom: 0
-                }
-            },
-            plugins: {
-                doughnutlabel: {
-                    labels: [
-                        {
-                            text: '키워드 상위 Top10',
-                            font: {
-                                size: '20',
-                                weight: 'bold',
-                            },
-                            color: '#6e707e'
-                        }
-                    ]
-                },
-            },
-            tooltips: {
-                titleMarginBottom: 10,
-                titleFontColor: '#6e707e',
-                titleFontSize: 14,
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: false,
-                caretPadding: 10,
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        var dataset = data.datasets[tooltipItem.datasetIndex];
-                        var currentValue = dataset.data[tooltipItem.index];
-                        return Number(currentValue).toLocaleString() + ' 건';
-                    }
-                }
-            },
-            legend: {
-                position: 'right'
-            },
-        }
-    };
-
-    const exChartConfig7 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
-        type: 'bar',                                            //Chart Type ex: doughnut, pie, line, bar ...
-        data: {                                                 //Data Setting
-            labels: {{ keyword_amt_label|safe }},               //라벨 명칭
-            datasets: [
-                {
-                    data: {{ keyword_amt_data|safe }},          //데이터
-                    backgroundColor: Samples.utils.colors(10),
-                    hoverBorderColor: "rgba(234, 236, 244, 1)",
-                }
-            ],
-        },
-        options: {                                               //chart Option
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: {
-                    left: 10,
-                    right: 25,
-                    top: 25,
-                    bottom: 0
-                }
-            },
-            scales: {
-                xAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        maxBarThickness: 50,
-                }],
-                yAxes: [{
-                    gridLines: {
-                        color: "rgb(234, 236, 244)",
-                        zeroLineColor: "rgb(234, 236, 244)",
-                        drawBorder: false,
-                        borderDash: [2],
-                        zeroLineBorderDash: [2]
-                    },
-                    ticks: {
-                        maxTicksLimit: 5,
-                        callback: function(value, index, values) {
-                            return Number(value).toLocaleString();
-                        }
-                    },
-                }]
-            },
-            legend: {
-                display: false
-            },
-            tooltips: {
-                titleMarginBottom: 10,
-                titleFontColor: '#6e707e',
-                titleFontSize: 14,
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: false,
-                caretPadding: 10,
-                callbacks: {
-                    label: function(tooltipItem, chart) {
-                        return Number(tooltipItem.yLabel).toLocaleString() + ' 만원';
-                    }
-                }
-            },
-        },
-    };
-
     window.onload = function() {
         var exChartCanvas1 = document.getElementById('exChart1').getContext('2d');
         var exChartCanvas2 = document.getElementById('exChart2').getContext('2d');
         var exChartCanvas3 = document.getElementById('exChart3').getContext('2d');
         var exChartCanvas4 = document.getElementById('exChart4').getContext('2d');
         var exChartCanvas5 = document.getElementById('exChart5').getContext('2d');
-        var exChartCanvas6 = document.getElementById('exChart6').getContext('2d');
-        var exChartCanvas7 = document.getElementById('exChart7').getContext('2d');
         var exChart1 = new Chart(exChartCanvas1, exChartConfig1);
         var exChart2 = new Chart(exChartCanvas2, exChartConfig2);
         var exChart3 = new Chart(exChartCanvas3, exChartConfig3);
         var exChart4 = new Chart(exChartCanvas4, exChartConfig4);
         var exChart5 = new Chart(exChartCanvas5, exChartConfig5);
-        var exChart6 = new Chart(exChartCanvas6, exChartConfig6);
-        var exChart7 = new Chart(exChartCanvas7, exChartConfig7);
 
         var date = new Date();
         date.setMonth(date.getMonth() - 1);

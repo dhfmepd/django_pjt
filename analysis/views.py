@@ -9,18 +9,17 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db import connection
 
-
 @login_required(login_url='common:login')
-def normal_exp_analy(request):
+def corp_exp_analy(request):
     """
-    일반/법인카드 경비분석 Dashboard
+    법인카드 경비분석 Dashboard
     """
     month = request.GET.get('month', (datetime.today() + relativedelta(months=-1)).strftime('%Y%m'))
 
     print("Target Month : ", month)
 
-    # 1.Top10 Chart
-    top10_list = get_top10_list(month)
+    # 1. 법인카드 Category Top 10
+    top10_list = get_corp_cate_top10_list(month)
 
     top10_label = []
     top10_data = []
@@ -31,120 +30,99 @@ def normal_exp_analy(request):
         top10_data.append(str(top10_info[1]))
         top10_sum += int(top10_info[1])
 
-    top10_sum = '{:,}'.format(top10_sum)
+    top10_sum_text = '{:,}'.format(top10_sum)
 
-    # 2. 경비 항목별 Top10 최근 3개월 증감
-    top10_monthly_label = []
-    top10_monthly_data_label = []
-    top10_monthly_data_list = []
-    top10_monthly_data1 = []
-    top10_monthly_data2 = []
-    top10_monthly_data3 = []
-    top10_monthly_data4 = []
-    top10_monthly_data5 = []
-    top10_monthly_data6 = []
-    top10_monthly_data7 = []
-    top10_monthly_data8 = []
-    top10_monthly_data9 = []
-    top10_monthly_data10 = []
-    top10_monthly_list = get_TOP10_monthly_list(month)
+    # 2. 법인카드 Category Trend Line
+    top10_trend_label = []
+    top10_trend_data_label = []
+    top10_trend_data_list = []
+    top10_trend_data1 = []
+    top10_trend_data2 = []
+    top10_trend_data3 = []
+    top10_trend_data4 = []
+    top10_trend_data5 = []
+    top10_trend_data6 = []
+    top10_trend_data7 = []
+    top10_trend_data8 = []
+    top10_trend_data9 = []
+    top10_trend_data10 = []
+    top10_trend_list = get_corp_cate_trend_list(month)
 
-    for r_idx, top10_monthly_info in enumerate(top10_monthly_list):
+    for r_idx, top10_trend_info in enumerate(top10_trend_list):
 
-        if top10_monthly_info[0] not in top10_monthly_label:  # 월(X) 라벨
-            top10_monthly_label.append(top10_monthly_info[0])
+        if top10_trend_info[0] not in top10_trend_label:  # 월(X) 라벨
+            top10_trend_label.append(top10_trend_info[0])
 
-        if top10_monthly_info[1] not in top10_monthly_data_label:  # 데이터셋 라벨
-            top10_monthly_data_label.append(top10_monthly_info[1])
+        if top10_trend_info[1] not in top10_trend_data_label:  # 데이터셋 라벨
+            top10_trend_data_label.append(top10_trend_info[1])
 
-        if r_idx % 10 == 0:  # 카테고리 Top 1
-            top10_monthly_data1.append(int(top10_monthly_info[2]))
-        if r_idx % 10 == 1:  # 카테고리 Top 2
-            top10_monthly_data2.append(int(top10_monthly_info[2]))
+        if r_idx % 10 == 0:
+            top10_trend_data1.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 1:
+            top10_trend_data2.append(int(top10_trend_info[2]))
         if r_idx % 10 == 2:
-            top10_monthly_data3.append(int(top10_monthly_info[2]))
+            top10_trend_data3.append(int(top10_trend_info[2]))
         if r_idx % 10 == 3:
-            top10_monthly_data4.append(int(top10_monthly_info[2]))
+            top10_trend_data4.append(int(top10_trend_info[2]))
         if r_idx % 10 == 4:
-            top10_monthly_data5.append(int(top10_monthly_info[2]))
+            top10_trend_data5.append(int(top10_trend_info[2]))
         if r_idx % 10 == 5:
-            top10_monthly_data6.append(int(top10_monthly_info[2]))
+            top10_trend_data6.append(int(top10_trend_info[2]))
         if r_idx % 10 == 6:
-            top10_monthly_data7.append(int(top10_monthly_info[2]))
+            top10_trend_data7.append(int(top10_trend_info[2]))
         if r_idx % 10 == 7:
-            top10_monthly_data8.append(int(top10_monthly_info[2]))
+            top10_trend_data8.append(int(top10_trend_info[2]))
         if r_idx % 10 == 8:
-            top10_monthly_data9.append(int(top10_monthly_info[2]))
+            top10_trend_data9.append(int(top10_trend_info[2]))
         if r_idx % 10 == 9:
-            top10_monthly_data10.append(int(top10_monthly_info[2]))
+            top10_trend_data10.append(int(top10_trend_info[2]))
 
-    if len(top10_monthly_data_label) == 10:
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[0], 'data': top10_monthly_data1})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[1], 'data': top10_monthly_data2})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[2], 'data': top10_monthly_data3})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[3], 'data': top10_monthly_data4})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[4], 'data': top10_monthly_data5})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[5], 'data': top10_monthly_data6})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[6], 'data': top10_monthly_data7})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[7], 'data': top10_monthly_data8})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[8], 'data': top10_monthly_data9})
-        top10_monthly_data_list.append({'label': top10_monthly_data_label[9], 'data': top10_monthly_data10})
+    if len(top10_trend_data_label) == 10:
+        top10_trend_data_list.append({'label': top10_trend_data_label[0], 'data': top10_trend_data1})
+        top10_trend_data_list.append({'label': top10_trend_data_label[1], 'data': top10_trend_data2})
+        top10_trend_data_list.append({'label': top10_trend_data_label[2], 'data': top10_trend_data3})
+        top10_trend_data_list.append({'label': top10_trend_data_label[3], 'data': top10_trend_data4})
+        top10_trend_data_list.append({'label': top10_trend_data_label[4], 'data': top10_trend_data5})
+        top10_trend_data_list.append({'label': top10_trend_data_label[5], 'data': top10_trend_data6})
+        top10_trend_data_list.append({'label': top10_trend_data_label[6], 'data': top10_trend_data7})
+        top10_trend_data_list.append({'label': top10_trend_data_label[7], 'data': top10_trend_data8})
+        top10_trend_data_list.append({'label': top10_trend_data_label[8], 'data': top10_trend_data9})
+        top10_trend_data_list.append({'label': top10_trend_data_label[9], 'data': top10_trend_data10})
 
-    # 3.평균 지출 Chart
-    year_Avg = get_yearAvg_info(month)
-    month_Sum = get_monSum_info(month)
+    # 3. 경비 Average and Now
+    year_avg_info = get_corp_year_avg_info(month)
+    month_sum_info = get_corp_month_sum_info(month)
 
-    avg_data = [int(year_Avg[0]), int(month_Sum[0])]
+    avg_data = [int(year_avg_info[0]), int(month_sum_info[0])]
 
-    # 4.월별 경비 증감 Chart
-    monthly_label = []
-    monthly_data = []
-    monthly_list = get_monthly_list(month)
+    # 4. 경비 Monthly 증감 현황
+    monthly_wave_label = []
+    monthly_wave_data = []
+    monthly_wave_list = get_corp_monthly_wave_list(month)
 
-    for r_idx, monthly_info in enumerate(monthly_list):
-        monthly_label.append(monthly_info[0])
-        monthly_data.append(int(monthly_info[1]))
+    for r_idx, monthly_wave_info in enumerate(monthly_wave_list):
+        monthly_wave_label.append(monthly_wave_info[0])
+        monthly_wave_data.append(int(monthly_wave_info[1]))
 
-    # 5. 전년, 전월 비교
-    monthly_year_label = []
-    monthly_year_data = []
-    monthly_year_list = get_monthly_year_list(month)
+    # 5. 경비 Year/Month 비교
+    ym_compare_label = []
+    ym_compare_data = []
+    ym_compare_list = get_corp_ym_compare_list(month)
 
-    for r_idx, monthly_year_info in enumerate(monthly_year_list):
-        monthly_year_label.append(monthly_year_info[0])
-        monthly_year_data.append(int(monthly_year_info[1]))
+    for r_idx, ym_compare_info in enumerate(ym_compare_list):
+        ym_compare_label.append(ym_compare_info[0])
+        ym_compare_data.append(int(ym_compare_info[1]))
 
-    # 6. 키워드 분석(건수)
-    keyword_cnt_list = get_keyword_cnt_anly_list(month)
-    keyword_cnt_label = []
-    keyword_cnt_data = []
+    context = {'month': month, 'top10_label': top10_label, 'top10_data': top10_data, 'top10_sum_text': top10_sum_text,
+               'top10_trend_label': top10_trend_label, 'top10_trend_data_list': top10_trend_data_list,
+               'avg_data': avg_data, 'monthly_wave_label': monthly_wave_label, 'monthly_wave_data': monthly_wave_data,
+               'ym_compare_label': ym_compare_label, 'ym_compare_data': ym_compare_data}
 
-    for keyword_cnt_info in keyword_cnt_list:
-        keyword_cnt_label.append(keyword_cnt_info[0])
-        keyword_cnt_data.append(str(keyword_cnt_info[1]))
+    return render(request, 'analysis/corp_exp_analy.html', context)
 
-    # 7. 키워드 분석(금액)
-    keyword_amt_list = get_keyword_amt_anly_list(month)
-    keyword_amt_label = []
-    keyword_amt_data = []
-
-    for keyword_amt_info in keyword_amt_list:
-        keyword_amt_label.append(keyword_amt_info[0])
-        keyword_amt_data.append(str(keyword_amt_info[1]))
-
-    context = {'month': month, 'top10_label': top10_label, 'top10_data': top10_data, 'top10_sum': top10_sum, 'avg_data': avg_data,
-               'monthly_label': monthly_label, 'monthly_data': monthly_data,
-               'monthly_year_label': monthly_year_label, 'monthly_year_data': monthly_year_data,
-               'top10_monthly_label': top10_monthly_label, 'top10_monthly_data_list': top10_monthly_data_list,
-               'keyword_cnt_label': keyword_cnt_label, 'keyword_cnt_data': keyword_cnt_data,
-               'keyword_amt_label': keyword_amt_label, 'keyword_amt_data': keyword_amt_data}
-
-    return render(request, 'analysis/normal_exp_analy.html', context)
-
-
-def get_top10_list(month):
+def get_corp_cate_top10_list(month):
     """
-    경비 Category Top 10 SQL
+    법인카드 Category Top 10 SQL
     """
     sql_str = "SELECT RSLT.MCC_NM, IFNULL(ROUND(RSLT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT "
     sql_str += "  FROM ( "
@@ -175,170 +153,9 @@ def get_top10_list(month):
 
     return list
 
-
-def get_yearAvg_info(month):
+def get_corp_cate_trend_list(month):
     """
-    경비 Average and Now
-    """
-    sql_str = "SELECT IFNULL(ROUND(AVG(DT.APV_SUM_AMT) / 10000, 0), 0) "
-    sql_str += "   FROM ( "
-    sql_str += "         SELECT SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "           FROM ( "
-    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS APV_DD, APV_SUM_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_CORPCARD_ASK "
-    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "            AND APV_DD BETWEEN CONCAT(SUBSTR('" + month + "', 1, 4), '0101') "
-    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "         UNION ALL "
-    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS APV_DD, ECAL_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_EXPN_ETC "
-    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
-    sql_str += "            AND OCCR_YMD BETWEEN CONCAT(SUBSTR('" + month + "', 1, 4), '0101') "
-    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "                ) A "
-    sql_str += "          GROUP BY A.APV_DD "
-    sql_str += "   ) AS DT "
-
-    # print("[INFO] SQL : {}".format(sql_str))
-
-    with connection.cursor() as cursor:
-        cursor.execute(sql_str)
-        row = cursor.fetchone()
-
-    return row
-
-
-def get_monSum_info(month):
-    """
-    경비 Average and Now
-    """
-    sql_str = "SELECT IFNULL(ROUND(AVG(DT.APV_SUM_AMT) / 10000, 0), 0) "
-    sql_str += "   FROM ( "
-    sql_str += "         SELECT SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "           FROM ( "
-    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS APV_DD, APV_SUM_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_CORPCARD_ASK "
-    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "            AND APV_DD LIKE CONCAT('" + month + "', '%') "
-    sql_str += "         UNION ALL "
-    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS APV_DD, ECAL_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_EXPN_ETC "
-    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
-    sql_str += "            AND OCCR_YMD LIKE CONCAT('" + month + "', '%') "
-    sql_str += "                ) A "
-    sql_str += "          GROUP BY A.APV_DD "
-    sql_str += "   ) AS DT "
-
-    # print("[INFO] SQL : {}".format(sql_str))
-
-    with connection.cursor() as cursor:
-        cursor.execute(sql_str)
-        row = cursor.fetchone()
-
-    return row
-
-
-def get_monthly_list(month):
-    """
-    경비 Monthly 증감 현황 SQL
-    """
-    sql_str = "SELECT M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
-    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m') AS YEARMONTH "
-    sql_str += "       UNION "
-    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -3 MONTH, '%Y%m') AS YEARMONTH "
-    sql_str += "       UNION "
-    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -2 MONTH, '%Y%m') AS YEARMONTH "
-    sql_str += "       UNION "
-    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m') AS YEARMONTH "
-    sql_str += "       UNION "
-    sql_str += "       SELECT '" + month + "' AS YEARMONTH "
-    sql_str += ") M LEFT OUTER JOIN ( "
-    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "           FROM ( "
-    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, APV_SUM_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_CORPCARD_ASK "
-    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m01') "
-    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "         UNION ALL "
-    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS YEARMONTH, ECAL_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_EXPN_ETC "
-    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
-    sql_str += "            AND OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m01') "
-    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "                ) A "
-    sql_str += "          GROUP BY A.YEARMONTH "
-    sql_str += "   ) AS DT "
-    sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
-    sql_str += " ORDER BY M.YEARMONTH "
-
-    # print("[INFO] SQL : {}".format(sql_str))
-
-    with connection.cursor() as cursor:
-        cursor.execute(sql_str)
-        list = cursor.fetchall()
-
-    return list
-
-
-def get_monthly_year_list(month):
-    """
-    경비 Year/Month 비교 SQL
-    """
-    sql_str = "SELECT M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
-    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -12 MONTH, '%Y%m') AS YEARMONTH "
-    sql_str += "       UNION "
-    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m') AS YEARMONTH "
-    sql_str += "       UNION "
-    sql_str += "       SELECT '" + month + "' AS YEARMONTH "
-    sql_str += ") M LEFT OUTER JOIN ( "
-    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "           FROM ( "
-    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, APV_SUM_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_CORPCARD_ASK "
-    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m%01') "
-    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "         UNION ALL "
-    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS YEARMONTH, ECAL_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_EXPN_ETC "
-    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
-    sql_str += "            AND OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m%01') "
-    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "                ) A "
-    sql_str += "          GROUP BY A.YEARMONTH "
-    sql_str += "         UNION ALL "
-    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "           FROM ( "
-    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, APV_SUM_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_CORPCARD_ASK "
-    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -12 MONTH, '%Y%m%01') "
-    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "         UNION ALL "
-    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS YEARMONTH, ECAL_AMT AS APV_SUM_AMT "
-    sql_str += "           FROM EX_EXPN_ETC "
-    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
-    sql_str += "            AND OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -12 MONTH, '%Y%m%01') "
-    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "                ) A "
-    sql_str += "          GROUP BY A.YEARMONTH "
-    sql_str += "   ) AS DT "
-    sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
-    sql_str += " ORDER BY M.YEARMONTH "
-
-    # print("[INFO] SQL : {}".format(sql_str))
-
-    with connection.cursor() as cursor:
-        cursor.execute(sql_str)
-        list = cursor.fetchall()
-
-    return list
-
-
-def get_TOP10_monthly_list(month):
-    """
-    경비 Category Trend Line
+    법인카드 Category Trend Line SQL
     """
     sql_str = "SELECT BASE.APV_YM, BASE.MCC_NM, IFNULL(ROUND(RSLT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM "
     sql_str += "( "
@@ -397,24 +214,82 @@ def get_TOP10_monthly_list(month):
 
     return list
 
-def get_keyword_cnt_anly_list(month):
+def get_corp_year_avg_info(month):
     """
-    키워드 분석(건수) 결과 조회
+    법인카드 Average and Now
     """
-    sql_str = "SELECT A.TEXT AS KEYWORD, A.TOT_CNT "
-    sql_str += "  FROM ( "
-    sql_str += "        SELECT B.TEXT, COUNT(1) AS TOT_CNT "
-    sql_str += "          FROM EX_EXPN_ETC A, EX_EXPN_ETC_WORDS B "
-    sql_str += "         WHERE A.ECAL_NO = B.ECAL_NO AND A.SEQ = B.SEQ "
-    sql_str += "           AND A.OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -5 MONTH, '%Y%m%01') "
-    sql_str += "           AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "           AND B.TEXT NOT IN (SELECT detail_code_name "
-    sql_str += "                                FROM common_code "
-    sql_str += "                               WHERE group_code = 'C006' "
-    sql_str += "                                 AND use_flag = 1) "
-    sql_str += "         GROUP BY TEXT "
-    sql_str += "        ) A "
-    sql_str += " ORDER BY A.TOT_CNT DESC LIMIT 10 "
+    sql_str = "SELECT IFNULL(ROUND(AVG(DT.APV_SUM_AMT) / 10000, 0), 0) "
+    sql_str += "   FROM ( "
+    sql_str += "         SELECT SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS APV_DD, APV_SUM_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_CORPCARD_ASK "
+    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
+    sql_str += "            AND APV_DD BETWEEN CONCAT(SUBSTR('" + month + "', 1, 4), '0101') "
+    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.APV_DD "
+    sql_str += "   ) AS DT "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        row = cursor.fetchone()
+
+    return row
+
+def get_corp_month_sum_info(month):
+    """
+    법인카드 Average and Now
+    """
+    sql_str = "SELECT IFNULL(ROUND(AVG(DT.APV_SUM_AMT) / 10000, 0), 0) "
+    sql_str += "   FROM ( "
+    sql_str += "         SELECT SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS APV_DD, APV_SUM_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_CORPCARD_ASK "
+    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
+    sql_str += "            AND APV_DD LIKE CONCAT('" + month + "', '%') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.APV_DD "
+    sql_str += "   ) AS DT "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        row = cursor.fetchone()
+
+    return row
+
+def get_corp_monthly_wave_list(month):
+    """
+    경비 Monthly 증감 현황 SQL
+    """
+    sql_str = "SELECT M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -3 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -2 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT '" + month + "' AS YEARMONTH "
+    sql_str += ") M LEFT OUTER JOIN ( "
+    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, APV_SUM_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_CORPCARD_ASK "
+    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
+    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m01') "
+    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.YEARMONTH "
+    sql_str += "   ) AS DT "
+    sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
+    sql_str += " ORDER BY M.YEARMONTH "
 
     # print("[INFO] SQL : {}".format(sql_str))
 
@@ -424,23 +299,39 @@ def get_keyword_cnt_anly_list(month):
 
     return list
 
-def get_keyword_amt_anly_list(month):
+def get_corp_ym_compare_list(month):
     """
-    키워드 분석(금액) 결과 조회
+    경비 Year/Month 비교 SQL
     """
-    sql_str = "SELECT A.TEXT AS KEYWORD, IFNULL(ROUND(A.TOT_AMT / 10000, 0), 0) "
-    sql_str += "  FROM ( "
-    sql_str += "        SELECT B.TEXT, SUM(A.ECAL_AMT) AS TOT_AMT "
-    sql_str += "          FROM EX_EXPN_ETC A, EX_EXPN_ETC_WORDS B "
-    sql_str += "         WHERE A.ECAL_NO = B.ECAL_NO AND A.SEQ = B.SEQ "
-    sql_str += "           AND A.OCCR_YMD LIKE CONCAT('" + month + "', '%') "
-    sql_str += "           AND B.TEXT NOT IN (SELECT detail_code_name "
-    sql_str += "                                FROM common_code "
-    sql_str += "                               WHERE group_code = 'C006' "
-    sql_str += "                                 AND use_flag = 1) "
-    sql_str += "         GROUP BY TEXT "
-    sql_str += "        ) A "
-    sql_str += " ORDER BY A.TOT_AMT DESC LIMIT 10"
+    sql_str = "SELECT M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -12 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT '" + month + "' AS YEARMONTH "
+    sql_str += ") M LEFT OUTER JOIN ( "
+    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, APV_SUM_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_CORPCARD_ASK "
+    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
+    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m%01') "
+    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.YEARMONTH "
+    sql_str += "         UNION ALL "
+    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, APV_SUM_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_CORPCARD_ASK "
+    sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
+    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -12 MONTH, '%Y%m%01') "
+    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -11 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.YEARMONTH "
+    sql_str += "   ) AS DT "
+    sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
+    sql_str += " ORDER BY M.YEARMONTH "
 
     # print("[INFO] SQL : {}".format(sql_str))
 
@@ -450,9 +341,140 @@ def get_keyword_amt_anly_list(month):
 
     return list
 
-def get_dtls_anly_list(month):
+@login_required(login_url='common:login')
+def normal_exp_analy(request):
     """
-    일반경비 분석 결과 조회
+    법인카드 경비분석 Dashboard
+    """
+    month = request.GET.get('month', (datetime.today() + relativedelta(months=-1)).strftime('%Y%m'))
+
+    print("Target Month : ", month)
+
+    # 1. 일반 Category Top 10
+    top10_list = get_normal_cate_top10_list(month)
+
+    top10_label = []
+    top10_data = []
+    top10_sum = 0
+
+    for top10_info in top10_list:
+        top10_label.append(top10_info[0])
+        top10_data.append(str(top10_info[1]))
+        top10_sum += int(top10_info[1])
+
+    top10_sum_text = '{:,}'.format(top10_sum)
+
+    # 2. 일반 Category Trend Line
+    top10_trend_label = []
+    top10_trend_data_label = []
+    top10_trend_data_list = []
+    top10_trend_data1 = []
+    top10_trend_data2 = []
+    top10_trend_data3 = []
+    top10_trend_data4 = []
+    top10_trend_data5 = []
+    top10_trend_data6 = []
+    top10_trend_data7 = []
+    top10_trend_data8 = []
+    top10_trend_data9 = []
+    top10_trend_data10 = []
+    top10_trend_list = get_normal_cate_trend_list(month)
+
+    for r_idx, top10_trend_info in enumerate(top10_trend_list):
+
+        if top10_trend_info[0] not in top10_trend_label:  # 월(X) 라벨
+            top10_trend_label.append(top10_trend_info[0])
+
+        if top10_trend_info[1] not in top10_trend_data_label:  # 데이터셋 라벨
+            top10_trend_data_label.append(top10_trend_info[1])
+
+        if r_idx % 10 == 0:
+            top10_trend_data1.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 1:
+            top10_trend_data2.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 2:
+            top10_trend_data3.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 3:
+            top10_trend_data4.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 4:
+            top10_trend_data5.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 5:
+            top10_trend_data6.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 6:
+            top10_trend_data7.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 7:
+            top10_trend_data8.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 8:
+            top10_trend_data9.append(int(top10_trend_info[2]))
+        if r_idx % 10 == 9:
+            top10_trend_data10.append(int(top10_trend_info[2]))
+
+    if len(top10_trend_data_label) == 10:
+        top10_trend_data_list.append({'label': top10_trend_data_label[0], 'data': top10_trend_data1})
+        top10_trend_data_list.append({'label': top10_trend_data_label[1], 'data': top10_trend_data2})
+        top10_trend_data_list.append({'label': top10_trend_data_label[2], 'data': top10_trend_data3})
+        top10_trend_data_list.append({'label': top10_trend_data_label[3], 'data': top10_trend_data4})
+        top10_trend_data_list.append({'label': top10_trend_data_label[4], 'data': top10_trend_data5})
+        top10_trend_data_list.append({'label': top10_trend_data_label[5], 'data': top10_trend_data6})
+        top10_trend_data_list.append({'label': top10_trend_data_label[6], 'data': top10_trend_data7})
+        top10_trend_data_list.append({'label': top10_trend_data_label[7], 'data': top10_trend_data8})
+        top10_trend_data_list.append({'label': top10_trend_data_label[8], 'data': top10_trend_data9})
+        top10_trend_data_list.append({'label': top10_trend_data_label[9], 'data': top10_trend_data10})
+
+    # 3. 경비 Average and Now
+    year_avg_info = get_normal_year_avg_info(month)
+    month_sum_info = get_normal_month_sum_info(month)
+
+    avg_data = [int(year_avg_info[0]), int(month_sum_info[0])]
+
+    # 4. 경비 Monthly 증감 현황
+    monthly_wave_label = []
+    monthly_wave_data = []
+    monthly_wave_list = get_normal_monthly_wave_list(month)
+
+    for r_idx, monthly_wave_info in enumerate(monthly_wave_list):
+        monthly_wave_label.append(monthly_wave_info[0])
+        monthly_wave_data.append(int(monthly_wave_info[1]))
+
+    # 5. 경비 Year/Month 비교
+    ym_compare_label = []
+    ym_compare_data = []
+    ym_compare_list = get_normal_ym_compare_list(month)
+
+    for r_idx, ym_compare_info in enumerate(ym_compare_list):
+        ym_compare_label.append(ym_compare_info[0])
+        ym_compare_data.append(int(ym_compare_info[1]))
+
+    # 6. 키워드 분석(건수)
+    keyword_cnt_list = get_keyword_cnt_anly_list(month)
+    keyword_cnt_label = []
+    keyword_cnt_data = []
+
+    for keyword_cnt_info in keyword_cnt_list:
+        keyword_cnt_label.append(keyword_cnt_info[0])
+        keyword_cnt_data.append(str(keyword_cnt_info[1]))
+
+    # 7. 키워드 분석(금액)
+    keyword_amt_list = get_keyword_amt_anly_list(month)
+    keyword_amt_label = []
+    keyword_amt_data = []
+
+    for keyword_amt_info in keyword_amt_list:
+        keyword_amt_label.append(keyword_amt_info[0])
+        keyword_amt_data.append(str(keyword_amt_info[1]))
+
+    context = {'month': month, 'top10_label': top10_label, 'top10_data': top10_data, 'top10_sum_text': top10_sum_text,
+               'top10_trend_label': top10_trend_label, 'top10_trend_data_list': top10_trend_data_list,
+               'avg_data': avg_data, 'monthly_wave_label': monthly_wave_label, 'monthly_wave_data': monthly_wave_data,
+               'ym_compare_label': ym_compare_label, 'ym_compare_data': ym_compare_data,
+               'keyword_cnt_label': keyword_cnt_label, 'keyword_cnt_data': keyword_cnt_data,
+               'keyword_amt_label': keyword_amt_label, 'keyword_amt_data': keyword_amt_data}
+
+    return render(request, 'analysis/normal_exp_analy.html', context)
+
+def get_normal_cate_top10_list(month):
+    """
+    일반 Category Top 10 SQL
     """
     sql_str = "SELECT RSLT.LABEL_CATE_NM, IFNULL(ROUND(RSLT.ECAL_AMT / 10000, 0), 0) AS ECAL_AMT "
     sql_str += "  FROM ( "
@@ -482,9 +504,9 @@ def get_dtls_anly_list(month):
 
     return list
 
-def get_dtls_monthly_anly_list(month):
+def get_normal_cate_trend_list(month):
     """
-    키워드 분석(금액) 결과 조회
+    일반 Category Trend Line SQL
     """
     sql_str = "SELECT BASE.OCCR_YM, BASE.LABEL_CATE_NM, IFNULL(ROUND(RSLT.ECAL_AMT / 10000, 0), 0) AS ECAL_AMT FROM "
     sql_str += "( "
@@ -532,6 +554,186 @@ def get_dtls_monthly_anly_list(month):
     sql_str += "   ON BASE.OCCR_YM = RSLT.OCCR_YM "
     sql_str += "  AND BASE.LABEL_CATE_CD = RSLT.LABEL_CATE_CD "
     sql_str += "ORDER BY BASE.OCCR_YM, BASE.TOPRANK "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+def get_normal_year_avg_info(month):
+    """
+    일반 Average and Now
+    """
+    sql_str = "SELECT IFNULL(ROUND(AVG(DT.APV_SUM_AMT) / 10000, 0), 0) "
+    sql_str += "   FROM ( "
+    sql_str += "         SELECT SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS APV_DD, ECAL_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_EXPN_ETC "
+    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
+    sql_str += "            AND OCCR_YMD BETWEEN CONCAT(SUBSTR('" + month + "', 1, 4), '0101') "
+    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.APV_DD "
+    sql_str += "   ) AS DT "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        row = cursor.fetchone()
+
+    return row
+
+def get_normal_month_sum_info(month):
+    """
+    일반 Average and Now
+    """
+    sql_str = "SELECT IFNULL(ROUND(AVG(DT.APV_SUM_AMT) / 10000, 0), 0) "
+    sql_str += "   FROM ( "
+    sql_str += "         SELECT SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS APV_DD, ECAL_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_EXPN_ETC "
+    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
+    sql_str += "            AND OCCR_YMD LIKE CONCAT('" + month + "', '%') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.APV_DD "
+    sql_str += "   ) AS DT "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        row = cursor.fetchone()
+
+    return row
+
+def get_normal_monthly_wave_list(month):
+    """
+    경비 Monthly 증감 현황 SQL
+    """
+    sql_str = "SELECT M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -3 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -2 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT '" + month + "' AS YEARMONTH "
+    sql_str += ") M LEFT OUTER JOIN ( "
+    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS YEARMONTH, ECAL_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_EXPN_ETC "
+    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
+    sql_str += "            AND OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m01') "
+    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.YEARMONTH "
+    sql_str += "   ) AS DT "
+    sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
+    sql_str += " ORDER BY M.YEARMONTH "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+def get_normal_ym_compare_list(month):
+    """
+    경비 Year/Month 비교 SQL
+    """
+    sql_str = "SELECT M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -12 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT '" + month + "' AS YEARMONTH "
+    sql_str += ") M LEFT OUTER JOIN ( "
+    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS YEARMONTH, ECAL_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_EXPN_ETC "
+    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
+    sql_str += "            AND OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m%01') "
+    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.YEARMONTH "
+    sql_str += "         UNION ALL "
+    sql_str += "         SELECT A.YEARMONTH, SUM(A.APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "           FROM ( "
+    sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS YEARMONTH, ECAL_AMT AS APV_SUM_AMT "
+    sql_str += "           FROM EX_EXPN_ETC "
+    sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
+    sql_str += "            AND OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -12 MONTH, '%Y%m%01') "
+    sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -11 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "                ) A "
+    sql_str += "          GROUP BY A.YEARMONTH "
+    sql_str += "   ) AS DT "
+    sql_str += "    ON M.YEARMONTH = DT.YEARMONTH "
+    sql_str += " ORDER BY M.YEARMONTH "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+def get_keyword_cnt_anly_list(month):
+    """
+    키워드 분석(건수) 결과 조회
+    """
+    sql_str = "SELECT A.TEXT AS KEYWORD, A.TOT_CNT "
+    sql_str += "  FROM ( "
+    sql_str += "        SELECT B.TEXT, COUNT(1) AS TOT_CNT "
+    sql_str += "          FROM EX_EXPN_ETC A, EX_EXPN_ETC_WORDS B "
+    sql_str += "         WHERE A.ECAL_NO = B.ECAL_NO AND A.SEQ = B.SEQ "
+    sql_str += "           AND A.OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -5 MONTH, '%Y%m%01') "
+    sql_str += "           AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "           AND B.TEXT NOT IN (SELECT detail_code_name "
+    sql_str += "                                FROM common_code "
+    sql_str += "                               WHERE group_code = 'C006' "
+    sql_str += "                                 AND use_flag = 1) "
+    sql_str += "         GROUP BY TEXT "
+    sql_str += "        ) A "
+    sql_str += " ORDER BY A.TOT_CNT DESC LIMIT 10 "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+def get_keyword_amt_anly_list(month):
+    """
+    키워드 분석(금액) 결과 조회
+    """
+    sql_str = "SELECT A.TEXT AS KEYWORD, IFNULL(ROUND(A.TOT_AMT / 10000, 0), 0) "
+    sql_str += "  FROM ( "
+    sql_str += "        SELECT B.TEXT, SUM(A.ECAL_AMT) AS TOT_AMT "
+    sql_str += "          FROM EX_EXPN_ETC A, EX_EXPN_ETC_WORDS B "
+    sql_str += "         WHERE A.ECAL_NO = B.ECAL_NO AND A.SEQ = B.SEQ "
+    sql_str += "           AND A.OCCR_YMD LIKE CONCAT('" + month + "', '%') "
+    sql_str += "           AND B.TEXT NOT IN (SELECT detail_code_name "
+    sql_str += "                                FROM common_code "
+    sql_str += "                               WHERE group_code = 'C006' "
+    sql_str += "                                 AND use_flag = 1) "
+    sql_str += "         GROUP BY TEXT "
+    sql_str += "        ) A "
+    sql_str += " ORDER BY A.TOT_AMT DESC LIMIT 10"
 
     # print("[INFO] SQL : {}".format(sql_str))
 
