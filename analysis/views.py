@@ -15,7 +15,7 @@ def normal_exp_analy(request):
     """
     일반/법인카드 경비분석 Dashboard
     """
-    month = request.GET.get('month', (datetime.today() + relativedelta(months=-1)).strftime("%Y%m"))
+    month = request.GET.get('month', (datetime.today() + relativedelta(months=-1)).strftime('%Y%m'))
 
     print("Target Month : ", month)
 
@@ -160,7 +160,7 @@ def get_top10_list(month):
     sql_str += "            SELECT DISP_CATE_CD, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
     sql_str += "                    FROM EX_CORPCARD_ASK "
     sql_str += "                    WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "                    AND APV_DD LIKE CONCAT('" + month + "' '%') "
+    sql_str += "                    AND APV_DD LIKE CONCAT('" + month + "', '%') "
     sql_str += "                    GROUP BY DISP_CATE_CD "
     sql_str += "    ) BASE "
     sql_str += ") RSLT "
@@ -243,6 +243,10 @@ def get_monthly_list(month):
     경비 Monthly 증감 현황 SQL
     """
     sql_str = "SELECT M.YEARMONTH, IFNULL(ROUND(DT.APV_SUM_AMT / 10000, 0), 0) AS APV_SUM_AMT FROM ( "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
+    sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -3 MONTH, '%Y%m') AS YEARMONTH "
+    sql_str += "       UNION "
     sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -2 MONTH, '%Y%m') AS YEARMONTH "
     sql_str += "       UNION "
     sql_str += "       SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m') AS YEARMONTH "
@@ -254,13 +258,13 @@ def get_monthly_list(month):
     sql_str += "         SELECT SUBSTR(APV_DD, 1, 6) AS YEARMONTH, APV_SUM_AMT AS APV_SUM_AMT "
     sql_str += "           FROM EX_CORPCARD_ASK "
     sql_str += "          WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -2 MONTH, '%Y%m01') "
+    sql_str += "            AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m01') "
     sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
     sql_str += "         UNION ALL "
     sql_str += "         SELECT SUBSTR(OCCR_YMD, 1, 6) AS YEARMONTH, ECAL_AMT AS APV_SUM_AMT "
     sql_str += "           FROM EX_EXPN_ETC "
     sql_str += "          WHERE COM_CD = '1000' AND SLIP_NO IS NULL AND OCCR_ACC_CD LIKE '5%' "
-    sql_str += "            AND OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -2 MONTH, '%Y%m01') "
+    sql_str += "            AND OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m01') "
     sql_str += "            AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
     sql_str += "                ) A "
     sql_str += "          GROUP BY A.YEARMONTH "
