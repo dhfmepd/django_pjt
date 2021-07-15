@@ -158,10 +158,10 @@ def get_top10_list(month):
     sql_str += "      FROM "
     sql_str += "    ( "
     sql_str += "            SELECT DISP_CATE_CD, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "                    FROM EX_CORPCARD_ASK "
-    sql_str += "                    WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "                    AND APV_DD LIKE CONCAT('" + month + "', '%') "
-    sql_str += "                    GROUP BY DISP_CATE_CD "
+    sql_str += "              FROM EX_CORPCARD_ASK "
+    sql_str += "             WHERE COM_CD = '1000' AND SEND_DIV = '01' "
+    sql_str += "               AND APV_DD LIKE CONCAT('" + month + "', '%') "
+    sql_str += "             GROUP BY DISP_CATE_CD "
     sql_str += "    ) BASE "
     sql_str += ") RSLT "
     sql_str += "ORDER BY RSLT.APV_SUM_AMT DESC "
@@ -368,21 +368,21 @@ def get_TOP10_monthly_list(month):
     sql_str += "        SELECT DT.DISP_CATE_CD, DT.TOPRANK "
     sql_str += "          FROM ( "
     sql_str += "            SELECT DISP_CATE_CD, DENSE_RANK() over(ORDER BY SUM(APV_SUM_AMT) DESC) AS TOPRANK, SUM(APV_SUM_AMT) AS APV_SUM_AMT "
-    sql_str += "                    FROM EX_CORPCARD_ASK "
-    sql_str += "                    WHERE COM_CD = '1000' AND SEND_DIV = '01' "
-    sql_str += "                    AND APV_DD LIKE CONCAT('" + month + "', '%') "
-    sql_str += "                    GROUP BY DISP_CATE_CD "
+    sql_str += "              FROM EX_CORPCARD_ASK "
+    sql_str += "             WHERE COM_CD = '1000' AND SEND_DIV = '01' "
+    sql_str += "               AND APV_DD LIKE CONCAT('" + month + "', '%') "
+    sql_str += "             GROUP BY DISP_CATE_CD "
     sql_str += "            ) AS DT "
     sql_str += "        WHERE TOPRANK <= 10 "
     sql_str += "    ) NRNK "
     sql_str += ") BASE LEFT OUTER JOIN ( "
     sql_str += "    SELECT SUBSTR(APV_DD, 1, 6) AS APV_YM "
     sql_str += "         , DISP_CATE_CD "
-    sql_str += "         ,SUM(APV_SUM_AMT) AS APV_SUM_AMT "
+    sql_str += "         , SUM(APV_SUM_AMT) AS APV_SUM_AMT "
     sql_str += "      FROM EX_CORPCARD_ASK "
     sql_str += "     WHERE COM_CD = '1000' AND SEND_DIV = '01' "
     sql_str += "       AND APV_DD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -5 MONTH, '%Y%m%01') "
-    sql_str += "       AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -11 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "       AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
     sql_str += "     GROUP BY SUBSTR(APV_DD, 1, 6), DISP_CATE_CD "
     sql_str += ") RSLT "
     sql_str += "   ON BASE.APV_YM = RSLT.APV_YM "
@@ -441,6 +441,97 @@ def get_keyword_amt_anly_list(month):
     sql_str += "         GROUP BY TEXT "
     sql_str += "        ) A "
     sql_str += " ORDER BY A.TOT_AMT DESC LIMIT 10"
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+def get_dtls_anly_list(month):
+    """
+    일반경비 분석 결과 조회
+    """
+    sql_str = "SELECT RSLT.LABEL_CATE_NM, IFNULL(ROUND(RSLT.ECAL_AMT / 10000, 0), 0) AS ECAL_AMT "
+    sql_str += "  FROM ( "
+    sql_str += "    SELECT BASE.LABEL_CATE_CD "
+    sql_str += "         , (SELECT detail_code_name "
+    sql_str += "              FROM common_code "
+    sql_str += "             WHERE group_code = 'C005' "
+    sql_str += "               AND detail_code = BASE.LABEL_CATE_CD "
+    sql_str += "               AND use_flag = 1) AS LABEL_CATE_NM "
+    sql_str += "         , BASE.ECAL_AMT "
+    sql_str += "      FROM "
+    sql_str += "    ( "
+    sql_str += "            SELECT LABEL_CATE_CD, SUM(ECAL_AMT) AS ECAL_AMT "
+    sql_str += "              FROM EX_EXPN_ETC "
+    sql_str += "             WHERE OCCR_YMD LIKE CONCAT('" + month + "', '%') "
+    sql_str += "             GROUP BY LABEL_CATE_CD "
+    sql_str += "    ) BASE "
+    sql_str += ") RSLT "
+    sql_str += "ORDER BY RSLT.ECAL_AMT DESC "
+    sql_str += "LIMIT 10 "
+
+    # print("[INFO] SQL : {}".format(sql_str))
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql_str)
+        list = cursor.fetchall()
+
+    return list
+
+def get_dtls_monthly_anly_list(month):
+    """
+    키워드 분석(금액) 결과 조회
+    """
+    sql_str = "SELECT BASE.OCCR_YM, BASE.LABEL_CATE_NM, IFNULL(ROUND(RSLT.ECAL_AMT / 10000, 0), 0) AS ECAL_AMT FROM "
+    sql_str += "( "
+    sql_str += "    SELECT RANG.OCCR_YM "
+    sql_str += "         , NRNK.LABEL_CATE_CD "
+    sql_str += "         , (SELECT detail_code_name "
+    sql_str += "              FROM common_code "
+    sql_str += "             WHERE group_code = 'C005' "
+    sql_str += "               AND detail_code = NRNK.LABEL_CATE_CD "
+    sql_str += "               AND use_flag = 1) AS LABEL_CATE_NM "
+    sql_str += "         , NRNK.TOPRANK "
+    sql_str += "      FROM "
+    sql_str += "    ( "
+    sql_str += "        SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -5 MONTH, '%Y%m') AS OCCR_YM FROM DUAL "
+    sql_str += "        UNION ALL "
+    sql_str += "        SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -4 MONTH, '%Y%m') AS OCCR_YM FROM DUAL "
+    sql_str += "        UNION ALL "
+    sql_str += "        SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -3 MONTH, '%Y%m') AS OCCR_YM FROM DUAL "
+    sql_str += "        UNION ALL "
+    sql_str += "        SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -2 MONTH, '%Y%m') AS OCCR_YM FROM DUAL "
+    sql_str += "        UNION ALL "
+    sql_str += "        SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH, '%Y%m') AS OCCR_YM FROM DUAL "
+    sql_str += "        UNION ALL "
+    sql_str += "        SELECT '" + month + "'AS OCCR_YM FROM DUAL "
+    sql_str += "    ) RANG, "
+    sql_str += "    ( "
+    sql_str += "        SELECT DT.LABEL_CATE_CD, DT.TOPRANK "
+    sql_str += "          FROM ( "
+    sql_str += "            SELECT LABEL_CATE_CD, DENSE_RANK() over(ORDER BY SUM(ECAL_AMT) DESC) AS TOPRANK, SUM(ECAL_AMT) AS ECAL_AMT "
+    sql_str += "              FROM EX_EXPN_ETC "
+    sql_str += "             WHERE OCCR_YMD LIKE CONCAT('" + month + "', '%') "
+    sql_str += "             GROUP BY LABEL_CATE_CD "
+    sql_str += "            ) AS DT "
+    sql_str += "        WHERE TOPRANK <= 10 "
+    sql_str += "    ) NRNK "
+    sql_str += ") BASE LEFT OUTER JOIN ( "
+    sql_str += "    SELECT SUBSTR(OCCR_YMD, 1, 6) AS OCCR_YM "
+    sql_str += "         , LABEL_CATE_CD "
+    sql_str += "         , SUM(ECAL_AMT) AS ECAL_AMT "
+    sql_str += "      FROM EX_EXPN_ETC "
+    sql_str += "     WHERE OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -5 MONTH, '%Y%m%01') "
+    sql_str += "       AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "     GROUP BY SUBSTR(OCCR_YMD, 1, 6), LABEL_CATE_CD "
+    sql_str += ") RSLT "
+    sql_str += "   ON BASE.OCCR_YM = RSLT.OCCR_YM "
+    sql_str += "  AND BASE.LABEL_CATE_CD = RSLT.LABEL_CATE_CD "
+    sql_str += "ORDER BY BASE.OCCR_YM, BASE.TOPRANK "
 
     # print("[INFO] SQL : {}".format(sql_str))
 
