@@ -25,7 +25,7 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">법인카드 Category Top 10</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">일반경비 Category 현황</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -34,7 +34,7 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-xl-9">전월 법인카드 지출경비 상위 10</div>
+                        <div class="col-xl-9">전월 일반경비 카테고리 별 현황</div>
                         <div class="col-xl-3" style="text-align:right;">(단위: 만원)</div>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">법인카드 Category Trend Line</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">일반경비 Category Trend Line</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -54,7 +54,7 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-xl-9">법인카드 최근 6개월 상위 10 증감 추이</div>
+                        <div class="col-xl-9">일반경비 최근 6개월 카테고리 별 증감 추이</div>
                         <div class="col-xl-3" style="text-align:right;">(단위: 만원)</div>
                     </div>
                 </div>
@@ -181,9 +181,9 @@
     const exChartConfig1 = {                                        //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'doughnut',                                           //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                     //Data Setting
-            labels: {{ top10_label|safe }},   //라벨 명칭
+            labels: {{ cate_label|safe }},   //라벨 명칭
             datasets: [{
-                data: {{ top10_data|safe }},                        //데이터
+                data: {{ cate_data|safe }},                        //데이터
                 backgroundColor: Samples.utils.colors(10),
                 hoverBorderColor: "rgba(234, 236, 244, 1)",
             }],
@@ -204,7 +204,7 @@
                 doughnutlabel: {
                     labels: [
                         {
-                            text: '상위 Top10 합계',
+                            text: '카테고리 합계',
                             font: {
                                 size: '20',
                                 weight: 'bold',
@@ -212,7 +212,7 @@
                             color: '#6e707e'
                         },
                         {
-                            text: '{{ top10_sum_text }} 만원',
+                            text: '{{ cate_sum_text }} 만원',
                             font: {
                                 size: '15'
                             },
@@ -250,13 +250,13 @@
     const exChartConfig2 = {                                    //https://www.chartjs.org/docs/2.9.4/charts/bar.html
         type: 'line',                                           //Chart Type ex: doughnut, pie, line, bar ...
         data: {                                                 //Data Setting
-            labels: {{ top10_trend_label|safe }},             //라벨 명칭
+            labels: {{ cate_trend_label|safe }},             //라벨 명칭
             datasets: [
-            {% if top10_trend_data_list %}
-            {% for top10_trend_data in top10_trend_data_list %}
+            {% if cate_trend_data_list %}
+            {% for cate_trend_data in cate_trend_data_list %}
                 {
-                    label: '{{ top10_trend_data.label|safe }}',
-                    data: {{ top10_trend_data.data|safe }},
+                    label: '{{ cate_trend_data.label|safe }}',
+                    data: {{ cate_trend_data.data|safe }},
                     borderColor: Samples.utils.color({{forloop.counter0}}),
                     fill: false,
                     lineTension: 0.25,

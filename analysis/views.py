@@ -351,75 +351,63 @@ def normal_exp_analy(request):
     print("Target Month : ", month)
 
     # 1. 일반 Category Top 10
-    top10_list = get_normal_cate_top10_list(month)
+    cate_list = get_normal_cate_list(month)
 
-    top10_label = []
-    top10_data = []
-    top10_sum = 0
+    cate_label = []
+    cate_data = []
+    cate_sum = 0
 
-    for top10_info in top10_list:
-        top10_label.append(top10_info[0])
-        top10_data.append(str(top10_info[1]))
-        top10_sum += int(top10_info[1])
+    for cate_info in cate_list:
+        cate_label.append(cate_info[0])
+        cate_data.append(str(cate_info[1]))
+        cate_sum += int(cate_info[1])
 
-    top10_sum_text = '{:,}'.format(top10_sum)
+    cate_sum_text = '{:,}'.format(cate_sum)
 
     # 2. 일반 Category Trend Line
-    top10_trend_label = []
-    top10_trend_data_label = []
-    top10_trend_data_list = []
-    top10_trend_data1 = []
-    top10_trend_data2 = []
-    top10_trend_data3 = []
-    top10_trend_data4 = []
-    top10_trend_data5 = []
-    top10_trend_data6 = []
-    top10_trend_data7 = []
-    top10_trend_data8 = []
-    top10_trend_data9 = []
-    top10_trend_data10 = []
-    top10_trend_list = get_normal_cate_trend_list(month)
+    cate_trend_label = []
+    cate_trend_data_label = []
+    cate_trend_data_list = []
+    cate_trend_data1 = []
+    cate_trend_data2 = []
+    cate_trend_data3 = []
+    cate_trend_data4 = []
+    cate_trend_data5 = []
+    cate_trend_data6 = []
+    cate_trend_data7 = []
+    cate_trend_list = get_normal_cate_trend_list(month)
 
-    for r_idx, top10_trend_info in enumerate(top10_trend_list):
+    for r_idx, cate_trend_info in enumerate(cate_trend_list):
 
-        if top10_trend_info[0] not in top10_trend_label:  # 월(X) 라벨
-            top10_trend_label.append(top10_trend_info[0])
+        if cate_trend_info[0] not in cate_trend_label:  # 월(X) 라벨
+            cate_trend_label.append(cate_trend_info[0])
 
-        if top10_trend_info[1] not in top10_trend_data_label:  # 데이터셋 라벨
-            top10_trend_data_label.append(top10_trend_info[1])
+        if cate_trend_info[1] not in cate_trend_data_label:  # 데이터셋 라벨
+            cate_trend_data_label.append(cate_trend_info[1])
 
         if r_idx % 10 == 0:
-            top10_trend_data1.append(int(top10_trend_info[2]))
+            cate_trend_data1.append(int(cate_trend_info[2]))
         if r_idx % 10 == 1:
-            top10_trend_data2.append(int(top10_trend_info[2]))
+            cate_trend_data2.append(int(cate_trend_info[2]))
         if r_idx % 10 == 2:
-            top10_trend_data3.append(int(top10_trend_info[2]))
+            cate_trend_data3.append(int(cate_trend_info[2]))
         if r_idx % 10 == 3:
-            top10_trend_data4.append(int(top10_trend_info[2]))
+            cate_trend_data4.append(int(cate_trend_info[2]))
         if r_idx % 10 == 4:
-            top10_trend_data5.append(int(top10_trend_info[2]))
+            cate_trend_data5.append(int(cate_trend_info[2]))
         if r_idx % 10 == 5:
-            top10_trend_data6.append(int(top10_trend_info[2]))
+            cate_trend_data6.append(int(cate_trend_info[2]))
         if r_idx % 10 == 6:
-            top10_trend_data7.append(int(top10_trend_info[2]))
-        if r_idx % 10 == 7:
-            top10_trend_data8.append(int(top10_trend_info[2]))
-        if r_idx % 10 == 8:
-            top10_trend_data9.append(int(top10_trend_info[2]))
-        if r_idx % 10 == 9:
-            top10_trend_data10.append(int(top10_trend_info[2]))
+            cate_trend_data7.append(int(cate_trend_info[2]))
 
-    if len(top10_trend_data_label) == 10:
-        top10_trend_data_list.append({'label': top10_trend_data_label[0], 'data': top10_trend_data1})
-        top10_trend_data_list.append({'label': top10_trend_data_label[1], 'data': top10_trend_data2})
-        top10_trend_data_list.append({'label': top10_trend_data_label[2], 'data': top10_trend_data3})
-        top10_trend_data_list.append({'label': top10_trend_data_label[3], 'data': top10_trend_data4})
-        top10_trend_data_list.append({'label': top10_trend_data_label[4], 'data': top10_trend_data5})
-        top10_trend_data_list.append({'label': top10_trend_data_label[5], 'data': top10_trend_data6})
-        top10_trend_data_list.append({'label': top10_trend_data_label[6], 'data': top10_trend_data7})
-        top10_trend_data_list.append({'label': top10_trend_data_label[7], 'data': top10_trend_data8})
-        top10_trend_data_list.append({'label': top10_trend_data_label[8], 'data': top10_trend_data9})
-        top10_trend_data_list.append({'label': top10_trend_data_label[9], 'data': top10_trend_data10})
+    if len(cate_trend_data_label) == 10:
+        cate_trend_data_list.append({'label': cate_trend_data_label[0], 'data': cate_trend_data1})
+        cate_trend_data_list.append({'label': cate_trend_data_label[1], 'data': cate_trend_data2})
+        cate_trend_data_list.append({'label': cate_trend_data_label[2], 'data': cate_trend_data3})
+        cate_trend_data_list.append({'label': cate_trend_data_label[3], 'data': cate_trend_data4})
+        cate_trend_data_list.append({'label': cate_trend_data_label[4], 'data': cate_trend_data5})
+        cate_trend_data_list.append({'label': cate_trend_data_label[5], 'data': cate_trend_data6})
+        cate_trend_data_list.append({'label': cate_trend_data_label[6], 'data': cate_trend_data7})
 
     # 3. 경비 Average and Now
     year_avg_info = get_normal_year_avg_info(month)
@@ -463,8 +451,8 @@ def normal_exp_analy(request):
         keyword_amt_label.append(keyword_amt_info[0])
         keyword_amt_data.append(str(keyword_amt_info[1]))
 
-    context = {'month': month, 'top10_label': top10_label, 'top10_data': top10_data, 'top10_sum_text': top10_sum_text,
-               'top10_trend_label': top10_trend_label, 'top10_trend_data_list': top10_trend_data_list,
+    context = {'month': month, 'cate_label': cate_label, 'cate_data': cate_data, 'cate_sum_text': cate_sum_text,
+               'cate_trend_label': cate_trend_label, 'cate_trend_data_list': cate_trend_data_list,
                'avg_data': avg_data, 'monthly_wave_label': monthly_wave_label, 'monthly_wave_data': monthly_wave_data,
                'ym_compare_label': ym_compare_label, 'ym_compare_data': ym_compare_data,
                'keyword_cnt_label': keyword_cnt_label, 'keyword_cnt_data': keyword_cnt_data,
@@ -472,9 +460,9 @@ def normal_exp_analy(request):
 
     return render(request, 'analysis/normal_exp_analy.html', context)
 
-def get_normal_cate_top10_list(month):
+def get_normal_cate_list(month):
     """
-    일반 Category Top 10 SQL
+    일반 Category 당월 SQL
     """
     sql_str = "SELECT RSLT.LABEL_CATE_NM, IFNULL(ROUND(RSLT.ECAL_AMT / 10000, 0), 0) AS ECAL_AMT "
     sql_str += "  FROM ( "
@@ -487,14 +475,14 @@ def get_normal_cate_top10_list(month):
     sql_str += "         , BASE.ECAL_AMT "
     sql_str += "      FROM "
     sql_str += "    ( "
-    sql_str += "            SELECT LABEL_CATE_CD, SUM(ECAL_AMT) AS ECAL_AMT "
-    sql_str += "              FROM EX_EXPN_ETC "
-    sql_str += "             WHERE OCCR_YMD LIKE CONCAT('" + month + "', '%') "
-    sql_str += "             GROUP BY LABEL_CATE_CD "
+    sql_str += "        SELECT LABEL_CATE_CD, SUM(ECAL_AMT) AS ECAL_AMT "
+    sql_str += "          FROM EX_EXPN_ETC "
+    sql_str += "         WHERE OCCR_YMD LIKE CONCAT('" + month + "', '%') "
+    sql_str += "           AND LABEL_CATE_CD IS NOT NULL "
+    sql_str += "         GROUP BY LABEL_CATE_CD "
     sql_str += "    ) BASE "
     sql_str += ") RSLT "
     sql_str += "ORDER BY RSLT.ECAL_AMT DESC "
-    sql_str += "LIMIT 10 "
 
     # print("[INFO] SQL : {}".format(sql_str))
 
@@ -511,13 +499,8 @@ def get_normal_cate_trend_list(month):
     sql_str = "SELECT BASE.OCCR_YM, BASE.LABEL_CATE_NM, IFNULL(ROUND(RSLT.ECAL_AMT / 10000, 0), 0) AS ECAL_AMT FROM "
     sql_str += "( "
     sql_str += "    SELECT RANG.OCCR_YM "
-    sql_str += "         , NRNK.LABEL_CATE_CD "
-    sql_str += "         , (SELECT detail_code_name "
-    sql_str += "              FROM common_code "
-    sql_str += "             WHERE group_code = 'C005' "
-    sql_str += "               AND detail_code = NRNK.LABEL_CATE_CD "
-    sql_str += "               AND use_flag = 1) AS LABEL_CATE_NM "
-    sql_str += "         , NRNK.TOPRANK "
+    sql_str += "         , CCOD.LABEL_CATE_CD "
+    sql_str += "         , CCOD.LABEL_CATE_NM "
     sql_str += "      FROM "
     sql_str += "    ( "
     sql_str += "        SELECT DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -5 MONTH, '%Y%m') AS OCCR_YM FROM DUAL "
@@ -533,15 +516,12 @@ def get_normal_cate_trend_list(month):
     sql_str += "        SELECT '" + month + "'AS OCCR_YM FROM DUAL "
     sql_str += "    ) RANG, "
     sql_str += "    ( "
-    sql_str += "        SELECT DT.LABEL_CATE_CD, DT.TOPRANK "
-    sql_str += "          FROM ( "
-    sql_str += "            SELECT LABEL_CATE_CD, DENSE_RANK() over(ORDER BY SUM(ECAL_AMT) DESC) AS TOPRANK, SUM(ECAL_AMT) AS ECAL_AMT "
-    sql_str += "              FROM EX_EXPN_ETC "
-    sql_str += "             WHERE OCCR_YMD LIKE CONCAT('" + month + "', '%') "
-    sql_str += "             GROUP BY LABEL_CATE_CD "
-    sql_str += "            ) AS DT "
-    sql_str += "        WHERE TOPRANK <= 10 "
-    sql_str += "    ) NRNK "
+    sql_str += "       SELECT detail_code AS LABEL_CATE_CD "
+    sql_str += "            , detail_code_name AS LABEL_CATE_NM "
+    sql_str += "         FROM common_code "
+    sql_str += "        WHERE group_code = 'C005' "
+    sql_str += "          AND use_flag = 1 "
+    sql_str += "    ) CCOD "
     sql_str += ") BASE LEFT OUTER JOIN ( "
     sql_str += "    SELECT SUBSTR(OCCR_YMD, 1, 6) AS OCCR_YM "
     sql_str += "         , LABEL_CATE_CD "
@@ -549,11 +529,12 @@ def get_normal_cate_trend_list(month):
     sql_str += "      FROM EX_EXPN_ETC "
     sql_str += "     WHERE OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -5 MONTH, '%Y%m%01') "
     sql_str += "       AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
+    sql_str += "       AND LABEL_CATE_CD IS NOT NULL "
     sql_str += "     GROUP BY SUBSTR(OCCR_YMD, 1, 6), LABEL_CATE_CD "
     sql_str += ") RSLT "
     sql_str += "   ON BASE.OCCR_YM = RSLT.OCCR_YM "
     sql_str += "  AND BASE.LABEL_CATE_CD = RSLT.LABEL_CATE_CD "
-    sql_str += "ORDER BY BASE.OCCR_YM, BASE.TOPRANK "
+    sql_str += "ORDER BY BASE.OCCR_YM, BASE.LABEL_CATE_CD "
 
     # print("[INFO] SQL : {}".format(sql_str))
 
