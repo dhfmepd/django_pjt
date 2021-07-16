@@ -386,21 +386,21 @@ def normal_exp_analy(request):
         if cate_trend_info[1] not in cate_trend_data_label:  # 데이터셋 라벨
             cate_trend_data_label.append(cate_trend_info[1])
 
-        if r_idx % 10 == 0:
+        if cate_trend_info[1] == '1':
             cate_trend_data1.append(int(cate_trend_info[2]))
-        if r_idx % 10 == 1:
+        if cate_trend_info[1] == '2':
             cate_trend_data2.append(int(cate_trend_info[2]))
-        if r_idx % 10 == 2:
+        if cate_trend_info[1] == '3':
             cate_trend_data3.append(int(cate_trend_info[2]))
-        if r_idx % 10 == 3:
+        if cate_trend_info[1] == '4':
             cate_trend_data4.append(int(cate_trend_info[2]))
-        if r_idx % 10 == 4:
+        if cate_trend_info[1] == '5':
             cate_trend_data5.append(int(cate_trend_info[2]))
-        if r_idx % 10 == 5:
+        if cate_trend_info[1] == '6':
             cate_trend_data6.append(int(cate_trend_info[2]))
-        if r_idx % 10 == 6:
+        if cate_trend_info[1] == '7':
             cate_trend_data7.append(int(cate_trend_info[2]))
-        if r_idx % 10 == 7:
+        if cate_trend_info[1] == '99':
             cate_trend_data8.append(int(cate_trend_info[2]))
 
     if len(cate_trend_data_label) == 8:
