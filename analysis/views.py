@@ -375,6 +375,7 @@ def normal_exp_analy(request):
     cate_trend_data5 = []
     cate_trend_data6 = []
     cate_trend_data7 = []
+    cate_trend_data8 = []
     cate_trend_list = get_normal_cate_trend_list(month)
 
     for r_idx, cate_trend_info in enumerate(cate_trend_list):
@@ -399,8 +400,10 @@ def normal_exp_analy(request):
             cate_trend_data6.append(int(cate_trend_info[2]))
         if r_idx % 10 == 6:
             cate_trend_data7.append(int(cate_trend_info[2]))
+        if r_idx % 10 == 7:
+            cate_trend_data8.append(int(cate_trend_info[2]))
 
-    if len(cate_trend_data_label) == 10:
+    if len(cate_trend_data_label) == 8:
         cate_trend_data_list.append({'label': cate_trend_data_label[0], 'data': cate_trend_data1})
         cate_trend_data_list.append({'label': cate_trend_data_label[1], 'data': cate_trend_data2})
         cate_trend_data_list.append({'label': cate_trend_data_label[2], 'data': cate_trend_data3})
@@ -408,6 +411,7 @@ def normal_exp_analy(request):
         cate_trend_data_list.append({'label': cate_trend_data_label[4], 'data': cate_trend_data5})
         cate_trend_data_list.append({'label': cate_trend_data_label[5], 'data': cate_trend_data6})
         cate_trend_data_list.append({'label': cate_trend_data_label[6], 'data': cate_trend_data7})
+        cate_trend_data_list.append({'label': cate_trend_data_label[7], 'data': cate_trend_data8})
 
     # 3. 경비 Average and Now
     year_avg_info = get_normal_year_avg_info(month)
@@ -475,10 +479,9 @@ def get_normal_cate_list(month):
     sql_str += "         , BASE.ECAL_AMT "
     sql_str += "      FROM "
     sql_str += "    ( "
-    sql_str += "        SELECT LABEL_CATE_CD, SUM(ECAL_AMT) AS ECAL_AMT "
+    sql_str += "        SELECT IFNULL(LABEL_CATE_CD, '99') AS LABEL_CATE_CD, SUM(ECAL_AMT) AS ECAL_AMT "
     sql_str += "          FROM EX_EXPN_ETC "
     sql_str += "         WHERE OCCR_YMD LIKE CONCAT('" + month + "', '%') "
-    sql_str += "           AND LABEL_CATE_CD IS NOT NULL "
     sql_str += "         GROUP BY LABEL_CATE_CD "
     sql_str += "    ) BASE "
     sql_str += ") RSLT "
@@ -524,12 +527,11 @@ def get_normal_cate_trend_list(month):
     sql_str += "    ) CCOD "
     sql_str += ") BASE LEFT OUTER JOIN ( "
     sql_str += "    SELECT SUBSTR(OCCR_YMD, 1, 6) AS OCCR_YM "
-    sql_str += "         , LABEL_CATE_CD "
+    sql_str += "         , IFNULL(LABEL_CATE_CD, '99') AS LABEL_CATE_CD "
     sql_str += "         , SUM(ECAL_AMT) AS ECAL_AMT "
     sql_str += "      FROM EX_EXPN_ETC "
     sql_str += "     WHERE OCCR_YMD BETWEEN DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL -5 MONTH, '%Y%m%01') "
     sql_str += "       AND DATE_FORMAT(CONCAT('" + month + "', '01') + INTERVAL +1 MONTH + INTERVAL -1 DAY, '%Y%m%d') "
-    sql_str += "       AND LABEL_CATE_CD IS NOT NULL "
     sql_str += "     GROUP BY SUBSTR(OCCR_YMD, 1, 6), LABEL_CATE_CD "
     sql_str += ") RSLT "
     sql_str += "   ON BASE.OCCR_YM = RSLT.OCCR_YM "
