@@ -383,25 +383,25 @@ def normal_exp_analy(request):
         if cate_trend_info[0] not in cate_trend_label:  # 월(X) 라벨
             cate_trend_label.append(cate_trend_info[0])
 
-        if cate_trend_info[1] not in cate_trend_data_label:  # 데이터셋 라벨
-            cate_trend_data_label.append(cate_trend_info[1])
+        if cate_trend_info[2] not in cate_trend_data_label:  # 데이터셋 라벨
+            cate_trend_data_label.append(cate_trend_info[2])
 
         if cate_trend_info[1] == '1':
-            cate_trend_data1.append(int(cate_trend_info[2]))
+            cate_trend_data1.append(int(cate_trend_info[3]))
         if cate_trend_info[1] == '2':
-            cate_trend_data2.append(int(cate_trend_info[2]))
+            cate_trend_data2.append(int(cate_trend_info[3]))
         if cate_trend_info[1] == '3':
-            cate_trend_data3.append(int(cate_trend_info[2]))
+            cate_trend_data3.append(int(cate_trend_info[3]))
         if cate_trend_info[1] == '4':
-            cate_trend_data4.append(int(cate_trend_info[2]))
+            cate_trend_data4.append(int(cate_trend_info[3]))
         if cate_trend_info[1] == '5':
-            cate_trend_data5.append(int(cate_trend_info[2]))
+            cate_trend_data5.append(int(cate_trend_info[3]))
         if cate_trend_info[1] == '6':
-            cate_trend_data6.append(int(cate_trend_info[2]))
+            cate_trend_data6.append(int(cate_trend_info[3]))
         if cate_trend_info[1] == '7':
-            cate_trend_data7.append(int(cate_trend_info[2]))
+            cate_trend_data7.append(int(cate_trend_info[3]))
         if cate_trend_info[1] == '99':
-            cate_trend_data8.append(int(cate_trend_info[2]))
+            cate_trend_data8.append(int(cate_trend_info[3]))
 
     if len(cate_trend_data_label) == 8:
         cate_trend_data_list.append({'label': cate_trend_data_label[0], 'data': cate_trend_data1})
@@ -499,7 +499,7 @@ def get_normal_cate_trend_list(month):
     """
     일반 Category Trend Line SQL
     """
-    sql_str = "SELECT BASE.OCCR_YM, BASE.LABEL_CATE_NM, IFNULL(ROUND(RSLT.ECAL_AMT / 10000, 0), 0) AS ECAL_AMT FROM "
+    sql_str = "SELECT BASE.OCCR_YM, BASE.LABEL_CATE_CD, BASE.LABEL_CATE_NM, IFNULL(ROUND(RSLT.ECAL_AMT / 10000, 0), 0) AS ECAL_AMT FROM "
     sql_str += "( "
     sql_str += "    SELECT RANG.OCCR_YM "
     sql_str += "         , CCOD.LABEL_CATE_CD "
